@@ -1,21 +1,16 @@
-<p align="center">
-  <a href="https://gear-tech.io">
-    <img src="https://github.com/gear-tech/gear/blob/master/images/logo-grey.png" width="400" alt="GEAR">
-  </a>
-</p>
-<p align=center>
-    <a href="https://github.com/gear-tech/gear-js/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL%203.0-success"></a>
-</p>
+<div>
+  <img src="./public/banner.png" width = "100%">
+</div>
 <hr>
 
 ## Description
 
-A ready-made application template with a well-thought-out infrastructure for quickly turning the application on Gear blockchain.
+Rutzo is a Web3 game that allows users to earn NFTs by competing against other users through the use of NFTs as skill cards and items. The game is based on blockchain technology and uses the Vara proof-of-stake network.
 
-## Installation
+## Our team
 
-Simply clone this repo to your local folder
-
-```sh
-git clone https://github.com/gear-dapps/react-app.git d-app
-```
+- [Ricardo Mora](https://github.com/RicardoUMC)
+- [David Hernández](https://github.com/David-HernandezM)
+- [Juan M. Hernández](https://github.com/JuanH44)
+- [Alan Gómez](https://github.com/Alangh0011)
+- [Brandonn Herrera](https://github.com/brandonhxrr)
