@@ -13,4 +13,4 @@ Rutzo is a Web3 game that allows users to earn NFTs by competing against other u
 - [David Hernández](https://github.com/David-HernandezM)
 - [Juan M. Hernández](https://github.com/JuanH44)
 - [Alan Gómez](https://github.com/Alangh0011)
-- [Brandonn Herrera](https://github.com/brandonhxrr)
+- [Brandon Herrera](https://github.com/brandonhxrr)
