@@ -7,9 +7,9 @@ function Home() {
   return (
     <Container>
       <Intro style={{width: '100%'}}/>
-      <h1 style={{ textAlign: 'center', margin: '5%'}}>Features</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}}>Features</h1>
       <Features />
-      <h1 style={{ textAlign: 'center', margin: '5%'}}>How to start</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}}>How to start</h1>
       <HowToStart />
     </Container>
   );
