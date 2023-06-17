@@ -6,12 +6,6 @@ use gear_lib::non_fungible_token::token::TokenId;
 pub struct MainContractMetadata;
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum id_type {
-    user_id,
-    game_id
-}
-
-#[derive(Encode, Decode, TypeInfo)]
 pub enum InputMessages {
     Login(id_type),
     Register(id_type),
@@ -31,16 +25,46 @@ pub enum InputMessages {
 pub enum Answer {
     ErrorBuying(String),
     AccountAlreadyExist(String),
+    AccountNotExists(String),
+    QueryNotAllowed(String),
     RegisterSucces,
     LoginSucces,
     PurchaseSucces,
+    ReplySuccess,
+    NewPlayer(ActorId),
+    NewPlayerWithMainId(NewPlayerWithIdData)
 }
 
-#[derive(TypeInfo)]
+#[derive(Encode, Decode, TypeInfo)]
+pub struct NewPlayerWithIdData {
+    pub main_id: ActorId,
+    pub new_player: ActorId
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum id_type {
+    user_id,
+    game_id
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub struct game_data {
+    pub actor_game_id: ActorId,
+    pub actual_state: game_state
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub enum game_state {
+    waiting_for_player,
+    game_in_progress
+}
+
+#[derive(Encode, Decode, TypeInfo)]
 pub struct user_games_id {
     pub users: Vec<ActorId>,
-    pub games: Vec<ActorId>
+    pub games: Vec<game_data>
 }
+
 
 impl Metadata for MainContractMetadata {
     type Init = ();
@@ -50,3 +74,4 @@ impl Metadata for MainContractMetadata {
     type Signal = ();
     type State = user_games_id;
 }
+
