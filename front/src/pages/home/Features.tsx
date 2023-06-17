@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 
 function Features() {
   return ( 
-      <Container style={{ marginBlock: '5%'}} className='text-light'>
+      <Container style={{ marginBlock: '5%'}} className='text-light' id='Features'>
         <Container style={{ marginBlock: '5%', display: 'flex'}}>
         <img  src={NFT1} style={{width:'30%'}} alt="fireSpot"/>
           <Container style={{alignSelf: 'center', marginLeft: '10%'}}>

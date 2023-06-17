@@ -12,9 +12,10 @@ function Header({ isAccountVisible }: Props) {
       <Logo />
         <nav className={styles.nav}>
             <ul className={styles.list}>
-                <li><a href="/about" className='link-light'>ABOUT</a></li>
-                <li><a href="/caracteristicas" className='link-light'>FEATURES</a></li>
-                <li><a href="/start" className='link-light'>START</a></li>
+                <li><a href="/#about" className='link-light'>ABOUT</a></li>
+                <li><a href="/#features" className='link-light'>FEATURES</a></li>
+                <li><a href="/#how-to-start" className='link-light'>HOW TO START</a></li>
+                <li><a href="/#faq" className='link-light'>FAQ</a></li>
                 <li><a href="/marketplace" className='link-light'>MARKETPLACE</a></li>
                 <li className={styles.highlight}><a href="faq">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3.5} stroke="currentColor" className="w-6 h-6">

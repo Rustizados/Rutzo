@@ -6,13 +6,13 @@ import { FAQ } from './FAQ';
 
 function Home() {
   return (
-    <Container>
+    <Container className='About'>
       <Intro style={{width: '100%'}}/>
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}}>Features</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='features'>Features</h1>
       <Features />
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}}>How to start</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='how-to-start'>How to start</h1>
       <HowToStart />
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}}>FAQ</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='faq'>FAQ</h1>
       <FAQ />
     </Container>
   );
