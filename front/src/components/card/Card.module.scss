@@ -1,25 +1,45 @@
 .container{
   display: flex;
-  width: 250px;
-  height: 250px;
+  width: 220px;
+  height:270px;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 16px;
   background-color: #17113a;
   //clip-path: polygon(0% 0%, 80% 0%, 100% 20%, 100% 100%, 0% 100%);
-  filter: drop-shadow(0px 0px 8px #6248f8);
+  filter: drop-shadow(0px 0px 10px #6248f8);
 
+}
+
+.graphics{
+  display: flex;
+
+    justify-content: space-between;
+
+}
+
+.typec{
+  margin: 8px 0;
+}
+
+.type{
+  border: white 2px solid;
+  border-radius: 16px;
+  padding: 0 8px;
+  display: inline;
+  margin: 8px 0;
 }
 
 
 
 .title{
-  color: #3dd882 !important;
+
+  color: #3dd882;
 }
 
 .hexagon {
-  display: flex;
-  width:100px;
-  height: 100px;
+  display: block;
+  width:120px;
+  height: 120px;
   background-size: cover;
   clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
   -webkit-mask-image: url("../../assets/mask.svg");
@@ -31,4 +51,8 @@
 .content {
   padding: 16px;
   color: #fff;
+}
+
+.card{
+  width: 100%;
 }
