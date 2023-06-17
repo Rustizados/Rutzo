@@ -4,17 +4,17 @@ use gstd::{prelude::*, msg, ActorId};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum InputMessages {
-    Login(id_type),
-    Register(id_type),
-    PlayGame(id_type),
-    QuitGame(id_type),
-    GetCards(id_type),
+    Login(TypeId),
+    Register(TypeId),
+    PlayGame(TypeId),
+    QuitGame(TypeId),
+    GetCards(TypeId),
     BuyCard(TokenId),
-    EndGame(id_type),
+    EndGame(TypeId),
     TransferCard {
         from: ActorId,
         to: ActorId,
-        matchId: ActorId
+        match_id: ActorId
     },
 }
 
@@ -28,23 +28,23 @@ pub enum Answer {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum id_type {
-    user_id,
-    game_id
+pub enum TypeId {
+    UserId,
+    GameId
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub struct user_games_id {
+pub struct UserGamesID {
     pub users: Vec<ActorId>,
     pub games: Vec<ActorId>
 }
 
-static mut USERSANDGAMESID: Option<user_games_id> = None;
+static mut USERSANDGAMESID: Option<UserGamesID> = None;
 
 #[no_mangle]
 extern "C" fn init() {
     unsafe {
-        USERSANDGAMESID = Some(user_games_id {
+        USERSANDGAMESID = Some(UserGamesID {
             users: Vec::new(),
             games: Vec::new()
         });
@@ -56,7 +56,7 @@ extern "C" fn handle() {
     let action = msg::load().expect("Error in loading message");
     match action {
         InputMessages::Login(actor_id) => {
-            if let id_type::user_id = actor_id {
+            if let TypeId::UserId = actor_id {
                 let ids_list = unsafe {
                     USERSANDGAMESID.users
                         .as_mut()
@@ -92,7 +92,7 @@ extern "C" fn handle() {
         InputMessages::TransferCard {
             from,
             to,
-            matchId
+            match_id
         } => {
             msg::reply(Answer::LoginSucces, 0).expect("Error in sending reply message");
         }
