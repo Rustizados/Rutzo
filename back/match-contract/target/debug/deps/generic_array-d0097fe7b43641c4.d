@@ -1,0 +1,11 @@
+C:\Users\rumc-\OneDrive\Vara\Rutzo\back\match-contract\target\debug\deps\generic_array-d0097fe7b43641c4.rmeta: C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\lib.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\hex.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\impls.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\arr.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\functional.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\iter.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\sequence.rs
+
+C:\Users\rumc-\OneDrive\Vara\Rutzo\back\match-contract\target\debug\deps\generic_array-d0097fe7b43641c4.d: C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\lib.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\hex.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\impls.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\arr.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\functional.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\iter.rs C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\sequence.rs
+
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\lib.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\hex.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\impls.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\arr.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\functional.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\iter.rs:
+C:\Users\rumc-\.cargo\registry\src\index.crates.io-6f17d22bba15001f\generic-array-0.14.7\src\sequence.rs:

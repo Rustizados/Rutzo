@@ -5,12 +5,12 @@ import Container from 'react-bootstrap/Container';
 
 function HowToStart() {
   return ( 
-    <Container style={{ margin: '5%' }}>
+    <Container style={{ marginBlock: '5%' }} className='text-light'>
       <Container style={{ alignSelf: 'center'}}>
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
           <TbHexagonNumber1 style={{ fontSize: '300%' }} />
           <br/><br/>
-          Download the <a href="https://polkadot.js.org/extension/">polkadot js extension   <TbExternalLink /></a>
+          Download the <a href="https://polkadot.js.org/extension/" className='link-light'>polkadot js extension   <TbExternalLink /></a>
         </h2>
         <p style={{marginBottom: '50px', textAlign: 'center'}}>Create and sign transactions with your accounts</p>
         <img src={extension} alt="Polkadot extension" style={{width: '100%', marginBottom: '50px'}}/>
