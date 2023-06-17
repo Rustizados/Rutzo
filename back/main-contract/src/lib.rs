@@ -1,6 +1,6 @@
 #![no_std]
 use gear_lib::non_fungible_token::token::TokenId;
-use gstd::{prelude::*, msg, ActorId};
+use gstd::{prelude::*, msg, ActorId, Vec};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum InputMessages {
@@ -57,18 +57,26 @@ extern "C" fn handle() {
     match action {
         InputMessages::Login(actor_id) => {
             if let id_type::user_id = actor_id {
-                let ids_list = unsafe {
-                    USERSANDGAMESID.users
-                        .as_mut()
-                        .expect("The contract is no initialized");
-                };
                 let id = msg::source();
-                let user_account = ids_list
-                    .into_iter()
-                    .find(|&account| account == id);
+                let user_account: Option<ActorId> = unsafe {
+                    if let Some(vect) = &USERSANDGAMESID {
+                        vect.users
+                            .iter()
+                            .find(|&&account| account == id)
+                            .copied()
+                    } else {
+                        None
+                    }
+                };
+
                 if let None = user_account {
-                    user_account.push(id);
-                }
+                    unsafe {
+                        if let Some(vect) = &mut USERSANDGAMESID {
+                            vect.users
+                                .push(id);
+                        };
+                    };
+                };
             }
         },
         InputMessages::Register(actor_id) => {
@@ -99,5 +107,5 @@ extern "C" fn handle() {
     }
 }
 
-#[no_mangle]
-extern "C" fn handle_reply() {}
+// #[no_mangle]
+// extern "C" fn handle_reply() {}
