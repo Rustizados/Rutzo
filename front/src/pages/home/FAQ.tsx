@@ -1,4 +1,3 @@
-import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Accordion from 'react-bootstrap/Accordion';
 import 'bootstrap/dist/css/bootstrap.min.css';
