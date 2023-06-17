@@ -5,23 +5,20 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies]
+gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], rev = "78dfa07" }
+gmeta = { git = "https://github.com/gear-tech/gear", rev = "78dfa07" }
+gear-lib = { git = "https://github.com/gear-dapps/gear-lib.git", tag = "0.3.7" }
+parity-scale-codec = { version = "3", default-features = false }
+scale-info = { version = "2", default-features = false }
+hex-literal = "0.4.1"
+
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", features = ["wasm-opt"], rev = "78dfa07" }
 main_contract_io = { path = "main_contract_io" }
 
-[dependencies]
-gear-wasm-builder = { git = "https://github.com/gear-tech/gear", rev = "78dfa07" }
-gtest = { git = "https://github.com/gear-tech/gear", rev = "78dfa07" }
-gmeta = { git = "https://github.com/gear-tech/gear", rev = "78dfa07" }
-gstd = { git = "https://github.com/gear-tech/gear", rev = "78dfa07" }
-sp-core = { git = "https://github.com/gear-tech/substrate.git", rev = "36699c4478ce8ae05517bb42a1b115403313e083" }
-scale-info = { version = "2", default-features = false }
-parity-scale-codec = { version = "3", default-features = false }
-hashbrown = "0.13"
-primitive-types = { version = "0.12", default-features = false, features = ["scale-info"]}
-gear-lib = { git = "https://github.com/gear-dapps/gear-lib" }
-tokio = "1"
-light_sr25519 = { git = "https://github.com/gear-tech/gear.git", rev = "78dfa07" }
-
 [dev-dependencies]
 gtest = { git = "https://github.com/gear-tech/gear.git", rev = "78dfa07" }
+
+
+
