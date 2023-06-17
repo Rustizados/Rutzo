@@ -1,0 +1,39 @@
+.playcontainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.play{
+  font-family: "valorax";
+  background-color: #7834cf;
+  font-size: 1.5rem;
+}
+
+.playcontainer:hover{
+  filter:  drop-shadow(5px 5px 0 rgba(194, 48, 11, 0.953)) hue-rotate(45deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
+  transition: all 0.3s ease-in-out;
+}
+
+.playcontainer a{
+  color: #3dd882;
+  display: flex;
+  align-items: center;
+  padding:8px 24px;
+  border-radius: 32px;
+}
+
+.playcontainer:hover{
+  color: #fff;
+}
+
+.playcontainer svg {
+  font-weight: bold;
+  width: 1em;
+  height: 1em;
+  margin-right: 5px;
+  color: #3dd882;
+}
