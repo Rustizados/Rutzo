@@ -4,8 +4,7 @@ import NFT3 from 'assets/images/features/NFT3.png';
 import Container from 'react-bootstrap/Container';
 
 function Features() {
-  return (
-    
+  return ( 
       <Container style={{ margin: '5%'}}>
         <Container style={{ margin: '5%', display: 'flex'}}>
         <img  src={NFT1} style={{width:'70%'}} alt="fireSpot"/>
