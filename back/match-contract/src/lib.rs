@@ -36,26 +36,16 @@ pub enum GameState {
     Won
 }
 
-#[derive(Encode, Decode, TypeInfo)]
-pub enum Signvdx {
-    UserId,
-    GameId
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-pub enum TypeId {
-    UserId,
-    GameId
-}
-
-/* #[derive(Encode, Decode, TypeInfo)]
-pub enum TypeId {
-    UserId,
-    GameId
-} */
+static mut GAME_SCORE: Option<Scoreboard> = None;
 
 #[no_mangle]
-extern "C" fn init() {}
+extern "C" fn init() {
+    unsafe { GAME_SCORE = Some(Scoreboard { 
+            score_p1: 0,
+            score_p2: 0 
+        }) 
+    };
+}
 
 #[no_mangle]
 extern "C" fn handle() {}
