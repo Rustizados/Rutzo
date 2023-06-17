@@ -18,7 +18,7 @@ function Card (props: { image: string; title: string; type: string; value: numbe
 
 
             <div className={styles.content}>
-                <h3 className={styles.title}>{title}</h3>
+                <p className={styles.title}>{title}</p>
                 <div className={styles.typec}>
                     <p className={styles.type}>{type}</p>
                 </div>

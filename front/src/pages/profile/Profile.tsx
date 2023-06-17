@@ -1,23 +1,37 @@
-
-import Identicon from "@polkadot/react-identicon";
 import './Profile.scss';
-import {Card} from '../../components/card/Card';
+import { useState } from 'react';
 
-function Profile(){
-    return(
-        <div >
-            <h1 className="title">Profile</h1>
-            <div className="cards">
-                <Card image="/p.jpg" title="SparkPug Blaze" type="fire" value={2}/>
-                <Card image="/pp.jpg" title="SparkPug Blaze" type="water" value={1}/>
-                <Card image="/r.jpg" title="SparkPug Blaze" type="ice" value={3}/>
-                <Card image="/hex.jpg" title="SparkPug Blaze" type="water" value={1}/>
-                <Card image="/d.jpg" title="SparkPug Blaze" type="fire" value={3}/>
+
+function Profile() {
+    const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar si el usuario ha iniciado sesión o no
+
+    const handleLogin = () => {
+        setLoggedIn(true);
+    };
+
+    const handleLogout = () => {
+        setLoggedIn(false);
+    };
+
+    const renderProfileDetails = () => {
+        if (loggedIn) {
+            return (
+                <div>
+                    <h2>Detalles del usuario</h2>
+                    <button type="button" onClick={handleLogout}>Cerrar sesión</button>
+                </div>
+            );
+        }
+
+        return (
+            <div>
+                <p>No has iniciado sesión.</p>
+                <button type="button" onClick={handleLogin}>Iniciar sesión</button>
             </div>
+        );
+    };
 
-
-        </div>
-    );
+    return <div className="profile">{renderProfileDetails()}</div>;
 }
 
 export { Profile };
