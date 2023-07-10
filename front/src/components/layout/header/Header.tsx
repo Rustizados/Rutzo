@@ -12,7 +12,6 @@ function Header({ isAccountVisible }: Props) {
       <Logo />
         <nav className={styles.nav}>
             <ul className={styles.list}>
-                <li><a href="/#about" className='link-light'>ABOUT</a></li>
                 <li><a href="/#features" className='link-light'>FEATURES</a></li>
                 <li><a href="/#how-to-start" className='link-light'>HOW TO START</a></li>
                 <li><a href="/#faq" className='link-light'>FAQ</a></li>

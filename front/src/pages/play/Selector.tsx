@@ -14,7 +14,7 @@ function Selector() {
         </Col>
         <Col>
           <div className="border p-3" style={{ height: '300px', position: 'relative' }}>
-            <h4>Container 2</h4>
+            
             <Button variant="outline-primary" className="position-absolute bottom-0 end-0 m-3">
               <span>+</span>
             </Button>
@@ -22,7 +22,7 @@ function Selector() {
         </Col>
         <Col>
           <div className="border p-3" style={{ height: '300px', position: 'relative' }}>
-            <h4>Container 3</h4>
+            
             <Button variant="outline-primary" className="position-absolute bottom-0 end-0 m-3">
               <span>+</span>
             </Button>
