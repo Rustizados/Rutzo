@@ -11,11 +11,11 @@ function Marketplace() {
 
             <div >
                 <div className="cards-container">
-                    <Card image="/p.jpg" title="SparkPug Blaze" type="fire" value={2}/>
-                    <Card image="/pp.jpg" title="AstroPug Nebula" type="water" value={1}/>
-                    <Card image="/r.jpg" title="Rusty Robot" type="ice" value={3}/>
-                    <Card image="/hex.jpg" title="Astonishing Technicolor" type="water" value={1}/>
-                    <Card image="/d.jpg" title="Cosmic Inferno" type="fire" value={3}/>
+                    <Card image="/p.jpg" title="SparkPug Blaze" type="fire" value={2} price={0.96}/>
+                    <Card image="/pp.jpg" title="AstroPug Nebula" type="water" value={1} price={1.02}/>
+                    <Card image="/r.jpg" title="Rusty Robot" type="ice" value={3} price={.56}/>
+                    <Card image="/hex.jpg" title="Astonishing Technicolor" type="water" value={1} price={0.35}/>
+                    <Card image="/d.jpg" title="Cosmic Inferno" type="fire" value={3} price={1.50}/>
                 </div>
             </div>
         </Container>

@@ -5,8 +5,8 @@ import {Icon} from './icon'
 import {Stars} from './stars'
 
 
-function Card (props: { image: string; title: string; type: string; value: number; }) {
-    const { image, title, type, value } = props;
+function Card (props: { image: string; title: string; type: string; value: number; price: number; }) {
+    const { image, title, type, value, price } = props;
 
     return (
     <div className={styles.cards_container}>
@@ -25,6 +25,7 @@ function Card (props: { image: string; title: string; type: string; value: numbe
                 <div>
                     <Stars num={value}/>
                 </div>
+                <p className={styles.price}>${price} ETH</p>
             </div>
         </div>
     </div>
