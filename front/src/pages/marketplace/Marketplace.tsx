@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import { ReactComponent as Banner } from 'assets/images/marketplace.svg';
 import './Marketplace.scss';
-import {Card} from '../../components/card/Card';
+import { Card } from '../../components/card/Card';
 
 function Marketplace() {
     return (
