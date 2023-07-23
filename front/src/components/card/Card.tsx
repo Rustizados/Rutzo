@@ -1,11 +1,9 @@
-// Card.tsx
-
 import React from 'react';
 import styles from './Card.module.scss';
 import { Icon } from './icon';
 import { Stars } from './stars';
 import { CardDialog } from './CardDialog';
-import { Modal } from './Modal'; // Importa el nuevo componente Modal
+import { Modal } from './Modal';
 
 interface CardProps {
   image: string;
@@ -72,8 +70,6 @@ class Card extends React.Component<CardProps, CardState> {
             <p className={styles.price}>${price} ETH</p>
           </div>
         </div>
-
-        {/* Utiliza el Modal para mostrar el CardDialog */}
         {dialogOpen && (
           <Modal onClose={this.handleClose}>
             <CardDialog

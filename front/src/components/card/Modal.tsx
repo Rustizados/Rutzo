@@ -40,16 +40,14 @@ function Modal({ children, onClose }: ModalProps) {
   return (
     <button
       className={styles.modalOverlay}
-      type="button" // Agregar el atributo type al botón
-      onClick={handleModalClick}
-    >
+      type="button"
+      onClick={handleModalClick}>
       <button
         className={styles.modalContent}
         tabIndex={-1}
-        type='button' // Agregar el atributo type al botón
+        type="button"
         onClick={handleDialogContentClick}
-        onKeyDown={handleDialogContentKeyDown}
-      >
+        onKeyDown={handleDialogContentKeyDown}>
         {children}
       </button>
     </button>
