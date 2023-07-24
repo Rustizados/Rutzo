@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Rutzo/static/css/main.9f7dac21.css",
-    "main.js": "/Rutzo/static/js/main.2a63d8f0.js",
+    "main.js": "/Rutzo/static/js/main.d0a333e1.js",
     "static/media/marketplace.svg": "/Rutzo/static/media/marketplace.8f2e43697615f3e68d4693ede73be647.svg",
     "static/media/Intro.svg": "/Rutzo/static/media/Intro.da496cf6f1ef37ad4505be23a91ceab3.svg",
     "static/media/signin.png": "/Rutzo/static/media/signin.2fdac172470dd0cd2bf3.png",
@@ -28,10 +28,10 @@
     "static/media/login.svg": "/Rutzo/static/media/login.7bdf46dacf416ecce0a339aa9338abc9.svg",
     "static/media/bg.svg": "/Rutzo/static/media/bg.0ced73485ef26eb62727.svg",
     "main.9f7dac21.css.map": "/Rutzo/static/css/main.9f7dac21.css.map",
-    "main.2a63d8f0.js.map": "/Rutzo/static/js/main.2a63d8f0.js.map"
+    "main.d0a333e1.js.map": "/Rutzo/static/js/main.d0a333e1.js.map"
   },
   "entrypoints": [
     "static/css/main.9f7dac21.css",
-    "static/js/main.2a63d8f0.js"
+    "static/js/main.d0a333e1.js"
   ]
 }
