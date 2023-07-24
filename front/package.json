@@ -2,6 +2,7 @@
   "name": "dapp",
   "version": "0.1.1",
   "private": true,
+  "homepage": "https://brandonhxrr.github.io/Rutzo",
   "dependencies": {
     "@gear-js/api": "0.31.2",
     "@gear-js/react-hooks": "0.5.18",
@@ -25,6 +26,7 @@
     "bootstrap": "^5.3.0",
     "buffer": "6.0.3",
     "clsx": "1.2.1",
+    "gh-pages": "^5.0.0",
     "identicon.js": "^2.3.3",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.4",
@@ -42,7 +44,9 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
