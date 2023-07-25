@@ -1,15 +1,24 @@
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Marketplace } from './marketplace';
 import { Home } from './home';
 import { Play } from './play';
 import { Profile } from './profile';
 
-const routes = [{ path: '/', Page: Home }, { path: '/marketplace', Page: Marketplace }, { path: '/play', Page: Play }, { path: '/profile', Page: Profile }];
-
-function Routing() {
-  const getRoutes = () => routes.map(({ path, Page }) => <Route key={path} path={path} element={<Page />} />);
-
-  return <Routes>{getRoutes()}</Routes>;
+export function Routing() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/marketplace" element={<Marketplace />} />
+      <Route path="/play" element={<Play />} />
+      <Route path="/profile" element={<Profile />} />
+    </Routes>
+  );
 }
 
-export { Routing };
+export function App() {
+  return (
+    <BrowserRouter basename="/Rutzo">
+      <Routing />
+    </BrowserRouter>
+  );
+}
