@@ -2,7 +2,6 @@
   "name": "dapp",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://brandonhxrr.github.io/Rutzo",
   "dependencies": {
     "@gear-js/api": "0.31.2",
     "@gear-js/react-hooks": "0.5.18",
