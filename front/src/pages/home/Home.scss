@@ -37,3 +37,44 @@
   margin-right: 5px;
   color: #3dd882;
 }
+
+.feature{
+  display: flex;
+  margin-block: 5%;
+}
+
+.feature:nth-child(even){
+  flex-direction: row-reverse;
+}
+
+.content {
+  align-items: center;
+}
+
+.content :nth-child(even), .content h2 {
+  margin-left: 10%;
+}
+
+.content h2 {
+  margin-bottom: 5%;
+}
+
+@media screen and (max-width: 1016px) {
+  .feature{
+    display: inline-block;
+    text-align: center;
+  }
+
+  .feature img {
+    margin-bottom: 5%;
+  }
+
+  .container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .content :nth-child(even), .content h2 {
+    margin-left: 0%;
+  }
+}
