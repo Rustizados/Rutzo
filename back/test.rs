@@ -1,0 +1,4 @@
+enum x {
+fn main() {
+	
+}
