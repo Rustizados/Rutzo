@@ -1,4 +1,0 @@
-enum x {
-fn main() {
-	
-}
