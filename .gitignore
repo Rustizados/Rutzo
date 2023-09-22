@@ -18,3 +18,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 yarn.lock
+
+# Backend
+
+.binpath
+.DS_Store
+.vscode
+target/
+.metahash
+meta.txt
+*.meta.txt
+
