@@ -1,6 +1,6 @@
 #![no_std]
 use gstd::{prelude::*, ActorId};
-use gmeta::{Metadata, InOut, In};
+use gmeta::{Metadata, InOut, In, Out};
 use gear_lib::non_fungible_token::token::TokenId;
 
 pub struct ProgramMetadata;
@@ -11,29 +11,42 @@ impl Metadata for ProgramMetadata {
     type Reply = ();
     type Others = ();
     type Signal = ();
-    type State = MatchContractData;
+    type State = Out<MatchContractData>;
 }
 
-// Para test -------------------------
 #[derive(Encode, Decode, TypeInfo)]
-pub enum MatchContractMessage {
+pub enum MatchContractAction {
     NewUser(ActorId),
+    ChoosenCard(u8),
+    DeleteContract
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum MatchContractEvent {
+    UserAddedToMatch,
+    MatchBegin,
     MatchResult(MatchContractResults),
-    AcceptedUser,
-    DeleteContract,
+    ContractDeleted,
     QueryNotAllowed(String),
     ErrorAddingUser((ActorId, String))
 }
 
-// Para test   -----------------------------
 #[derive(Encode, Decode, TypeInfo)]
-pub struct MatchContractData {
-    pub first_user: Option<ActorId>,
-    pub second_user: Option<ActorId>,
-    pub mainContractId: ActorId
+pub struct NewUser {
+    user_id: ActorId,
 }
 
-// Para test ----------------------------
+
+
+
+// Para test   -----------------------------
+/*
+#[derive(Encode, Decode, TypeInfo)]
+pub struct MatchContractData {
+    pub mainContractId: ActorId
+}
+*/
+
 #[derive(Encode, Decode, TypeInfo)]
 pub struct MatchContractResults {
     pub data: String,
@@ -41,21 +54,19 @@ pub struct MatchContractResults {
 
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum InputMessages {
-    Login(id_type),
-    Register(id_type),
-    PlayGame(id_type),
-    QuitGame(id_type),
-    GetCards(id_type),
-    BuyCard(TokenId),
-    EndGame(id_type),
+pub enum RutzoAction {
+    Login,
+    Register,
+    PlayGame,
+    QuitGame,
+    GetCards,
+    BuyCard,
+    EndGame,
     TransferCard {
         from: ActorId,
         to: ActorId,
         matchId: ActorId
-    },
-    ContractCreated(MatchContractResults), // para test -------------------------------
-    CleanContractCreatedData
+    }
 }
 
 #[derive(Encode, Decode, TypeInfo)]
