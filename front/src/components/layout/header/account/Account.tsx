@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useAccount } from '@gear-js/react-hooks';
+import { ReactComponent as userSVG } from 'assets/images/icons/login.svg';
+import { Button } from '@gear-js/ui';
 import { AccountsModal } from './accounts-modal';
 import { Wallet } from './wallet';
 
@@ -20,7 +22,7 @@ function Account() {
       {account ? (
         <Wallet balance={account.balance} address={account.address} name={account.meta.name} onClick={openModal} />
       ) : (
-        <button type="button" onClick={openModal}> Connect Your Wallet</button>
+        <Button icon={userSVG} text="Sign in" onClick={openModal} />
       )}
       {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
     </>
