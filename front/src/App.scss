@@ -7,6 +7,30 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: 'press_start_tp';
+  src: url('./fonts/press_start_tp.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'apex';
+  src: url('./fonts/apex.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'jetbrains_mono';
+  src: url('./fonts/jetbrains_mono.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'call_ops_duty';
+  src: url('./fonts/call_ops_duty.otf');
+  font-weight: normal;
+}
+
 #root {
   max-width: 1200px;
   min-height: 100vh;
