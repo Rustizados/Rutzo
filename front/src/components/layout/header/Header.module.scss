@@ -44,8 +44,9 @@
 
 .highlight:hover{
   color: #fff;
-  filter:  drop-shadow(5px 5px 0 rgba(194, 48, 11, 0.953)) hue-rotate(45deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
-  transition: all 0.3s ease-in-out;
+  background-color: #3DDC84;
+  //filter:  drop-shadow(5px 5px 0 rgba(194, 48, 11, 0.953)) hue-rotate(45deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
+  //transition: all 0.3s ease-in-out;
 }
 
 .highlight a{
