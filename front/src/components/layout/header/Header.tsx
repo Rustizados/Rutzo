@@ -15,10 +15,10 @@ function Header({ isAccountVisible }: Props) {
       <Logo />
       <div className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
         <ul className={`${styles.list} ${isMenuOpen ? styles.show : ''}`}>
-          <li><a href="/#features" className='link-light'>FEATURES</a></li>
-          <li><a href="/#how-to-start" className='link-light'>HOW TO START</a></li>
-          <li><a href="/#faq" className='link-light'>FAQ</a></li>
-          <li><a href="/marketplace" className='link-light'>MARKETPLACE</a></li>
+          <li><a href="/#features">FEATURES</a></li>
+          <li><a href="/#how-to-start">HOW TO START</a></li>
+          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="/marketplace">MARKETPLACE</a></li>
         </ul>
       </div>
       <div className={styles.highlight}><a href="/play">PLAY</a></div>

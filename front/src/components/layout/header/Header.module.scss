@@ -19,10 +19,19 @@
 
 .list li{
   padding: 10px;
-  font-family: valorax;
+  font-family: jetbrains_mono;
+  font-weight: bold;
+  font-size: 16px;
 }
 
+.list li:hover {
+  color: #FFF;
+  text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
+}
+
+
 .highlight{
+  color: #FFF;
   display: flex;
   margin-inline: 20px;
   align-items: center;
@@ -30,7 +39,7 @@
   border-radius: 24px;
   padding: 10px;
   transition: all 0.3s ease-in-out;
-  font-family: "valorax";
+  font-family: "press_start_tp";
 }
 
 .highlight:hover{
@@ -40,7 +49,7 @@
 }
 
 .highlight a{
-  color: #3dd882;
+  color: #FFF;
   display: flex;
   align-items: center;
   padding: 0 8px;
@@ -51,7 +60,7 @@
   width: 1em;
   height: 1em;
   margin-right: 5px;
-  color: #3dd882;
+  color: #FFF;
 }
 
 @media screen and (max-width: 1016px) {
