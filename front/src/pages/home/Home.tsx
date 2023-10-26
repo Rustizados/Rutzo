@@ -18,11 +18,11 @@ function Home() {
             </a>
         </div>
 
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='features'>Features</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%'}} id='features' className='title'>Features</h1>
       <Features />
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='how-to-start'>How to start</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%'}} id='how-to-start' className='title'>How to start</h1>
       <HowToStart />
-      <h1 style={{ textAlign: 'center', margin: '5%', color: '#7834CF'}} id='faq'>FAQ</h1>
+      <h1 style={{ textAlign: 'center', margin: '5%'}} id='faq' className='title'>FAQ</h1>
       <FAQ />
     </Container>
   );

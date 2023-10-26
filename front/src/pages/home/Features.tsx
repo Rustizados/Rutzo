@@ -2,7 +2,6 @@ import NFT1 from 'assets/images/features/NFT1.png';
 import NFT2 from 'assets/images/features/NFT2.png';
 import NFT3 from 'assets/images/features/NFT3.png';
 import Container from 'react-bootstrap/Container';
-import styles from './Feature.module.scss';
 import './Home.scss'
 
 function Features() {
