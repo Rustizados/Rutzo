@@ -29,9 +29,9 @@ impl Metadata for NFTMetadata {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct RutzoNft {
-    media: String,
-    nft_type: String,
-    power: u8
+    pub media: String,
+    pub nft_type: String,
+    pub power: u8
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -42,7 +42,8 @@ pub struct Config {
     pub authorized_minters: Vec<ActorId>,
 }
 
-#[derive(Debug, Encode, Decode, TypeInfo)]
+//#[derive(Debug, Encode, Decode, TypeInfo)]
+#[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct TokenURI {
@@ -72,7 +73,8 @@ pub struct InitNFT {
     /// Defaults NFT to mint to new users
     pub default_nfts: Vec<(TokenMetadata, RutzoNft)>,
     /// Marketplace ContractId for sale NFT's
-    pub marketplace_actorid: Option<ActorId>
+    pub marketplace_actorid: Option<ActorId>,
+    pub main_contract: Option<ActorId>
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -87,6 +89,9 @@ pub struct Collection {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum NFTAction {
+    SetMainContract {
+        main_contract_id: ActorId  
+    },
     ApproveMarketplace {
         transaction_id: u64,
         marketplace_id: ActorId
@@ -171,8 +176,11 @@ pub enum NFTEvent {
     MinterAdded {
         minter_id: ActorId,
     },
+    MainContractEstablished,
+    MarketplaceApproved,
     UserNotAllowedToMint,
-    UserIsNotTheOwner
+    UserIsNotTheOwner,
+    NoMainContractInActualContract
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -203,7 +211,8 @@ pub struct State {
     pub default_nfts: Vec<(TokenMetadata, RutzoNft)>,
     pub transactions: Vec<(H256, NFTEvent)>,
     pub config: Option<Config>,
-    pub marketplace_id: Option<ActorId>
+    pub marketplace_id: Option<ActorId>,
+    pub main_contract: Option<ActorId>
 }  
 
 impl From<&NFTState> for IoNFTState {
