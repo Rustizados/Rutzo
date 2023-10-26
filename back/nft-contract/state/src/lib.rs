@@ -1,13 +1,12 @@
 #![no_std]
 
 use program_io::*;
-//use gear_lib_old::non_fungible_token::{
 use gear_lib::non_fungible_token::{
     state::{
         NFTQueryReply,
         NFTQuery
     },
-    token::{ Token, TokenId }
+    token::{ TokenId }
 };
 use gstd::prelude::*;
 
@@ -25,13 +24,14 @@ pub mod metafns {
             .find(|(id, _)| token_id.eq(id))
             .and_then(|(_id, metadata)| metadata.clone())
             .unwrap_or_default();
-        let content = RutzoNft::default();
+        let mut content = RutzoNft::default();
         if let Some((_id, nft)) = state.nfts.iter().find(|(id, _)| token_id.eq(id)) {
             content = nft.clone();
         }
         TokenURI { metadata, content }
     }
     
+    /*
     pub fn token_uri(state: State, token_id: TokenId) -> Option<Vec<u8>> {
         let metadata = state
             .token
@@ -46,6 +46,7 @@ pub mod metafns {
         }
         Some(TokenURI { metadata, content }.enconde())
     }
+    */
     
     pub fn base(state: State, query: NFTQuery) -> Option<Vec<u8>> {
         let encoded = match query {
