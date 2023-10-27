@@ -313,6 +313,11 @@ unsafe extern fn handle() {
                 0,
             )
             .expect("Error during replying with `NFTEvent::Approval`");
+        },
+        NFTAction::NFTDataFromTokenId {
+            tokens_id
+        } => {
+            
         }
     };
 }
@@ -436,11 +441,11 @@ impl MyNFTCore for Contract {
             .clone()
             .iter()
             .for_each(|default_nft| {
-                NFTCore::mint(self, &self.main_contract.unwrap().clone(), self.token_id, Some(default_nft.0.clone()));
+                NFTCore::mint(self, &self.main_contract.unwrap().clone(), self.token_id, Some((default_nft.0).clone()));
                 NFTCore::approve(self, &self.main_contract.unwrap().clone(), self.token_id);
                 NFTCore::approve(self, &self.owner.clone(),  self.token_id);
                 last_transfer = NFTCore::transfer(self, &user_id, self.token_id);
-                self.nfts.insert(self.token_id, default_nft.1.clone());
+                self.nfts.insert(self.token_id, (default_nft.1).clone());
                 self.token_id = self.token_id.saturating_add(U256::one());
             });
         last_transfer

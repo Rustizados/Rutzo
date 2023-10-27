@@ -923,6 +923,7 @@ dependencies = [
  "gstd",
  "gtest",
  "hex-literal",
+ "primitive-types",
  "program-io",
  "program-state",
 ]
@@ -1137,7 +1138,9 @@ dependencies = [
  "gear-lib",
  "gmeta",
  "gstd",
+ "hex-literal",
  "parity-scale-codec",
+ "primitive-types",
  "scale-info",
 ]
 

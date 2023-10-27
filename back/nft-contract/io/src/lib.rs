@@ -153,6 +153,9 @@ pub enum NFTAction {
         transaction_id: u64,
         minter_id: ActorId,
     },
+    NFTDataFromTokenId {
+        tokens_id: Vec<TokenId>
+    }
 }
 
 #[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -180,7 +183,7 @@ pub enum NFTEvent {
     MarketplaceApproved,
     UserNotAllowedToMint,
     UserIsNotTheOwner,
-    NoMainContractInActualContract
+    NoMainContractInActualContract,  
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
