@@ -9,11 +9,11 @@
     justify-content: center;
     align-items: center;
     z-index: 999;
+    box-shadow: 0 8px 8px rgba(43, 43, 43, 0);
   }
   
   .modalContent {
-    background-color: #00000050;
-    padding: 20px;
+    background-color: #00000000;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
   }
@@ -29,7 +29,15 @@
     font-weight: bold;
   }
 
-  button:hover {
+  .modalOverlay {
     background-color: #00000050;
+  }
+
+  .modalOverlay:hover {
+    background-color: #00000050;
+  }
+
+  .modalContent:hover {
+    background-color: #00000000;
   }
   
