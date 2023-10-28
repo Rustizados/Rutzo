@@ -1,11 +1,10 @@
-import Container from 'react-bootstrap/Container';
 import Accordion from 'react-bootstrap/Accordion';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './home_styles.css';
 
 function FAQ() {
   return (
-    <Container>
+    <div>
       <Accordion>
         <Accordion.Item eventKey="0" >
           <Accordion.Header>How do I create an account?</Accordion.Header>
@@ -38,7 +37,7 @@ function FAQ() {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-    </Container>
+    </div>
   );
 }
 

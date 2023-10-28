@@ -1,8 +1,6 @@
-import React from 'react';
 import NFT1 from 'assets/images/features/NFT1.png';
 import NFT2 from 'assets/images/features/NFT2.png';
 import NFT3 from 'assets/images/features/NFT3.png';
-import Container from 'react-bootstrap/Container';
 import { Feature } from './Feature'; // Asegúrate de importar el nuevo componente Feature
 import './Home.scss';
 
@@ -29,13 +27,13 @@ const featureData = [
 
 function Features() {
   return (
-    <Container style={{ marginBlock: '5%' }} className='text-light' id='Features'>
+    <div style={{ marginBlock: '5%' }} className='text-light' id='Features'>
       <div className='features-container'>
       {featureData.map((feature) => (
         <Feature key={feature.id} image={feature.image} title={feature.title} content={feature.content} />
       ))}
       </div>
-    </Container>
+    </div>
   );
 }
 

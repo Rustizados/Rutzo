@@ -1,6 +1,4 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
-import './Feature.module.scss'; // Agrega los estilos necesarios aquí
+import './Feature.module.scss';
 
 interface FeatureProps {
   image: string;
@@ -10,13 +8,13 @@ interface FeatureProps {
 
 function Feature({ image, title, content }: FeatureProps) {
   return (
-    <Container className='feature'>
+    <div className='feature'>
       <img src={image} style={{ width: '30%', height: '30%' }} alt="fireSpot" />
-      <Container className='content'>
+      <div className='content'>
         <h2>{title}</h2>
         <p>{content}</p>
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 }
 

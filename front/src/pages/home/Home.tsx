@@ -1,5 +1,4 @@
 import { ReactComponent as Intro } from 'assets/images/Intro.svg';
-import Container from 'react-bootstrap/Container';
 import { Features } from './Features';
 import { HowToStart } from './HowToStart';
 import { FAQ } from './FAQ';
@@ -7,7 +6,7 @@ import './Home.scss';
 
 function Home() {
   return (
-    <Container className='About'>
+    <div className='About'>
       <Intro style={{width: '100%'}}/>
         <div className="playcontainer">
             <a href="/play" className="play">
@@ -24,7 +23,7 @@ function Home() {
       <HowToStart />
       <h1 style={{ textAlign: 'center', margin: '5%'}} id='faq' className='title'>FAQ</h1>
       <FAQ />
-    </Container>
+    </div>
   );
 }
 
