@@ -1,6 +1,6 @@
 import styles from './CardDialog.module.scss';
 import { Icon } from './icon';
-import { Stars } from './stars';
+import { PowerBar } from './power';
 
 interface CardDialogProps {
   isOpen: boolean;
@@ -32,11 +32,10 @@ function CardDialog({
         <p className={styles.type}>{type}</p>
       </div>
       <div>
-        <Stars num={value} />
+        <PowerBar progress={value} />
       </div>
-      <p className={styles.price}>${price} ETH</p>
       <button type='button' onClick={onClose}>
-        Cerrar
+        Buy
       </button>
     </div>
   );

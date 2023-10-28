@@ -10,6 +10,7 @@
     z-index: 999;   }
   
   .dialog {
+    width: 250px;
     background-color: #17113a;
     padding: 20px;
     border-radius: 8px;
@@ -31,13 +32,16 @@
     text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
   }
   
-  .typec {
-    align-items: center;
+  .typec{
+    margin: 16px 0;
   }
   
-  .type {
-    font-size: 16px;
-    margin: 20px;
+  .type{
+    border: white 2px solid;
+    border-radius: 16px;
+    padding: 0 8px;
+    display: inline;
+    margin: 8px;
   }
   
   .price {

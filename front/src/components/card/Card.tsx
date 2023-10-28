@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Card.module.scss';
 import { Icon } from './icon';
-import { Stars } from './stars';
+import { PowerBar } from './power';
 import { CardDialog } from './CardDialog';
 import { Modal } from './Modal';
 
@@ -65,9 +65,8 @@ class Card extends React.Component<CardProps, CardState> {
               <p className={styles.type}>{type}</p>
             </div>
             <div>
-              <Stars num={value} />
+              <PowerBar progress={value} />
             </div>
-            <p className={styles.price}>${price} ETH</p>
           </div>
         </div>
         {dialogOpen && (
