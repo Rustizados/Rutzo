@@ -1,8 +1,8 @@
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 
 function Selector() {
   return (
-    <Container style={{ width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <Row md={3}>
         <Col>
           <div className="border p-3" style={{ height: '300px', position: 'relative' }}>
@@ -38,7 +38,7 @@ function Selector() {
             Start game
         </a>
     </div>
-    </Container>
+    </div>
   );
 }
 
