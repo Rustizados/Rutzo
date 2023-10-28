@@ -1,30 +1,57 @@
-import styles from './Icon.module.scss';
+import { ReactComponent as Bug } from 'assets/images/class_icons/bug.svg';
+import { ReactComponent as Fire } from 'assets/images/class_icons/fire.svg';
+import { ReactComponent as Water } from 'assets/images/class_icons/water.svg';
+import { ReactComponent as Grass } from 'assets/images/class_icons/grass.svg';
+import { ReactComponent as Electric } from 'assets/images/class_icons/electric.svg';
+import { ReactComponent as Psychic } from 'assets/images/class_icons/psychic.svg';
+import { ReactComponent as Ice } from 'assets/images/class_icons/ice.svg';
+import { ReactComponent as Dragon } from 'assets/images/class_icons/dragon.svg';
+import { ReactComponent as Fairy } from 'assets/images/class_icons/fairy.svg';
+import { ReactComponent as Fighting } from 'assets/images/class_icons/fighting.svg';
+import { ReactComponent as Flying } from 'assets/images/class_icons/flying.svg';
+import { ReactComponent as Ghost } from 'assets/images/class_icons/ghost.svg';
+import { ReactComponent as Ground } from 'assets/images/class_icons/ground.svg';
+import { ReactComponent as Normal } from 'assets/images/class_icons/normal.svg';
+import { ReactComponent as Poison } from 'assets/images/class_icons/poison.svg';
+import { ReactComponent as Rock } from 'assets/images/class_icons/rock.svg';
+import './Icons.css';
 
 function Icon({ name }: { name: string }) {
     switch (name) {
-        case 'ice':
-            return (
-                <svg xmlns="http://www.w3.org/2000/svg" className={styles.ionicon} viewBox="0 0 512 512" stroke="white" fill="#bbd0ff">
-                    <path
-                        d="M461 349l-34-19.64a89.53 89.53 0 0120.94-16 22 22 0 00-21.28-38.51 133.62 133.62 0 00-38.55 32.1L300 256l88.09-50.86a133.46 133.46 0 0038.55 32.1 22 22 0 1021.28-38.51 89.74 89.74 0 01-20.94-16l34-19.64A22 22 0 10439 125l-34 19.63a89.74 89.74 0 01-3.42-26.15A22 22 0 00380 96h-.41a22 22 0 00-22 21.59 133.61 133.61 0 008.5 49.41L278 217.89V116.18a133.5 133.5 0 0047.07-17.33 22 22 0 00-22.71-37.69A89.56 89.56 0 01278 71.27V38a22 22 0 00-44 0v33.27a89.56 89.56 0 01-24.36-10.11 22 22 0 10-22.71 37.69A133.5 133.5 0 00234 116.18v101.71L145.91 167a133.61 133.61 0 008.52-49.43 22 22 0 00-22-21.59H132a22 22 0 00-21.59 22.41 89.74 89.74 0 01-3.41 26.19L73 125a22 22 0 10-22 38.1l34 19.64a89.74 89.74 0 01-20.94 16 22 22 0 1021.28 38.51 133.62 133.62 0 0038.55-32.1L212 256l-88.09 50.86a133.62 133.62 0 00-38.55-32.1 22 22 0 10-21.28 38.51 89.74 89.74 0 0120.94 16L51 349a22 22 0 1022 38.1l34-19.63a89.74 89.74 0 013.42 26.15A22 22 0 00132 416h.41a22 22 0 0022-21.59 133.61 133.61 0 00-8.5-49.41L234 294.11v101.71a133.5 133.5 0 00-47.07 17.33 22 22 0 1022.71 37.69A89.56 89.56 0 01234 440.73V474a22 22 0 0044 0v-33.27a89.56 89.56 0 0124.36 10.11 22 22 0 0022.71-37.69A133.5 133.5 0 00278 395.82V294.11L366.09 345a133.61 133.61 0 00-8.52 49.43 22 22 0 0022 21.59h.43a22 22 0 0021.59-22.41 89.74 89.74 0 013.41-26.19l34 19.63A22 22 0 10461 349z"/>
-                </svg>
-            );
+        case 'bug':
+            return <Bug className="icon bug" />;
+        case 'dragon':
+            return <Dragon className="icon dragon" />;
+        case 'electric':
+            return <Electric className="icon electric" />;
+        case 'fairy':
+            return <Fairy className="icon fairy" />;
+        case 'fighting':
+            return <Fighting className="icon fighting" />;
         case 'fire':
-            return (
-                <svg xmlns="http://www.w3.org/2000/svg" className={styles.ionicon} viewBox="0 0 512 512" stroke="white" fill="#ffc300">
-                    <path
-                        d="M394.23 197.56a300.43 300.43 0 00-53.37-90C301.2 61.65 249.05 32 208 32a16 16 0 00-15.48 20c13.87 53-14.88 97.07-45.31 143.72C122 234.36 96 274.27 96 320c0 88.22 71.78 160 160 160s160-71.78 160-160c0-43.3-7.32-84.49-21.77-122.44zm-105.9 221.13C278 429.69 265.05 432 256 432s-22-2.31-32.33-13.31S208 390.24 208 368c0-25.14 8.82-44.28 17.34-62.78 4.95-10.74 10-21.67 13-33.37a8 8 0 0112.49-4.51A126.48 126.48 0 01275 292c18.17 24 29 52.42 29 76 0 22.24-5.42 39.77-15.67 50.69z"/>
-                </svg>
-            );
+            return <Fire className="icon fire" />;
+        case 'flying':
+            return <Flying className="icon flying" />;
+        case 'ghost':
+            return <Ghost className="icon ghost" />;
+        case 'grass':
+            return <Grass className="icon grass" />;
+        case 'ground':
+            return <Ground className="icon ground" />;
+        case 'ice':
+            return <Ice className="icon ice" />;
+        case 'normal':
+            return <Normal className="icon normal" />;
+        case 'poison':
+            return <Poison className="icon poison" />;
+        case 'psychic':
+            return <Psychic className="icon psychic" />;
+        case 'rock':
+            return <Rock className="icon rock" />;
         case 'water':
-            return (
-                <svg xmlns="http://www.w3.org/2000/svg" className={styles.ionicon} viewBox="0 0 512 512" stroke="white" fill="#3a86ff">
-                    <path
-                        d="M265.12 60.12a12 12 0 00-18.23 0C215.23 97.15 112 225.17 112 320c0 88.37 55.64 144 144 144s144-55.63 144-144c0-94.83-103.23-222.85-134.88-259.88zM272 412a12 12 0 01-11.34-16 11.89 11.89 0 0111.41-8A60.06 60.06 0 00332 328.07a11.89 11.89 0 018-11.41A12 12 0 01356 328a84.09 84.09 0 01-84 84z"/>
-                </svg>
-            );
-        default :
-            return(<p>.</p>);
+            return <Water className="icon water" />;
+        default:
+            return <Normal className="icon normal" />;
     }
 }
 
