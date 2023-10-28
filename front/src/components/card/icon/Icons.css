@@ -7,6 +7,12 @@
   transition: 200ms all;
 }
 
+.icon:hover{
+  filter: saturate(200%);
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
 .bug {
   background: #92BC2C;
   box-shadow: 0 0 20px #92BC2C;
