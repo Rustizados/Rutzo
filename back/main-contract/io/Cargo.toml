@@ -9,3 +9,5 @@ scale-info.workspace = true
 parity-scale-codec.workspace = true
 gmeta.workspace = true
 gear-lib.workspace = true
+primitive-types.workspace = true
+hex-literal.workspace = true

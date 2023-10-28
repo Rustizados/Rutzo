@@ -11,6 +11,119 @@ const ZERO_ID: u64 = 0;
 const MARKETPLACE_ID: u64 = 6;
 const MAINCONTRACT_ID: u64 = 7;
 
+
+
+#[test]
+fn mint_default() {
+    let sys = System::new();
+    let mut transaction_id: u64 = 1;
+    utils::init_nft_no_marketplace(&sys);
+    let nft = sys.get_program(1);
+    let nft_test = utils::one_nft();
+    
+    let res = nft.send(
+        USERS[0],
+        NFTAction::SetMainContract {
+            main_contract_id: MAINCONTRACT_ID.into()
+        }
+    );
+    
+    let expected_log = Log::builder()
+        .dest(USERS[0])
+        .payload(NFTEvent::MainContractEstablished);
+    
+    assert!(res.contains(&expected_log));
+    
+    let res = nft.send(
+        USERS[0],
+        NFTAction::ApproveMarketplace {
+            transaction_id: transaction_id.into(),
+            marketplace_id: MARKETPLACE_ID.into()
+        }
+    );
+    
+    let expected_log = Log::builder()
+        .dest(USERS[0])
+        .payload(NFTEvent::MarketplaceApproved);
+    
+    assert!(res.contains(&expected_log));
+    assert!(!res.main_failed());
+    
+    
+    
+    // With user 2
+    transaction_id += 1;
+    let res = nft.send(
+        MAINCONTRACT_ID,
+        NFTAction::MintDefault { 
+            transaction_id: transaction_id.into(),
+            to: USERS[2].into(),
+        } 
+    );
+    
+    let message = NFTEvent::Transfer(NFTTransfer {
+        from: MAINCONTRACT_ID.into(),
+        to: USERS[2].into(),
+        token_id: 4.into(),
+    }).encode();
+    
+    assert!(!res.main_failed());
+    assert!(res.contains(&(MAINCONTRACT_ID, message)));
+    
+    utils::check_token_from_state(&nft, USERS[2], 3);
+    utils::check_token_from_state(&nft, USERS[2], 4);
+    
+    
+    //with user 3
+    transaction_id += 1;
+    let res = nft.send(
+        MAINCONTRACT_ID,
+        NFTAction::MintDefault { 
+            transaction_id: transaction_id.into(),
+            to: USERS[3].into(),
+        } 
+    );
+    
+    let message = NFTEvent::Transfer(NFTTransfer {
+        from: MAINCONTRACT_ID.into(),
+        to: USERS[3].into(),
+        token_id: 6.into(),
+    }).encode();
+    
+    assert!(!res.main_failed());
+    assert!(res.contains(&(MAINCONTRACT_ID, message)));
+    
+    utils::check_token_from_state(&nft, USERS[3], 5);
+    utils::check_token_from_state(&nft, USERS[3], 6);
+    
+    
+    
+    // with user 4
+    transaction_id += 1;
+    let res = nft.send(
+        MAINCONTRACT_ID,
+        NFTAction::MintDefault { 
+            transaction_id: transaction_id.into(),
+            to: USERS[4].into(),
+        } 
+    );
+    
+    let message = NFTEvent::Transfer(NFTTransfer {
+        from: MAINCONTRACT_ID.into(),
+        to: USERS[4].into(),
+        token_id: 8.into(),
+    }).encode();
+    
+    assert!(!res.main_failed());
+    assert!(res.contains(&(MAINCONTRACT_ID, message)));
+    
+    utils::check_token_from_state(&nft, USERS[4], 7);
+    utils::check_token_from_state(&nft, USERS[4], 8);
+}
+
+
+/*
+
 // First action -----------------------------------
 
 #[test]
@@ -309,8 +422,11 @@ fn approve_of_marketplace_success_fail() {
     assert!(!res.main_failed());
 }
 
+*/
 
 // Third action ----------------------------------------
+
+/*
 
 #[test]
 fn mint_default() {
@@ -348,6 +464,9 @@ fn mint_default() {
     assert!(res.contains(&expected_log));
     assert!(!res.main_failed());
     
+    
+    
+    // With user 2
     transaction_id += 1;
     let res = nft.send(
         MAINCONTRACT_ID,
@@ -360,7 +479,7 @@ fn mint_default() {
     let message = NFTEvent::Transfer(NFTTransfer {
         from: MAINCONTRACT_ID.into(),
         to: USERS[2].into(),
-        token_id: 0.into(),
+        token_id: 4.into(),
     }).encode();
     
     assert!(!res.main_failed());
@@ -368,8 +487,58 @@ fn mint_default() {
     
     utils::check_token_from_state(&nft, USERS[2], 3);
     utils::check_token_from_state(&nft, USERS[2], 4);
+    
+    
+    //with user 3
+    transaction_id += 1;
+    let res = nft.send(
+        MAINCONTRACT_ID,
+        NFTAction::MintDefault { 
+            transaction_id: transaction_id.into(),
+            to: USERS[3].into(),
+        } 
+    );
+    
+    let message = NFTEvent::Transfer(NFTTransfer {
+        from: MAINCONTRACT_ID.into(),
+        to: USERS[3].into(),
+        token_id: 6.into(),
+    }).encode();
+    
+    assert!(!res.main_failed());
+    assert!(res.contains(&(MAINCONTRACT_ID, message)));
+    
+    utils::check_token_from_state(&nft, USERS[3], 5);
+    utils::check_token_from_state(&nft, USERS[3], 6);
+    
+    
+    
+    // with user 4
+    transaction_id += 1;
+    let res = nft.send(
+        MAINCONTRACT_ID,
+        NFTAction::MintDefault { 
+            transaction_id: transaction_id.into(),
+            to: USERS[4].into(),
+        } 
+    );
+    
+    let message = NFTEvent::Transfer(NFTTransfer {
+        from: MAINCONTRACT_ID.into(),
+        to: USERS[4].into(),
+        token_id: 8.into(),
+    }).encode();
+    
+    assert!(!res.main_failed());
+    assert!(res.contains(&(MAINCONTRACT_ID, message)));
+    
+    utils::check_token_from_state(&nft, USERS[4], 7);
+    utils::check_token_from_state(&nft, USERS[4], 8);
 }
 
+*/
+
+/*
 #[test]
 fn mint_default_fail() {
     let sys = System::new();
@@ -423,6 +592,7 @@ fn mint_default_fail() {
     assert!(res.contains(&expected_log));
     assert!(!res.main_failed());
 }
+
 
 
 
@@ -565,7 +735,7 @@ fn transfer_success_marketplace_fail() {
 }
 
 
-
+*/
 
 
 

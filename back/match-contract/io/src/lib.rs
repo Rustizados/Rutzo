@@ -1,7 +1,6 @@
 #![no_std]
 use gstd::{prelude::*, ActorId};
 use gmeta::{Metadata, InOut, In, Out};
-use gear_lib::non_fungible_token::token::TokenId;
 
 pub struct ProgramMetadata;
 
@@ -18,7 +17,8 @@ impl Metadata for ProgramMetadata {
 pub enum MatchContractAction {
     NewUser(ActorId),
     ChoosenCard(u8),
-    DeleteContract
+    DeleteContract,
+    AcceptedUser,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
