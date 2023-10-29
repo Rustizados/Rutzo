@@ -1,6 +1,7 @@
 import styles from './CardDialog.module.scss';
 import { Icon } from './icon';
 import { PowerBar } from './power';
+import { MintNFT } from './MintNFT';
 
 interface CardDialogProps {
   isOpen: boolean;
@@ -34,9 +35,7 @@ function CardDialog({
       <div>
         <PowerBar progress={value} />
       </div>
-      <button type='button' onClick={onClose}>
-        Buy
-      </button>
+      <MintNFT/>
     </div>
   );
 }

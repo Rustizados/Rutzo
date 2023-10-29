@@ -1,6 +1,7 @@
 import { ReactComponent as Banner } from 'assets/images/marketplace.svg';
 import './Marketplace.scss';
 import { AllNFTCollection } from "./AllNFTCollection";
+import { MyNFTCollection } from "./MyNFTCollection";
 
 function Marketplace() {
     return (
@@ -10,6 +11,8 @@ function Marketplace() {
 
             <div >
                 <div className="cards-container">
+                    <MyNFTCollection/>
+                    <br/>
                     <AllNFTCollection/>                   
                 </div>
             </div>
