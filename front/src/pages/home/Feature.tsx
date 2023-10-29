@@ -1,4 +1,4 @@
-import './Feature.module.scss';
+import './Features.css';
 
 interface FeatureProps {
   image: string;
@@ -9,7 +9,9 @@ interface FeatureProps {
 function Feature({ image, title, content }: FeatureProps) {
   return (
     <div className='feature'>
-      <img src={image} style={{ width: '30%', height: '30%' }} alt="fireSpot" />
+      <div className='image-container'>
+        <img src={image} alt='fireSpot' />
+      </div>
       <div className='content'>
         <h2>{title}</h2>
         <p>{content}</p>

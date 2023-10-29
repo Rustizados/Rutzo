@@ -38,53 +38,9 @@
   color: #FFF;
 }
 
-.feature{
-  display: flex;
-  margin-block: 5%;
-}
-
-.feature:nth-child(even){
-  flex-direction: row-reverse;
-}
-
-.content {
-  align-items: center;
-}
-
-.content :nth-child(even), .content h2 {
-  margin-left: 10%;
-}
-
-.content h2 {
-  margin-bottom: 5%;
-}
-
-.content p {
-  font-size: 1.2em;
-}
-
 .title {
   font-family: apex;
   color: #FFF;
   text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
 }
 
-@media screen and (max-width: 1016px) {
-  .feature{
-    display: inline-block;
-    text-align: center;
-  }
-
-  .feature img {
-    margin-bottom: 5%;
-  }
-
-  .container {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .content :nth-child(even), .content h2 {
-    margin-left: 0%;
-  }
-}
