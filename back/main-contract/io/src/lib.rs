@@ -34,26 +34,8 @@ pub enum RutzoAction {
     MintCard {
         token_id: u8
     },
-    /*
-    MintCard {
-        token_metadata: TokenMetadata
-    },
-    */
-    //AddMinter(ActorId), 
     SetNFTAddress(ActorId),
     Register,
-    //QuitGame,
-    //GetCards,
-    //BuyCard,
-    //EndGame,
-    /*
-    TransferCard {
-        from: ActorId,
-        to: ActorId,
-        match_id: ActorId
-    }
-    */
-    
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -184,22 +166,6 @@ impl ContractData {
         
         msg::send_for_reply_as::<NFTAction, NFTEvent>(
             self.nft_contract.unwrap(), 
-            NFTAction::Approve { 
-                transaction_id: self.transaction_id, 
-                to: exec::program_id(), 
-                token_id: transfer_data.token_id 
-            }, 
-            0, 
-            0
-        )
-        .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
-        .await
-        .expect("Unable to decode NFTEvent");
-        
-        self.transaction_id += 1;
-        
-        msg::send_for_reply_as::<NFTAction, NFTEvent>(
-            self.nft_contract.unwrap(), 
             NFTAction::Transfer { 
                 transaction_id: self.transaction_id, 
                 to: user_id, 
@@ -265,7 +231,7 @@ impl ContractData {
                 });
                 let user1_power = game.user_1.power;
                 
-                let nft_to_transfer = if user1_power > power {
+                let (to, token_id) = if user1_power > power {
                     game.match_state = MatchState::Finished { 
                         winner: game.user_1.user_id, 
                         loser: user_id 
@@ -287,13 +253,12 @@ impl ContractData {
                     (user2_id, token_id_user1)
                 };
                 
-                /*
                 msg::send_for_reply_as::<NFTAction, NFTEvent>(
                     self.nft_contract.unwrap(), 
-                    NFTAction::Transfer {   
+                    NFTAction::Transfer { 
                         transaction_id: self.transaction_id, 
-                        to: nft_to_transfer.0, 
-                        token_id: nft_to_transfer.1
+                        to, 
+                        token_id 
                     }, 
                     0, 
                     0
@@ -301,8 +266,6 @@ impl ContractData {
                 .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
                 .await
                 .expect("Unable to decode NFTEvent");
-                    */
-                    
                 
                 self.transaction_id += 1;
                 return RutzoEvent::MatchFinished;
@@ -432,104 +395,6 @@ pub enum NFTEvent {
         minter_id: ActorId,
     },
 }
-
-/*
-let user_in_game = match self.users.get(&user_id) {
-            Some(user_data) => *user_data,
-            None => return RutzoEvent::AccountAlreadyExist(user_id)
-        };
-        
-        if user_in_game {
-            return RutzoEvent::AccountAlreadyInMatch(user_id);
-        }      
-        
-        let match_id = match self.find_match_waiting_player() {
-            Some(match_id) => match_id,
-            None => {
-                let match_id = self.create_match().await;
-                self.games.insert(match_id, GameState::WaitigForPlayer);
-                match_id
-            }
-        };
-        
-        let match_contract_message = msg::send_for_reply_as::<MatchContractAction, MatchContractEvent>(
-            match_id, 
-            MatchContractAction::NewUser(user_id), 
-            0, 
-            0
-        )
-        .expect("Error in sending a message 'MatchContractAction::NewUser(ActorId)' to a match contract")
-        .await;
-        
-        match match_contract_message {
-            Ok(match_action) => {
-                match match_action {
-                    MatchContractEvent::MatchBegin => {
-                        self.games
-                            .entry(match_id)
-                            .and_modify(|game_state| *game_state = GameState::GameInProgress);
-                    },
-                    MatchContractEvent::ErrorAddingUser(_) => {
-                        return RutzoEvent::ErrorInJoiningMatch;
-                    }
-                    _ => {}
-                }
-            },
-            Err(_) => return RutzoEvent::ErrorInJoiningMatch
-        }
-        
-        self.users
-            .entry(user_id)
-            .and_modify(|in_game| *in_game = true);
-        
-        
-        
-        
-        
-        
-        
-            
-    pub fn find_match_waiting_player(&self) -> Option<ActorId> {
-        let match_data = self.games
-            .iter()
-            .find(|&(_, game_state)| {
-                if let GameState::WaitigForPlayer = *game_state {
-                    true
-                } else {
-                    false
-                }
-            });
-        match match_data {
-            Some((match_id, _)) => Some(match_id.clone()),
-            None => None
-        }
-    }
-    
-    pub async fn create_match(&self) -> ActorId {
-        let submitted_code: CodeId = hex_literal::hex!("abf3746e72a6e8740bd9e12b879fbdd59e052cb390f116454e9116c22021ae4a").into();
-        let main_contract_id = exec::program_id();
-        let match_data = MatchContractData {
-            first_user: None,
-            second_user: None,
-            main_contract_id
-        };
-
-        let (match_id, _) = ProgramGenerator::create_program_with_gas_for_reply(
-            submitted_code, 
-            match_data.encode(), 
-            GAS_FOR_CREATION_MATCH,
-            0,
-            0
-        )
-        .expect("Error during Match program initialization")
-        .await
-        .expect("Program wat not initialized");
-                
-        match_id
-    }
-        */
-
-
 
 /*
  [
