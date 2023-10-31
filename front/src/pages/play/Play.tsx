@@ -1,4 +1,3 @@
-import './play-styles.css'
 import { MyNFTCollection } from './MyNFTCollection';
 
 function Play() {

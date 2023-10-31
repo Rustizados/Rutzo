@@ -1,0 +1,24 @@
+.playcontainer a{
+    height: 50px;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    padding:8px 24px;
+    border-radius: 32px;
+    background-color: #7834cf;
+    transition: all 0.3s ease-in-out;
+    font-family: "press_start_tp";
+  }
+  
+  .playcontainer a:hover{
+    color: #fff;
+    background-color: #3DDC84;
+  }
+  
+  .playcontainer svg {
+    font-weight: bold;
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 10px;
+    color: #FFF;
+  }

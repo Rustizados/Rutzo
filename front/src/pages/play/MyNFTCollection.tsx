@@ -2,7 +2,11 @@ import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "components/collection-card";
+import { ReactComponent as ShoppingCart } from 'assets/images/shopping_cart.svg';
+import { ReactComponent as GameController } from 'assets/images/game_controller.svg';
 import { EmptyCollection } from "./EmptyCollection";
+import "./EmptyCollection.scss";
+import "./Collection.scss";
 
 function InfoNFT({ name, description, media, reference }: any) {
   return (
@@ -58,11 +62,17 @@ function MyNFTCollection() {
 
         setTokensForOwnerState(tokensForOwner);
 
-        tokensForOwnerState.map((objeto: any) =>
-          objeto[0] === decodeAddress(currentaccount ?? "")
-            ? setAllmynft(objeto[1])
-            : setExistNFT(false)
-        );
+        let foundNFT = false;
+
+        tokensForOwnerState.forEach((objeto: any) => {
+            if (objeto[0] === decodeAddress(currentaccount ?? "")) {
+                foundNFT = true;
+                setAllmynft(objeto[1]);
+            }
+        });
+
+        setExistNFT(foundNFT);
+
 
         allmynft.forEach((posicion: any) => {
           if (posicion >= 0 && posicion < allnfts.length) {
@@ -80,19 +90,50 @@ function MyNFTCollection() {
   return (
     <div>
       {existNFT ? (
-        mynftcollection.map((elemento: any) => (
-          <InfoNFT
-            name={elemento.name}
-            description={elemento.description}
-            media={elemento.media}
-            reference={elemento.reference}
-          />
-        ))
+        <div>
+          {mynftcollection.length > 3 ? (
+            <div className="container">
+              <h1>Tu colección de NFTs</h1>
+              {mynftcollection.map((elemento: any) => (
+                <InfoNFT
+                  name={elemento.name}
+                  description={elemento.description}
+                  media={elemento.media}
+                  reference={elemento.reference}
+                />
+              ))}
+              <br/>
+              <div className="playcontainer"><a href="/play">
+                <GameController/>
+                PLAY</a>
+              </div>
+            </div>
+          ) : (
+            <div className="container">
+              <h1>No tienes suficientes NFTs</h1>
+              {mynftcollection.map((elemento: any) => (
+                <InfoNFT
+                  name={elemento.name}
+                  description={elemento.description}
+                  media={elemento.media}
+                  reference={elemento.reference}
+                />
+              ))}
+              <br/>
+              <div className="playcontainer"><a href="/marketplace">
+              <ShoppingCart/>
+                MARKETPLACE</a>
+                </div>
+            </div>
+          )}
+        </div>
       ) : (
-        <EmptyCollection/>
+        <EmptyCollection />
       )}
     </div>
   );
+  
+  
 }
 
 export { MyNFTCollection };
