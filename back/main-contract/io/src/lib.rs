@@ -1,16 +1,12 @@
 #![no_std]
-use gstd::{prelude::*, ActorId, BTreeMap, exec, CodeId, prog::ProgramGenerator, msg};
-use gmeta::{Metadata, InOut, Out, In};
-use gear_lib::non_fungible_token::token::TokenId;
-
-
 use gear_lib::non_fungible_token::{
     io::{NFTApproval, NFTTransfer, NFTTransferPayout},
     delegated::DelegatedApproveMessage,
     royalties::*,
-    token::*,
+    token::{TokenId, TokenMetadata},
 };
-
+use gmeta::{In, InOut, Metadata, Out};
+use gstd::{prelude::*, ActorId, BTreeMap, msg, exec};
 use primitive_types::{ H256 };
 
 pub struct ProgramMetadata;
@@ -19,9 +15,6 @@ pub type NftContractId = ActorId;
 pub type UserId = ActorId;
 pub type MatchId = ActorId;
 pub type InGame = bool;
-
-pub const MATCH_CODEID: &str = "aa7b8462984cba48bab6bce9b599caea61d914cbcb9682d654e4709b2abbcd3a";
-pub const GAS_FOR_CREATION_MATCH: u64 = 11_000_000_000;
 
 impl Metadata for ProgramMetadata {
     type Init = In<InitContractData>;
@@ -33,57 +26,46 @@ impl Metadata for ProgramMetadata {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum MatchContractAction {
-    NewUser(ActorId),
-    MatchResult(MatchContractResults),
-    AcceptedUser,
-    QueryNotAllowed(String),
-    DeleteContract,    
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-pub enum MatchContractEvent {
-    UserAddedToMatch,
-    MatchBegin,
-    MatchResult(MatchContractResults),
-    ContractDeleted,
-    QueryNotAllowed(String),
-    ErrorAddingUser((ActorId, String))
-}
-
-//  State: Beta   -----------------------------
-#[derive(Encode, Decode, TypeInfo)]
-pub struct MatchContractData {
-    pub first_user: Option<ActorId>,
-    pub second_user: Option<ActorId>,
-    pub mainContractId: ActorId
-}
-
-// State: Beta ----------------------------
-#[derive(Encode, Decode, TypeInfo)]
-pub struct MatchContractResults {
-    pub data: String,
-}
-
-#[derive(Encode, Decode, TypeInfo)]
 pub enum RutzoAction {
-    Login,
+    PlayGame {
+        token_id: TokenId,
+        power: String
+    },
+    MintCard {
+        token_id: u8
+    },
+    /*
+    MintCard {
+        token_metadata: TokenMetadata
+    },
+    */
+    //AddMinter(ActorId), 
+    SetNFTAddress(ActorId),
     Register,
-    PlayGame,
-    QuitGame,
-    GetCards,
-    BuyCard,
-    EndGame,
+    //QuitGame,
+    //GetCards,
+    //BuyCard,
+    //EndGame,
+    /*
     TransferCard {
         from: ActorId,
         to: ActorId,
-        matchId: ActorId
+        match_id: ActorId
     }
+    */
+    
 }
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum RutzoEvent {
+    Minted(TokenId),
+    NFTContractSaved,
+    ErrorCallingNFTContract,
+    UserIsNotApproved(ActorId),
+    UserIsNotTheOwner(ActorId),
+    Approved(ActorId),
     ErrorBuying(String),
+    NFTWithIdNotExists(u8),
     AccountAlreadyExist(UserId),
     AccountNotExists(UserId),
     AccountAlreadyInMatch(UserId),
@@ -95,25 +77,9 @@ pub enum RutzoEvent {
     PurchaseSucces,
     ReplySuccess,
     NewPlayer(ActorId),
-    NewPlayerWithMainId(NewPlayerWithIdData)
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-pub struct NewPlayerWithIdData {
-    pub main_id: ActorId,
-    pub new_player: ActorId
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone)]
-pub struct GameData {
-    pub match_id: ActorId,
-    pub actual_state: GameState
-}
-
-#[derive(Decode, Encode, TypeInfo)]
-pub struct UserData {
-    pub user_id: ActorId,
-    pub in_game: bool
+    MatchFinished,
+    MatchCreated,
+    MaxMintsReached(ActorId)
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
@@ -125,45 +91,155 @@ pub enum GameState {
 #[derive(Encode, Decode, TypeInfo)]
 pub struct ContractState {
     pub owner: ActorId,
-    pub match_contract: String,
-    pub nft_contract: NftContractId,
+    pub nft_contract: Option<NftContractId>,
     pub users: Vec<(UserId, InGame)>,
-    pub games: Vec<(MatchId, GameState)>,
+    pub games: Vec<MatchInformation>,
+    pub tokens_metadata_default: Vec<(u8, TokenMetadata)>,
+    pub default_tokens_minted_by_id: Vec<(UserId, Vec<u8>)>,
+    pub approved_minters: Vec<UserId>,
     pub transaction_id: u64
 }
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct InitContractData {
-    pub match_contract: String,
-    pub nft_contract: ActorId,
+    pub nft_contract: Option<ActorId>,
+    pub tokens_metadata_default: Vec<TokenMetadata>,
+}
+
+#[derive(Encode, Decode, TypeInfo, Default)]
+pub struct UserData {
+    pub user_id: ActorId,
+    pub chosen_nft: TokenId,
+    pub power: u8
+}
+
+#[derive(Encode, Decode, TypeInfo, Default, Clone)]
+pub enum MatchState {
+    Finished {
+        winner: ActorId,
+        loser: ActorId
+    },
+    #[default]
+    InProgress,
+    NotExists
 }
 
 #[derive(Encode, Decode, TypeInfo)]
+pub struct MatchInformation {
+    pub user_1: UserData,
+    pub user_2: Option<UserData>,
+    pub match_state: MatchState,
+}
+
+#[derive(Encode, Decode, TypeInfo, Default)]
 pub struct ContractData {
     pub owner: ActorId,
-    pub match_contract: String,
-    pub nft_contract: NftContractId,
+    pub nft_contract: Option<NftContractId>,
     pub users: BTreeMap<UserId, InGame>,
-    pub games: BTreeMap<MatchId, GameState>,
+    pub games: Vec<MatchInformation>,
+    pub tokens_metadata_default: BTreeMap<u8, TokenMetadata>,
+    pub default_tokens_minted_by_id: BTreeMap<UserId, Vec<u8>>,
+    pub approved_minters: Vec<UserId>,
     pub transaction_id: u64
 }
 
 impl ContractData {
-    pub async fn register_user(&mut self, user_id: UserId) -> RutzoEvent {
-        if self.is_register(&user_id) {
-            return RutzoEvent::AccountAlreadyExist(user_id);
+    pub async fn mint_card(&mut self, token_id: u8) -> RutzoEvent {
+        let user_id = msg::source();
+        
+        if !self.is_register(&user_id) {
+            return RutzoEvent::AccountNotExists(user_id);
+        } 
+        
+        if self.default_tokens_minted_by_id.get(&user_id).unwrap().len() == 3 {
+            return RutzoEvent::MaxMintsReached(user_id);    
         }
         
-        msg::send_for_reply_as::<NFTAction, NFTEvent>(self.nft_contract, NFTAction::MintDefault { 
-            transaction_id: self.transaction_id, 
-            to: user_id
-        }, 0, 0)
-        .expect("Error in sending a message 'NFTAction::MintDefault' to a match contract")
+        let token_metadata = self.tokens_metadata_default
+            .get(&token_id);
+           
+        let token_metadata = match token_metadata {
+            Some(token_data) => token_data.clone(),
+            None => return RutzoEvent::NFTWithIdNotExists(token_id)
+        };
+        
+        let answer: NFTEvent = msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            self.nft_contract.unwrap(), 
+            NFTAction::Mint { 
+                transaction_id: self.transaction_id, 
+                token_metadata
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
         .await
         .expect("Unable to decode NFTEvent");
         
-        self.users.insert(user_id, false);
+        let NFTEvent::Transfer(transfer_data) = answer else {
+            return RutzoEvent::ErrorCallingNFTContract; 
+        };
         
+        self.transaction_id += 1;
+        
+        msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            self.nft_contract.unwrap(), 
+            NFTAction::Approve { 
+                transaction_id: self.transaction_id, 
+                to: exec::program_id(), 
+                token_id: transfer_data.token_id 
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
+        .await
+        .expect("Unable to decode NFTEvent");
+        
+        self.transaction_id += 1;
+        
+        msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            self.nft_contract.unwrap(), 
+            NFTAction::Transfer { 
+                transaction_id: self.transaction_id, 
+                to: user_id, 
+                token_id: transfer_data.token_id 
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
+        .await
+        .expect("Unable to decode NFTEvent");
+        
+        self.default_tokens_minted_by_id
+            .entry(user_id)
+            .and_modify(|minted| minted.push(token_id))
+            .or_insert(Vec::new());
+        
+        self.transaction_id += 1;
+        
+        RutzoEvent::Minted(TokenId::default())//transfer_data.token_id)
+    }
+    
+    pub fn add_minter(&mut self, user_id: ActorId) -> RutzoEvent {
+        let caller = msg::source();
+        if caller != self.owner {
+            return RutzoEvent::UserIsNotTheOwner(caller);
+        }
+        
+        self.approved_minters.push(user_id);
+        
+        RutzoEvent::Approved(user_id)
+    }
+    
+    pub fn register_user(&mut self, user_id: UserId) -> RutzoEvent {
+        if self.is_register(&user_id) {
+            return RutzoEvent::AccountAlreadyExist(user_id);
+        }
+      
+        self.users.insert(user_id, false);        
+        self.default_tokens_minted_by_id.insert(user_id, Vec::new());
         RutzoEvent::RegisterSucces
     }
     
@@ -171,12 +247,194 @@ impl ContractData {
         self.users.contains_key(user_id)
     }
     
-    pub async fn join_player_to_game(&mut self, user_id: ActorId) -> RutzoEvent {
-        if self.is_register(&user_id) {
-            return RutzoEvent::AccountAlreadyExist(user_id);
+    pub async fn play_game(&mut self, user_id: ActorId, token_id: TokenId, power: u8) -> RutzoEvent {
+        if !self.is_register(&user_id) {
+            return RutzoEvent::AccountNotExists(user_id);
         }
         
-        let user_in_game = match self.users.get(&user_id) {
+        if *self.users.get(&user_id).unwrap() {
+            return RutzoEvent::AccountAlreadyInMatch(user_id);
+        }
+        
+        for game in self.games.iter_mut() {
+            if let MatchState::InProgress = game.match_state {
+                game.user_2 = Some(UserData {
+                    user_id,
+                    chosen_nft: token_id,
+                    power
+                });
+                let user1_power = game.user_1.power;
+                
+                let nft_to_transfer = if user1_power > power {
+                    game.match_state = MatchState::Finished { 
+                        winner: game.user_1.user_id, 
+                        loser: user_id 
+                    };
+                    
+                    let token_id_user2 = game.user_2.as_ref().unwrap().chosen_nft.clone();
+                    let user1_id = game.user_1.user_id;
+                    
+                    (user1_id, token_id_user2)
+                } else {
+                    game.match_state = MatchState::Finished { 
+                        winner: user_id, 
+                        loser:  game.user_1.user_id
+                    };
+                    
+                    let token_id_user1 = game.user_1.chosen_nft;
+                    let user2_id = game.user_2.as_ref().unwrap().user_id.clone();
+                    
+                    (user2_id, token_id_user1)
+                };
+                
+                /*
+                msg::send_for_reply_as::<NFTAction, NFTEvent>(
+                    self.nft_contract.unwrap(), 
+                    NFTAction::Transfer {   
+                        transaction_id: self.transaction_id, 
+                        to: nft_to_transfer.0, 
+                        token_id: nft_to_transfer.1
+                    }, 
+                    0, 
+                    0
+                )
+                .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
+                .await
+                .expect("Unable to decode NFTEvent");
+                    */
+                    
+                
+                self.transaction_id += 1;
+                return RutzoEvent::MatchFinished;
+            }
+        }
+        
+        self.games.push(MatchInformation {
+            user_1: UserData {
+                user_id,
+                chosen_nft: token_id,
+                power
+            },
+            user_2: None,
+            match_state: MatchState::default()
+        });
+        
+        RutzoEvent::MatchCreated
+    }
+}
+
+impl From<ContractData> for ContractState {
+    fn from(value: ContractData) -> Self {
+        let ContractData {
+            owner,
+            nft_contract,
+            users,
+            games,
+            tokens_metadata_default,
+            default_tokens_minted_by_id,
+            approved_minters,
+            transaction_id
+        } = value;
+        
+        let users = users
+            .iter()
+            .map(|(user_id, in_game)| (*user_id, in_game.clone()))
+            .collect();
+        let tokens_metadata_default = tokens_metadata_default
+            .iter()
+            .map(|(token_id, token_metadata)| (*token_id, token_metadata.clone()))
+            .collect();
+        let default_tokens_minted_by_id = default_tokens_minted_by_id
+            .iter()
+            .map(|(user_id, minted)| (*user_id, minted.clone()))
+            .collect();
+        
+        Self {
+            owner,
+            nft_contract,
+            users,
+            games,
+            transaction_id,
+            tokens_metadata_default,
+            default_tokens_minted_by_id,
+            approved_minters
+        }
+    }
+}
+
+#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
+pub enum NFTAction {
+    Mint {
+        transaction_id: u64,
+        token_metadata: TokenMetadata,
+    },
+    Burn {
+        transaction_id: u64,
+        token_id: TokenId,
+    },
+    Transfer {
+        transaction_id: u64,
+        to: ActorId,
+        token_id: TokenId,
+    },
+    TransferPayout {
+        transaction_id: u64,
+        to: ActorId,
+        token_id: TokenId,
+        amount: u128,
+    },
+    NFTPayout {
+        owner: ActorId,
+        amount: u128,
+    },
+    Approve {
+        transaction_id: u64,
+        to: ActorId,
+        token_id: TokenId,
+    },
+    DelegatedApprove {
+        transaction_id: u64,
+        message: DelegatedApproveMessage,
+        signature: [u8; 64],
+    },
+    Owner {
+        token_id: TokenId,
+    },
+    IsApproved {
+        to: ActorId,
+        token_id: TokenId,
+    },
+    Clear {
+        transaction_hash: H256,
+    },
+    AddMinter {
+        transaction_id: u64,
+        minter_id: ActorId,
+    },
+}
+
+#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
+pub enum NFTEvent {
+    Transfer(NFTTransfer),
+    TransferPayout(NFTTransferPayout),
+    NFTPayout(Payout),
+    Approval(NFTApproval),
+    Owner {
+        owner: ActorId,
+        token_id: TokenId,
+    },
+    IsApproved {
+        to: ActorId,
+        token_id: TokenId,
+        approved: bool,
+    },
+    MinterAdded {
+        minter_id: ActorId,
+    },
+}
+
+/*
+let user_in_game = match self.users.get(&user_id) {
             Some(user_data) => *user_data,
             None => return RutzoEvent::AccountAlreadyExist(user_id)
         };
@@ -224,9 +482,13 @@ impl ContractData {
             .entry(user_id)
             .and_modify(|in_game| *in_game = true);
         
-        RutzoEvent::UserInMatch(ActorId::default())
-    }
-    
+        
+        
+        
+        
+        
+        
+            
     pub fn find_match_waiting_player(&self) -> Option<ActorId> {
         let match_data = self.games
             .iter()
@@ -249,7 +511,7 @@ impl ContractData {
         let match_data = MatchContractData {
             first_user: None,
             second_user: None,
-            mainContractId: main_contract_id
+            main_contract_id
         };
 
         let (match_id, _) = ProgramGenerator::create_program_with_gas_for_reply(
@@ -265,146 +527,54 @@ impl ContractData {
                 
         match_id
     }
-}
-
-impl From<ContractData> for ContractState {
-    fn from(value: ContractData) -> Self {
-        let ContractData {
-            owner,
-            match_contract,
-            nft_contract,
-            users,
-            games,
-            transaction_id
-        } = value;
-        
-        let users = users
-            .iter()
-            .map(|(user_id, in_game)| (*user_id, in_game.clone()))
-            .collect();
-        let games = games
-            .iter()
-            .map(|(match_id, game_state)| (*match_id, game_state.clone()))
-            .collect();
-        
-        Self {
-            owner,
-            match_contract,
-            nft_contract,
-            users,
-            games,
-            transaction_id
-        }
-    }
-}
+        */
 
 
-#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTEvent {
-    Transfer(NFTTransfer),
-    TransferPayout(NFTTransferPayout),
-    NFTPayout(Payout),
-    Approval(NFTApproval),
-    MarketplaceApproval((u64, NFTApproval)),
-    Owner {
-        owner: ActorId,
-        token_id: TokenId,
-    },
-    IsApproved {
-        to: ActorId,
-        token_id: TokenId,
-        approved: bool,
-    },
-    MinterAdded {
-        minter_id: ActorId,
-    },
-    MainContractEstablished,
-    MarketplaceApproved,
-    UserNotAllowedToMint,
-    UserIsNotTheOwner,
-    NoMainContractInActualContract,  
-}
 
-#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTAction {
-    SetMainContract {
-        main_contract_id: ActorId  
-    },
-    ApproveMarketplace {
-        transaction_id: u64,
-        marketplace_id: ActorId
-    },
-    MintDefault {
-        // Mint default three NFT's to new users.
-        transaction_id: u64,
-        to: ActorId,
-    },
-    Mint {
-        // Modificado parte del mint ----------------
-        // Como es agregar un nuevo NFT, el dueño sera el propio contrato.
-        transaction_id: u64,
-        nft_data: RutzoNft,
-        token_metadata: TokenMetadata,
-    },
-    Burn {
-        // Modificado esta parte del burn -------------------
-        // Como es quemar un NFT, se especifica el token_id del nft.
-        transaction_id: u64,
-        token_id: TokenId
-    },
-    Transfer {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-    },
-    TransferPayout {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-        amount: u128,
-    },
-    NFTPayout {
-        owner: ActorId,
-        amount: u128,
-    },
-    Approve {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-    },
-    DelegatedApprove {
-        transaction_id: u64,
-        message: DelegatedApproveMessage,
-        signature: [u8; 64],
-    },
-    Owner {
-        token_id: TokenId,
-    },
-    IsApproved {
-        to: ActorId,
-        token_id: TokenId,
-    },
-    Clear {
-        transaction_hash: H256,
-    },
-    AddMinter {
-        transaction_id: u64,
-        minter_id: ActorId,
-    },
-    NFTDataFromTokenId {
-        tokens_id: Vec<TokenId>
-    }
-}
-
-#[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub struct RutzoNft {
-    pub media: String,
-    pub nft_type: String,
-    pub power: u8
-}
+/*
+ [
+            [
+                "0xeaee0180c37581cadedafb9eb59d8ecdf68be2f93bcb021124963f7ba7f7b90d",
+                false
+            ]
+        ],
+        "games": [],
+        "tokensMetadataDefault": [
+            {
+                "name": "ixchel",
+                "description": "wind",
+                "media": "https://home.rutzo.studio/NFT/ixchel_wind.jpg",
+                "reference": "33"
+            },
+            {
+                "name": "Death City Earth",
+                "description": "rock",
+                "media": "https://home.rutzo.studio/NFT/death_city_earth.jpg",
+                "reference": "20"
+            },
+            {
+                "name": "Chile",
+                "description": "fire",
+                "media": "https://home.rutzo.studio/NFT/chile_fire.jpg",
+                "reference": "55"
+            },
+            {
+                "name": "Chinampa",
+                "description": "water",
+                "media": "https://home.rutzo.studio/NFT/chinampa_water.jpg",
+                "reference": "50"
+            },
+            {
+                "name": "ehecatl",
+                "description": "wind",
+                "media": "https://home.rutzo.studio/NFT/ehecatl_wind.jpg",
+                "reference": "75"
+            },
+            {
+                "name": "huitzilopochtli",
+                "description": "rock",
+                "media": "https://home.rutzo.studio/NFT/huitzilopochtli_earth.jpg",
+                "reference": "43"
+            }
+        ]
+*/
