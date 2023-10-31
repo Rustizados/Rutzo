@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styles from './Card.module.scss';
 import { Icon } from './icon';
 import { PowerBar } from './power';
@@ -11,53 +11,42 @@ interface CardProps {
   type: string;
   value: number;
   price: number;
+  onCardClick?: () => void;
 }
 
-interface CardState {
-  dialogOpen: boolean;
-}
+function Card({ image, title, type, value, price, onCardClick }: CardProps) {
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-class Card extends React.Component<CardProps, CardState> {
-  constructor(props: CardProps) {
-    super(props);
-    this.state = {
-      dialogOpen: false,
-    };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
-
-  handleClick() {
-    this.setState({ dialogOpen: true });
-  }
-
-  handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  const handleClick = useCallback(() => {
+    if (onCardClick) {
+      onCardClick();
+    } else {
+      setDialogOpen(true);
+    }
+  }, [onCardClick]);
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      this.setState({ dialogOpen: true });
+      setDialogOpen(true);
     }
-    }
+  }, []);
 
-  handleClose() {
-    this.setState({ dialogOpen: false });
-  }
+  const handleClose = useCallback(() => {
+    setDialogOpen(false);
+  }, []);
 
-  render() {
-    const { image, title, type, value, price } = this.props;
-    const { dialogOpen } = this.state;
-
-    return (
+  return (
       <div className={styles.cards_container}>
         <div
-          className={styles.card}
-          onClick={this.handleClick}
-          onKeyDown={(e) => this.handleKeyDown(e)}
-          role="button"
-          tabIndex={0}
+            className={styles.card}
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${title} card details`}  // For better accessibility
         >
-           <div className={styles.graphics}>
+          <div className={styles.graphics}>
             <img className={styles.hexagon} src={image} alt="NFTimage" />
           </div>
-
           <div className={styles.content}>
             <p className={styles.title}>{title}</p>
             <div className={styles.typec}>
@@ -70,21 +59,20 @@ class Card extends React.Component<CardProps, CardState> {
           </div>
         </div>
         {dialogOpen && (
-          <Modal onClose={this.handleClose}>
-            <CardDialog
-              isOpen={dialogOpen}
-              onClose={this.handleClose}
-              image={image}
-              title={title}
-              type={type}
-              value={value}
-              price={price}
-            />
-          </Modal>
+            <Modal onClose={handleClose}>
+              <CardDialog
+                  isOpen={dialogOpen}
+                  onClose={handleClose}
+                  image={image}
+                  title={title}
+                  type={type}
+                  value={value}
+                  price={price}
+              />
+            </Modal>
         )}
       </div>
-    );
-  }
+  );
 }
 
 export { Card };

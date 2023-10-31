@@ -1,6 +1,8 @@
 import './Profile.scss';
 import { useState } from 'react';
 
+import {MintNFT} from "components";
+
 
 function Profile() {
     const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar si el usuario ha iniciado sesión o no
@@ -24,10 +26,15 @@ function Profile() {
         }
 
         return (
-            <div>
-                <p>No has iniciado sesión.</p>
-                <button type="button" onClick={handleLogin}>Iniciar sesión</button>
-            </div>
+            <>
+                <div>
+                    <p>No has iniciado sesión.</p>
+                    <button type="button" onClick={handleLogin}>Iniciar sesión</button>
+                </div>
+
+                <MintNFT />
+            </>
+
         );
     };
 

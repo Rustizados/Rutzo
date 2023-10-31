@@ -1,4 +1,5 @@
 import Accordion from 'react-bootstrap/Accordion';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './home_styles.css';
 

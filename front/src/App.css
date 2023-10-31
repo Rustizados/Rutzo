@@ -1,4 +1,3 @@
-
 #root {
   max-width: 1400px;
   min-height: 100vh;
@@ -14,6 +13,7 @@ main {
   background: white;
   background-size: 200% 200%;
   animation: gradientAnimation 5s linear infinite;
+  height: 100%;
 }
 
 
@@ -21,6 +21,10 @@ body {
   background: white;
   background-size: 200% 200%;
   animation: gradientAnimation 5s linear infinite;
+}
+
+mainContent{
+
 }
 
 @keyframes gradientAnimation {
