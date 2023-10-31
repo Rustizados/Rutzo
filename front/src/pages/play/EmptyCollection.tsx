@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { MintNFT as Mint1 } from "components/card/Mint/MintNFT0";
 import { MintNFT as Mint2 } from "components/card/Mint/MintNFT1";
@@ -28,27 +27,13 @@ function EmptyCollection() {
       const updatedButtonsState = [...mintButtonsState];
       updatedButtonsState[buttonIndex] = false;
       setMintButtonsState(updatedButtonsState);
-    }
-  };
-  
-
-  const handleRegister = () => {
-    // Lógica para manejar el registro aquí
-    setIsRegistered(true);
-  };
-
-  const handleMint = () => {
-    if (mintCount < 3) {
       setMintCount(mintCount + 1);
     }
   };
 
-  const renderMintButtons = () => {
-    const mintButtons = [];
-    for (let i = 0; i < mintCount; i+=1) {
-      mintButtons.push(<button type="button" key={i}>Mint {i + 1}</button>);
-    }
-    return mintButtons;
+  const handleRegister = () => {
+    // Lógica para manejar el registro aquí
+    setIsRegistered(true);
   };
 
   return (
@@ -64,15 +49,14 @@ function EmptyCollection() {
       {isRegistered && mintCount < 3 && (
         <>
           <p>Select {3 - mintCount} more to mint:</p>
-          {mintButtonsState[0] && <Mint1 />}
-            {mintButtonsState[1] && <Mint2 />}
-            {mintButtonsState[2] && <Mint3 />}
-            {mintButtonsState[3] && <Mint4 />}
-            {mintButtonsState[4] && <Mint5 />}
-            {mintButtonsState[5] && <Mint6 />}
+          {mintButtonsState[0] && <button type="button" onClick={() => handleMintClick(0)}>Mint 1</button>}
+          {mintButtonsState[1] && <button type="button" onClick={() => handleMintClick(1)}>Mint 2</button>}
+          {mintButtonsState[2] && <button type="button" onClick={() => handleMintClick(2)}>Mint 3</button>}
+          {mintButtonsState[3] && <button type="button" onClick={() => handleMintClick(3)}>Mint 4</button>}
+          {mintButtonsState[4] && <button type="button" onClick={() => handleMintClick(4)}>Mint 5</button>}
+          {mintButtonsState[5] && <button type="button" onClick={() => handleMintClick(5)}>Mint 6</button>}
         </>
       )}
-      {mintCount > 0 && renderMintButtons()}
     </div>
   );
 }
