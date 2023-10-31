@@ -1,12 +1,10 @@
 import './play-styles.css'
-import { Selector } from './Selector';
+import { MyNFTCollection } from './MyNFTCollection';
 
 function Play() {
     return (
-        <div style={{ height: '100vh', color:'white' }} className="play-title">
-            <h3 style={{ marginBottom: '50px'}}>Select your better cards and may the force be with you</h3>
-            <br/>
-            <Selector />
+        <div className="play-title">
+            <MyNFTCollection/>
         </div>
     );
 }
