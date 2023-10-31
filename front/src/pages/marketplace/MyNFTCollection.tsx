@@ -31,7 +31,7 @@ function MyNFTCollection() {
 
   // Add your programID
   const programIDNFT =
-    "0x633bd2ec165e62b76bf2cac28c83475d3c207984d2bc0b336936ce69ee120718";
+    "0x43500cceb8e88128eb38ecad188450bcb852e3311ef7ff734d34b11dd48ee651";
 
   // Add your metadata.txt
   const meta =

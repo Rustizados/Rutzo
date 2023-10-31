@@ -3,14 +3,15 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 
-function Register() {
+function PlayGame({reference}:any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
 
+ 
  // Add your programID
  const programIDNFT =
- "0x1ccdf0f33b8facef89781ce691feb2d0c26c6a204fdb9fd56d3f923cfe29f8e2";
+ "0x43500cceb8e88128eb38ecad188450bcb852e3311ef7ff734d34b11dd48ee651";
 
 // Add your metadata.txt
 const meta =
@@ -19,9 +20,11 @@ const meta =
 
 const metadata = ProgramMetadata.from(meta);
 
+const cardid= 2;
+
   const message: any = {
     destination: programIDNFT, // programId
-    payload: {Register}, // Add your data
+    payload: {PlayGame:[cardid,reference]}, // Add your data
     gasLimit: 2099819245,
     value: 0,
     
@@ -80,6 +83,6 @@ const metadata = ProgramMetadata.from(meta);
       );
   };
 
-  return <Button text="Register" onClick={signer} />;
+  return <Button text="Play"  onClick={signer} /> ;
 }
-export { Register };
+export { PlayGame };
