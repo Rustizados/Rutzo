@@ -1,4 +1,4 @@
-.alert {
+.alert, .empty_container {
     text-align: center;
 }
 
@@ -15,16 +15,17 @@ p.alert {
     width: 15%;
 }
 
-.alert * {
+.empty_container *, .alert .playcontainer, .alert h1 {
     margin-block: 20px;
+    
 }
-.alert button {
+.empty_container button {
     background-color: #6248f8;
     border-radius: 40px;
     font-size: 20px;
     transition: all 0.3s ease-in-out;
 }
 
-.button:hover{
+.empty_containe .button:hover{
     background-color: #3DDC84;
   }
