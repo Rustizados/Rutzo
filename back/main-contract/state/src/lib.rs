@@ -18,9 +18,26 @@ pub mod metafns {
        state.is_register(&user_id)
     }
     
-    pub fn matchs_in_progress_information(state: State, token_id: TokenId) -> MatchState {
+    pub fn match_in_progress_by_id(state: State, token_id: TokenId) -> MatchState {
+        for game in state.games.iter() {
+            let first = game.user_1.chosen_nft == token_id;
+            let second = if let Some(user_data) = &game.user_2 {
+                user_data.chosen_nft == token_id                    
+            } else {
+                false
+            };
+            
+            if first || second {
+                if let MatchState::InProgress  = game.match_state {
+                    return game.match_state.clone();
+                }
+            }
+        }
+        MatchState::NotExists
+    }
+    
+    pub fn matchs_finished_by_id(state: State, token_id: TokenId) -> Vec<MatchState> {
         let mut finished_matchs = Vec::new();
-        
         for game in state.games.iter() {
             let first = game.user_1.chosen_nft == token_id;
             let second = if let Some(user_data) = &game.user_2 {
@@ -35,14 +52,18 @@ pub mod metafns {
                 }
             }
         }
-        
         finished_matchs
     }
     
-    pub fn matchs_in_progress_information(state: State, token_id: TokenId) -> MatchState {
+    pub fn matchs_finished_by_id_and_user(state: State, token_id: TokenId, address: ActorId) -> Vec<MatchState> {
         let mut finished_matchs = Vec::new();
-        
         for game in state.games.iter() {
+            let user1 = game.user_1.user_id;
+            let user2 = if let Some(user_data) = &game.user_2 {
+                user_data.user_id.clone()               
+            } else {
+                ActorId::default()
+            };
             let first = game.user_1.chosen_nft == token_id;
             let second = if let Some(user_data) = &game.user_2 {
                 user_data.chosen_nft == token_id                    
@@ -50,35 +71,13 @@ pub mod metafns {
                 false
             };
             
-            if first || second {
+            if (first || second) && (user1 == address || user2 == address) {
                 if let MatchState::InProgress  = game.match_state {
                     finished_matchs.push(game.match_state.clone());
                 }
             }
         }
-        
         finished_matchs
-    }
-    
-    pub fn match_finished_information(state: State, token_id: TokenId) -> Vec<MatchState> {
-        let match_data = state.games
-            .iter()
-            .find(|&game| {
-                let first = game.user_1.chosen_nft == token_id;
-                let second = if let Some(user_data) = &game.user_2 {
-                    user_data.chosen_nft == token_id                    
-                } else {
-                    false
-                };
-                first || second
-            });
-        
-        match match_data {
-            Some(data) => {
-                data.match_state.clone()
-            },
-            None => MatchState::NotExists
-        } 
     }
     
     pub fn nfts_availables(state: State, user_id: ActorId) -> Vec<(Option<u8>, TokenMetadata)> {
