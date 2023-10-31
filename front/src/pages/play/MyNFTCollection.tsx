@@ -7,6 +7,7 @@ import { ReactComponent as GameController } from 'assets/images/game_controller.
 import { EmptyCollection } from "./EmptyCollection";
 import "./EmptyCollection.scss";
 import "./Collection.scss";
+import * as process from "process";
 
 function InfoNFT({ name, description, media, reference }: any) {
   return (
@@ -15,28 +16,27 @@ function InfoNFT({ name, description, media, reference }: any) {
 }
 
 function MyNFTCollection() {
-  const { api } = useApi();
-  const { account } = useAccount();
+    const {api} = useApi();
+    const {account} = useAccount();
 
-  const [allnfts, setAllnfts] = useState<any | undefined>([]);
-  const [allmynft, setAllmynft] = useState<any | undefined>();
-  const [existNFT, setExistNFT] = useState<boolean>(true);
+    const [allnfts, setAllnfts] = useState<any | undefined>([]);
+    const [allmynft, setAllmynft] = useState<any | undefined>();
+    const [existNFT, setExistNFT] = useState<boolean>(true);
 
-  const [tokensForOwnerState, setTokensForOwnerState] = useState<
-    any | undefined
-  >([]);
+    const [tokensForOwnerState, setTokensForOwnerState] = useState<
+        any | undefined
+    >([]);
 
-  const [fullState, setFullState] = useState<any | undefined>({});
+    const [fullState, setFullState] = useState<any | undefined>({});
 
-  const [mynftcollection, setMynftcollection] = useState<any | undefined>([]);
+    const [mynftcollection, setMynftcollection] = useState<any | undefined>([]);
 
-  const alldatanfts: any[] = [];
+    const alldatanfts: any[] = [];
 
-  const mynftscollection: any[] = [];
+    const mynftscollection: any[] = [];
 
-  // Add your programID
-  const programIDNFT =
-    "0x43500cceb8e88128eb38ecad188450bcb852e3311ef7ff734d34b11dd48ee651";
+    // Add your programID // NFT
+    const programIDNFT= "0x23fcd161c9b6c736cfb70fd7837c6dd66ea463c441d18fa7a1031c0af18fb0d0"
 
   // Add your metadata.txt
   const meta =

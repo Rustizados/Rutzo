@@ -11,6 +11,7 @@ interface CardProps {
   type: string;
   value: number;
   price: number;
+  onCardClick?: () => void;
 }
 
 interface CardState {
@@ -28,7 +29,13 @@ class Card extends React.Component<CardProps, CardState> {
   }
 
   handleClick() {
-    this.setState({ dialogOpen: true });
+    const { onCardClick } = this.props;
+
+    if (onCardClick) {
+      onCardClick();
+    } else {
+      this.setState({ dialogOpen: true });
+    }
   }
 
   handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {

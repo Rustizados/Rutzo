@@ -12,8 +12,7 @@ function GameStatus({reference}:any) {
 
  
  // Add your programID
- const programIDNFT =
- "0x1ccdf0f33b8facef89781ce691feb2d0c26c6a204fdb9fd56d3f923cfe29f8e2";
+ const programIDNFT="0x2cd2eefd93196e8adcb38eef6b40c476478fa9f0806f7a6c617fe02520381b1f"
 
 // Add your metadata.txt
 const meta =
@@ -45,6 +44,6 @@ const metadata = ProgramMetadata.from(meta);
       .catch(({ err }: any) => alert.error(err));
   };
 
-  return <Button text="Status"  onClick={gameStatus} /> ;
+  return <Button text="Check your result"  onClick={gameStatus} /> ;
 }
 export { GameStatus };

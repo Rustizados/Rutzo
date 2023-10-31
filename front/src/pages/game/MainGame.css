@@ -11,27 +11,31 @@
     margin: 20px;
 }
 
-
-.myCardsArea{
-    display: flex;
-    background: rgba(35, 222, 255, 0.2);
+.area {
+    width: 100%;
+    max-width: 1024px;
+    padding: 8px;
+    margin: 8px;
     border-radius: 16px;
-    border: 3px solid #09529a;
-    padding: 10px;
-    width: 80%;
-    max-width:1024px;
 }
+
 
 .selectedCardsArea{
     display: flex;
     flex-direction: column;
     background: rgba(55, 255, 10, 0.2);
     border-radius: 16px;
-    border: 3px solid #257215;
-    height: 500px;
-    width: 80%;
-    max-width:1024px;
-    margin: 16px;
+    border: #257215;
+}
+
+.myCardsArea {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+
+    background: rgba(35, 222, 255, 0.2);
+    border: 3px solid #15069d;
 }
 
 .selectedCards{
@@ -48,9 +52,8 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-
     background: rgba(120, 52, 207, 0.10);
-    border-radius: 16px;
+    width: 100%;
 }
 
 .versusArea{
@@ -83,22 +86,12 @@
 
 .youArea{
     background: rgba(17, 124, 252, 0.1);
-    border: 3px solid #15069d;
-    border-radius: 16px;
-    min-height: 100px;
-    width: 75%;
-    min-width: 420px;
-    margin: 8px;
+    border: #15069d;
 }
 
 .opponentArea{
     background: rgba(255, 0, 0, 0.1);
-    border: 3px solid #e50b0b;
-    border-radius: 16px;
-    min-height: 100px;
-    width: 75%;
-    min-width: 420px;
-    margin: 8px;
+    border:  #e50b0b;
 }
 
 .buttonPrimary{
@@ -117,4 +110,12 @@
     align-items: center;
     width: 100%;
     padding: 10px;
+}
+
+.imgBackCard{
+width: 100%;
+    height: 100%;
+    max-width: 100px;
+    max-height: 100px;
+
 }

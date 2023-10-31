@@ -2,6 +2,7 @@ import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "components/collection-card";
+import process from "process";
 
 function InfoNFT({ name, description, media, reference }: any) {
   return (
@@ -30,8 +31,7 @@ function MyNFTCollection() {
   const mynftscollection: any[] = [];
 
   // Add your programID
-  const programIDNFT =
-    "0x43500cceb8e88128eb38ecad188450bcb852e3311ef7ff734d34b11dd48ee651";
+  const programIDNFT="0x23fcd161c9b6c736cfb70fd7837c6dd66ea463c441d18fa7a1031c0af18fb0d0"
 
   // Add your metadata.txt
   const meta =
