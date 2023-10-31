@@ -85,6 +85,6 @@ const metadata = ProgramMetadata.from(meta);
       );
   };
 
-  return <Button text="Register" onClick={signer} />;
+  return <Button text="Register" onClick={signer} className="alert"/>;
 }
 export { Register };

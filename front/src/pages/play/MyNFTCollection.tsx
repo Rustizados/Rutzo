@@ -92,7 +92,7 @@ function MyNFTCollection() {
       {existNFT ? (
         <div>
           {mynftcollection.length >= 3 ? (
-            <div className="container">
+            <div className="alert">
               <h1>Your NFT collection</h1>
               {mynftcollection.map((elemento: any) => (
                 <InfoNFT
@@ -109,7 +109,7 @@ function MyNFTCollection() {
               </div>
             </div>
           ) : (
-            <div className="container">
+            <div className="alert">
               <h1>You don&apos;t have enough NFTs</h1>
               {mynftcollection.map((elemento: any) => (
                 <InfoNFT

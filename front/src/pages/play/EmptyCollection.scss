@@ -1,4 +1,4 @@
-.container {
+.alert {
     text-align: center;
 }
 
@@ -7,21 +7,20 @@ h1 {
     filter: drop-shadow(0px 0px 10px #6248f8);
 }
 
-p {
+p.alert {
     font-size: 1.5em;
 }
 
-.alert img {
-    width: 20%;
+#alert_img {
+    width: 15%;
 }
 
-.container * {
+.alert * {
     margin-block: 20px;
 }
-
-.container button {
+.alert button {
     background-color: #6248f8;
-    border-radius: 30px;
+    border-radius: 40px;
     font-size: 20px;
     transition: all 0.3s ease-in-out;
 }

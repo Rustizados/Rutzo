@@ -52,13 +52,13 @@ function EmptyCollection() {
   };
 
   return (
-    <div className="container alert">
+    <div className="alert">
       <h1>Oops! it looks like you don&apos;t have any cards</h1>
-      <img src="https://media.giphy.com/avatars/doodlesbyburnttoast/dMqxHmPPA8fd.gif" alt="empty" />
+      <img src="https://media.giphy.com/avatars/doodlesbyburnttoast/dMqxHmPPA8fd.gif" alt="empty" id="alert_img" />
       {!isRegistered && (
         <>
-          <p>Register to obtain free cards</p>
-          <Register onRegister={handleRegister} />
+          <p className="alert">Register to obtain free cards</p>
+          <Register onRegister={handleRegister} className="playcontainer"/>
         </>
       )}
       {isRegistered && mintCount < 3 && (
