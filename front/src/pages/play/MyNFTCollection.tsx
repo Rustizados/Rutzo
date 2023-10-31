@@ -120,7 +120,7 @@ function MyNFTCollection() {
                 />
               ))}
               <br/>
-              <div className="playcontainer"><a href="/marketplace">
+              <div className="playcontainer"><a href="/game">
               <ShoppingCart/>
                 MARKETPLACE</a>
                 </div>
