@@ -3,7 +3,7 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 
-function Register() {
+function Register({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
@@ -49,6 +49,11 @@ const metadata = ProgramMetadata.from(meta);
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
+
+              if (onRegister) {
+                onRegister();
+              }
+
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {

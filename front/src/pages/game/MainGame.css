@@ -1,0 +1,120 @@
+
+
+.mainContainer{
+    background: rgba(120, 52, 207, 0.10);
+}
+
+.sectionTitle{
+    color: #fff;
+    font-size: 2rem;
+    text-align: center;
+    margin: 20px;
+}
+
+
+.myCardsArea{
+    display: flex;
+    background: rgba(35, 222, 255, 0.2);
+    border-radius: 16px;
+    border: 3px solid #09529a;
+    padding: 10px;
+    width: 80%;
+    max-width:1024px;
+}
+
+.selectedCardsArea{
+    display: flex;
+    flex-direction: column;
+    background: rgba(55, 255, 10, 0.2);
+    border-radius: 16px;
+    border: 3px solid #257215;
+    height: 500px;
+    width: 80%;
+    max-width:1024px;
+    margin: 16px;
+}
+
+.selectedCards{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+
+.playArea{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    background: rgba(120, 52, 207, 0.10);
+    border-radius: 16px;
+}
+
+.versusArea{
+    background: rgba(255, 255, 0, 0.1);
+    border: 3px solid #e58c06;
+    border-radius: 16px;
+    min-height: 100px;
+    width: 75%;
+    min-width: 420px;
+    padding: 16px;
+    margin: 8px;
+}
+
+.buttonArea{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.gridArea{
+/*    5 columnas , 4 filas*/
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-gap: 10px;
+    width: 100%;
+    height: 100vh;
+    padding: 10px;
+}
+
+.youArea{
+    background: rgba(17, 124, 252, 0.1);
+    border: 3px solid #15069d;
+    border-radius: 16px;
+    min-height: 100px;
+    width: 75%;
+    min-width: 420px;
+    margin: 8px;
+}
+
+.opponentArea{
+    background: rgba(255, 0, 0, 0.1);
+    border: 3px solid #e50b0b;
+    border-radius: 16px;
+    min-height: 100px;
+    width: 75%;
+    min-width: 420px;
+    margin: 8px;
+}
+
+.buttonPrimary{
+    border-radius: 16px;
+    height: 36px;
+    padding: 8px 16px;
+    background: #18ff4e;
+    max-width: 200px;
+    align-self: center;
+}
+
+.grid-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}

@@ -4,7 +4,7 @@ import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 import { useState } from "react";
 
-function PlayGame({name, reference}:any) {
+function GameStatus({reference}:any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
@@ -22,23 +22,7 @@ const meta =
 
 const metadata = ProgramMetadata.from(meta);
 
-let cardid= 2;
-
-    if(name === "ixchel"){
-        cardid = 2;
-    }else if(name === "Death City Earth"){
-        cardid = 2;
-    }
-
-  const message: any = {
-    destination: programIDNFT, // programId
-    payload: {PlayGame:[cardid,reference]}, // Add your data
-    gasLimit: 40099819245,
-    value: 0,
-    
-  };
-
-  const GameStatus = () => {
+  const gameStatus = () => {
     api.programState
       .read({ programId: programIDNFT, payload: "" }, metadata)
       .then((result) => {
@@ -58,54 +42,9 @@ let cardid= 2;
           console.log("Void");
         }
       })
-      .catch(({ err }: any) => console.log(err));
+      .catch(({ err }: any) => alert.error(err));
   };
 
-
-  const signer = async () => {
-    const localaccount = account?.address;
-    const isVisibleAccount = accounts.some(
-      (visibleAccount) => visibleAccount.address === localaccount
-    );
-
-    if (isVisibleAccount) {
-      // Create a message extrinsic
-      const transferExtrinsic = await api.message.send(message, metadata);
-
-      const injector = await web3FromSource(accounts[0].meta.source);
-
-      transferExtrinsic
-        .signAndSend(
-          accounts[0].address,
-          { signer: injector.signer },
-          ({ status }) => {
-            if (status.isInBlock) {
-              console.log(
-                `Completed at block hash #${status.asInBlock.toString()}`
-              );
-              alert.success(`Block hash #${status.asInBlock.toString()}`);
-              
-            } else {
-              console.log(`Current status: ${status.type}`);
-              if (status.type === "Finalized") {
-                alert.success(status.type);
-
-                setInterval(() => {
-                    GameStatus();
-                }, 1000);
-              }
-            }
-          }
-        )
-        .catch((error: any) => {
-          console.log(":( transaction failed", error);
-        });
-    } else {
-      alert.error("Account not available to sign");
-    }
-
-  };
-
-  return <Button text="Play"  onClick={signer} /> ;
+  return <Button text="Status"  onClick={gameStatus} /> ;
 }
-export { PlayGame };
+export { GameStatus };

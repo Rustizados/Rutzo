@@ -1,6 +1,8 @@
+import { MainGame } from "./MainGame";
+
 function Game() {
     return (
-        <div/>
+        <MainGame/>
     );
 }
 
