@@ -36,6 +36,26 @@ pub mod metafns {
         MatchState::NotExists
     }
     
+    pub fn match_finished_by_id(state: State, token_id: TokenId) -> MatchState {
+        for game in state.games.iter() {
+            let first = game.user_1.chosen_nft == token_id;
+            let second = if let Some(user_data) = &game.user_2 {
+                user_data.chosen_nft == token_id                    
+            } else {
+                false
+            };
+            
+            if first || second {
+                if let MatchState::InProgress = game.match_state {
+                } else {
+                    return game.match_state.clone();
+                }
+            }
+        }
+        
+        MatchState::NotExists
+    }
+    
     pub fn matchs_finished_by_id(state: State, token_id: TokenId) -> Vec<MatchState> {
         let mut finished_matchs = Vec::new();
         for game in state.games.iter() {
@@ -47,7 +67,8 @@ pub mod metafns {
             };
             
             if first || second {
-                if let MatchState::InProgress  = game.match_state {
+                if let MatchState::InProgress = game.match_state {
+                } else {
                     finished_matchs.push(game.match_state.clone());
                 }
             }

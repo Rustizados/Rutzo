@@ -6,8 +6,8 @@ use gear_lib::non_fungible_token::{
     token::{TokenId, TokenMetadata},
 };
 use gmeta::{In, InOut, Metadata, Out};
-use gstd::{prelude::*, ActorId, BTreeMap, msg, exec};
-use primitive_types::{ H256 };
+use gstd::{prelude::*, ActorId, BTreeMap, msg};
+use primitive_types::H256;
 
 pub struct ProgramMetadata;
 
@@ -133,10 +133,12 @@ impl ContractData {
             return RutzoEvent::AccountNotExists(user_id);
         } 
         
-        if self.default_tokens_minted_by_id.get(&user_id).unwrap().len() == 3 {
+        let nfts_minted = self.default_tokens_minted_by_id.get(&user_id).unwrap();
+        
+        if nfts_minted.len() == 3 {
             return RutzoEvent::MaxMintsReached(user_id);    
         }
-        
+    
         let token_metadata = self.tokens_metadata_default
             .get(&token_id);
            
@@ -185,7 +187,7 @@ impl ContractData {
         
         self.transaction_id += 1;
         
-        RutzoEvent::Minted(TokenId::default())//transfer_data.token_id)
+        RutzoEvent::Minted(TokenId::default()) //transfer_data.token_id)
     }
     
     pub fn add_minter(&mut self, user_id: ActorId) -> RutzoEvent {
@@ -227,7 +229,7 @@ impl ContractData {
                 game.user_2 = Some(UserData {
                     user_id,
                     chosen_nft: token_id,
-                    power
+                    power,
                 });
                 let user1_power = game.user_1.power;
                 
@@ -252,21 +254,7 @@ impl ContractData {
                     
                     (user2_id, token_id_user1)
                 };
-                
-                msg::send_for_reply_as::<NFTAction, NFTEvent>(
-                    self.nft_contract.unwrap(), 
-                    NFTAction::Transfer { 
-                        transaction_id: self.transaction_id, 
-                        to, 
-                        token_id 
-                    }, 
-                    0, 
-                    0
-                )
-                .expect("Error in sending a message 'NFTAction::MintFromMainContract' to a match contract")
-                .await
-                .expect("Unable to decode NFTEvent");
-                
+    
                 self.transaction_id += 1;
                 return RutzoEvent::MatchFinished;
             }
@@ -395,51 +383,3 @@ pub enum NFTEvent {
         minter_id: ActorId,
     },
 }
-
-/*
- [
-            [
-                "0xeaee0180c37581cadedafb9eb59d8ecdf68be2f93bcb021124963f7ba7f7b90d",
-                false
-            ]
-        ],
-        "games": [],
-        "tokensMetadataDefault": [
-            {
-                "name": "ixchel",
-                "description": "wind",
-                "media": "https://home.rutzo.studio/NFT/ixchel_wind.jpg",
-                "reference": "33"
-            },
-            {
-                "name": "Death City Earth",
-                "description": "rock",
-                "media": "https://home.rutzo.studio/NFT/death_city_earth.jpg",
-                "reference": "20"
-            },
-            {
-                "name": "Chile",
-                "description": "fire",
-                "media": "https://home.rutzo.studio/NFT/chile_fire.jpg",
-                "reference": "55"
-            },
-            {
-                "name": "Chinampa",
-                "description": "water",
-                "media": "https://home.rutzo.studio/NFT/chinampa_water.jpg",
-                "reference": "50"
-            },
-            {
-                "name": "ehecatl",
-                "description": "wind",
-                "media": "https://home.rutzo.studio/NFT/ehecatl_wind.jpg",
-                "reference": "75"
-            },
-            {
-                "name": "huitzilopochtli",
-                "description": "rock",
-                "media": "https://home.rutzo.studio/NFT/huitzilopochtli_earth.jpg",
-                "reference": "43"
-            }
-        ]
-*/
