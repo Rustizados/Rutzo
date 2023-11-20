@@ -1,0 +1,8 @@
+[toolchain]
+channel = "nightly-2023-10-14" 
+targets = ["wasm32-unknown-unknown"]
+profile = "minimal"
+components = ["rustfmt", "clippy"]
+
+#channel = "nightly-2023-04-25" nightly-2023-10-14
+

@@ -1,14 +1,14 @@
 [package]
-name = "main-contract-io"
+name = "gear-lib"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true
 
 [dependencies]
-gmeta.workspace = true
 gstd.workspace = true
-#gear-lib.workspace = true 
-gear-lib-old.workspace = true 
+indexmap.workspace = true
+ahash.workspace = true
 primitive-types.workspace = true
 
-
+[dev-dependencies]
+gstd = { workspace = true, features = ["debug"] }
