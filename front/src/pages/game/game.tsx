@@ -1,9 +1,7 @@
 import { MainGame } from "./MainGame";
 
 function Game() {
-    return (
-        <MainGame/>
-    );
+  return <MainGame />;
 }
 
 export { Game };
