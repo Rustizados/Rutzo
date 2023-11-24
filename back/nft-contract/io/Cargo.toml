@@ -1,5 +1,5 @@
 [package]
-name = "main-contract-io"
+name = "nft-io"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true
@@ -7,9 +7,9 @@ publish.workspace = true
 [dependencies]
 gmeta.workspace = true
 gstd.workspace = true
-#gear-lib.workspace = true 
-gear-lib-old.workspace = true 
+#gear-lib.workspace = true
+gear-lib-old.workspace = true
+gear-lib-derive.workspace = true
 primitive-types.workspace = true
-nft-io.workspace = true
-
-
+#scale-info.workspace = true
+#parity-scale-codec.workspace = true
