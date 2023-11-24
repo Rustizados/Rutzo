@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9226f0e5.css",
+    "main.js": "/static/js/main.931b3063.js",
+    "static/media/marketplace.svg": "/static/media/marketplace.8f2e43697615f3e68d4693ede73be647.svg",
+    "static/media/Intro.svg": "/static/media/Intro.da496cf6f1ef37ad4505be23a91ceab3.svg",
+    "static/media/signin.png": "/static/media/signin.2fdac172470dd0cd2bf3.png",
+    "static/media/extension.png": "/static/media/extension.3751d54fc6d880f02beb.png",
+    "static/media/NFT2.png": "/static/media/NFT2.edcb7cba6ea2af525aef.png",
+    "static/media/NFT3.png": "/static/media/NFT3.3542e7dd84581857fd52.png",
+    "static/media/NFT1.png": "/static/media/NFT1.24e50b6d96f63e78d5d3.png",
+    "static/media/kanit-600.woff2": "/static/media/kanit-600.a2adb8f7c067494c0225.woff2",
+    "static/media/kanit-400.woff2": "/static/media/kanit-400.30d596e48610ef7e8932.woff2",
+    "static/media/kanit-700.woff2": "/static/media/kanit-700.4dceb6226434e96dc4e1.woff2",
+    "static/media/kanit-500.woff2": "/static/media/kanit-500.63d399e480c6301efad7.woff2",
+    "static/media/kanit-300.woff2": "/static/media/kanit-300.0c9e7f70b1047dcfa949.woff2",
+    "static/media/valorax.otf": "/static/media/valorax.aefcde538ff97713bf6c.otf",
+    "static/media/poppins-600.woff2": "/static/media/poppins-600.91145014c0350c248ed2.woff2",
+    "static/media/poppins-400.woff2": "/static/media/poppins-400.405055dd680fa1dcdfa2.woff2",
+    "static/media/poppins-300.woff2": "/static/media/poppins-300.39576fe9df8a22cc1bcc.woff2",
+    "static/media/poppins-700.woff2": "/static/media/poppins-700.d86662fe776dae29ea78.woff2",
+    "static/media/poppins-500.woff2": "/static/media/poppins-500.08491d3f7fe7ae88ef44.woff2",
+    "static/media/logo.svg": "/static/media/logo.855ca611f534414162b0de1063064a53.svg",
+    "static/media/gear.svg": "/static/media/gear.353e6ca38ebe90ede366.svg",
+    "static/media/mask.svg": "/static/media/mask.6ba332f9b256cc9e5d2f.svg",
+    "static/media/github.svg": "/static/media/github.60573504071ab797e60e6ca12386c056.svg",
+    "index.html": "/index.html",
+    "static/media/login.svg": "/static/media/login.7bdf46dacf416ecce0a339aa9338abc9.svg",
+    "static/media/bg.svg": "/static/media/bg.0ced73485ef26eb62727.svg",
+    "main.9226f0e5.css.map": "/static/css/main.9226f0e5.css.map",
+    "main.931b3063.js.map": "/static/js/main.931b3063.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9226f0e5.css",
+    "static/js/main.931b3063.js"
+  ]
+}
