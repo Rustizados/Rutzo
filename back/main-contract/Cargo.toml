@@ -12,6 +12,7 @@ gear-lib-old.workspace = true
 
 [dev-dependencies]
 gtest.workspace = true
+nft-io.workspace = true
 
 [build-dependencies]
 main-contract-io.workspace = true

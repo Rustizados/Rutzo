@@ -5,7 +5,6 @@ use gear_lib_old::non_fungible_token::{
     token::*,
 };
 use gear_lib_derive::{NFTCore, NFTMetaState, NFTStateKeeper};
-use gmeta::Metadata;
 use gstd::{
     errors::Result as GstdResult, 
     exec, 
@@ -19,7 +18,7 @@ use gstd::{
 //use nft_io::*;
 
 use nft_io::{
-    Collection, Constraints, InitNFT, IoNFT, NFTAction, NFTEvent, NFTMetadata, Nft, State, NFTStateReply, NFTStateQuery
+    Collection, Constraints, InitNFT, IoNFT, NFTAction, NFTEvent, Nft, State
 };
 use primitive_types::{H256, U256};
 
@@ -186,7 +185,7 @@ unsafe extern "C" fn handle() {
         },
         NFTAction::NFTData(token_id) => {
             let caller = msg::source();
-            if caller != nft.main_contract {
+            if caller != nft.main_contract && caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
                 return;
@@ -198,11 +197,15 @@ unsafe extern "C" fn handle() {
                 return;
             }
             
+            //msg::reply(NFTEvent::NFTData(None), 0)
+            //    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+            
             msg::reply(NFTEvent::NFTData(token_metadata_helper(&token_id, nft)), 0)
                 .expect("Error during replying with 'NFTEvent::NFTData'");
         },
         NFTAction::NFTDataFromUsers(users) => {
-            if msg::source() != nft.main_contract {
+            let caller = msg::source();
+            if caller != nft.main_contract && caller != nft.owner  {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
                 return;
@@ -228,6 +231,73 @@ unsafe extern "C" fn handle() {
             
             msg::reply(NFTEvent::AllNFTInformation(response), 0)
                 .expect("Error during replying with 'NFTEvent::AllNFTInformation'");
+        },
+        NFTAction::SetMainContract(contract_address) => {
+            if msg::source() != nft.owner {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            nft.main_contract = contract_address;
+            
+            msg::reply(NFTEvent::MainContractSet, 0)
+                .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+        },
+        NFTAction::MintNFTsTo {
+            to,
+            nfts
+        } => {
+            let caller = msg::source();
+            if caller != nft.owner && caller != nft.main_contract {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            let mut tokens_id = Vec::new();
+            nfts
+                .into_iter()
+                .for_each(|token_metadata| {
+                    let NFTTransfer { token_id, .. } = MyNFTCore::mint(nft, token_metadata);
+                    tokens_id.push(token_id);
+                });
+            tokens_id
+                .into_iter()
+                .for_each(|token_id| {
+                    NFTCore::transfer(nft, &to, token_id); 
+                });
+            
+            msg::reply(
+                NFTEvent::NFTsMinted,
+                0,
+            )
+            .expect("Error during replying with `NFTEvent::Transfer`");
+        },
+        NFTAction::BurnAllNFTS => {
+            let caller = msg::source();
+            if caller != nft.owner && caller != nft.main_contract {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            
+            nft.transactions.clear();
+            nft.token.owner_by_id.clear();
+            nft.token.token_approvals.clear();
+            nft.token.token_metadata_by_id.clear();
+            nft.token.tokens_for_owner.clear();
+            
+            msg::reply(NFTEvent::AllBurned, 0)
+                .expect("Error during replying with 'NFTEvent::AllBurned'");
+        },
+        NFTAction::DeleteContract => {
+            let caller = msg::source();
+            if caller != nft.owner {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            
+            exec::exit(caller);
         }
     };
 }
@@ -355,7 +425,7 @@ impl From<&Contract> for State {
             transactions,
             collection,
             constraints,
-            main_contract
+            main_contract: _
         } = value;
 
         let owners = token
@@ -398,6 +468,13 @@ impl From<&Contract> for State {
 }
 
 fn token_metadata_helper(token_id: &TokenId, state: &Contract) -> Option<TokenMetadata> {
+    match state.token.token_metadata_by_id.get(token_id) {
+        Some(data) => {
+            data.clone()
+        },
+        None =>None
+    }
+    /*
     let mut token_metadata = TokenMetadata::default();
     if let Some((_token_id, Some(metadata))) = state
         .token
@@ -414,4 +491,5 @@ fn token_metadata_helper(token_id: &TokenId, state: &Contract) -> Option<TokenMe
     }
     
     Some(token_metadata)
+    */
 }

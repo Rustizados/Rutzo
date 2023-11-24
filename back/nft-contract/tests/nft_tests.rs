@@ -11,6 +11,7 @@ use utils::*;
 const USERS: &[u64] = &[3, 4, 5];
 const ZERO_ID: u64 = 0;
 
+
 #[test]
 fn mint_success() {
     let sys = System::new();

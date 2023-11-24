@@ -2067,7 +2067,7 @@ dependencies = [
 
 [[package]]
 name = "gear-lib-derive"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "quote",
  "syn 2.0.37",
@@ -2075,7 +2075,7 @@ dependencies = [
 
 [[package]]
 name = "gear-lib-old"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gstd",
  "primitive-types",
@@ -3205,28 +3205,30 @@ dependencies = [
 
 [[package]]
 name = "main-contract"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gear-lib-old",
  "gear-wasm-builder",
  "gstd",
  "gtest",
  "main-contract-io",
+ "nft-io",
 ]
 
 [[package]]
 name = "main-contract-io"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gear-lib-old",
  "gmeta",
  "gstd",
+ "nft-io",
  "primitive-types",
 ]
 
 [[package]]
 name = "main-contract-state"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gear-wasm-builder",
  "gmeta",
@@ -3366,7 +3368,7 @@ checksum = "7843ec2de400bcbc6a6328c958dc38e5359da6e93e72e37bc5246bf1ae776389"
 
 [[package]]
 name = "nft"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gclient",
  "gear-lib-derive",
@@ -3385,7 +3387,7 @@ dependencies = [
 
 [[package]]
 name = "nft-io"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gear-lib-derive",
  "gear-lib-old",
@@ -3396,7 +3398,7 @@ dependencies = [
 
 [[package]]
 name = "nft-state"
-version = "0.3.3"
+version = "1.0.0"
 dependencies = [
  "gear-lib-old",
  "gear-wasm-builder",

@@ -12,6 +12,8 @@ use gstd::{prelude::*, ActorId};
 
 use primitive_types::H256;
 
+pub type UserNFTS = (ActorId, Vec<TokenMetadata>);
+
 pub struct NFTMetadata;
 
 impl Metadata for NFTMetadata {
@@ -118,6 +120,13 @@ pub enum NFTAction {
     },
     NFTData(TokenId),
     NFTDataFromUsers(Vec<ActorId>),
+    SetMainContract(ActorId),
+    MintNFTsTo {
+        to: ActorId,
+        nfts: Vec<TokenMetadata>
+    },
+    BurnAllNFTS,
+    DeleteContract
 }
 
 #[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -143,7 +152,10 @@ pub enum NFTEvent {
     NFTData(Option<TokenMetadata>),
     AllNFTInformation(Vec<(ActorId, Vec<TokenMetadata>)>),
     ActionOnlyForMainContract,
-    MainContractIsNotApproved
+    MainContractIsNotApproved,
+    MainContractSet,
+    NFTsMinted,    
+    AllBurned
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
