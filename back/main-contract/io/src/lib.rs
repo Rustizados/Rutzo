@@ -253,6 +253,7 @@ pub struct NFTOnSale {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateQuery{
+    UserIsRegister(UserId),
     GameInformationById(u64),
     MatchStateById(u64),
     PlayerInformation(UserId),
@@ -269,6 +270,7 @@ pub enum RutzoStateQuery{
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateReply {
+    UserIsRegister(bool),
     GameInformation(MatchInformation),
     PlayerInformation(UserDataState),
     PlayerInMatch(Option<u64>),

@@ -5,7 +5,7 @@ import { MintNFT as Mint3 } from "components/card/Mint/MintNFT2";
 import { MintNFT as Mint4 } from "components/card/Mint/MintNFT3";
 import { MintNFT as Mint5 } from "components/card/Mint/MintNFT4";
 import { MintNFT as Mint6 } from "components/card/Mint/MintNFT5";
-import "./EmptyCollection.scss";
+import "./UnregisteredUser.scss";
 import {Card} from "components/card/Card";
 import {MintNFT2} from "components/card/MintNFT2";
 import { Register } from "./Register";
@@ -68,7 +68,7 @@ const characters = [
     ];
 
 
-function EmptyCollection() {
+function UnregisteredUser() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [mintCount, setMintCount] = useState(0);
   const [mintButtonsState, setMintButtonsState] = useState([
@@ -137,4 +137,4 @@ function EmptyCollection() {
   );
 }
 
-export { EmptyCollection };
+export { UnregisteredUser };

@@ -1,7 +1,9 @@
 import { ReactComponent as Banner } from "assets/images/marketplace.svg";
-import "./Marketplace.scss";
+import { MyNFTCollection } from "components";
 import { AllNFTCollection } from "./AllNFTCollection";
-import { MyNFTCollection } from "./MyNFTCollection";
+// import { MyNFTCollection } from "./MyNFTCollection";
+import "./Marketplace.scss";
+
 
 function Marketplace() {
   return (

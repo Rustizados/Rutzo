@@ -5,20 +5,12 @@ import { CollectionCard } from "components/collection-card";
 import { NFT_CONTRACT } from "consts";
 import process from "process";
 
-function InfoNFT({ name, description, media, reference }: any) {
-  return (
-    <CollectionCard
-      image={media}
-      title={name}
-      type={description.toLowerCase()}
-      value={reference}
-    />
-  );
+interface NftColletionFromProps {
+    user: `0x${string}` | undefined 
 }
 
-function MyNFTCollection() {
+function NftCollectionFromUser({ user }: NftColletionFromProps) {
   const { api } = useApi();
-  const { account } = useAccount();
 
   const [allnfts, setAllnfts] = useState<any | undefined>([]);
   const [allmynft, setAllmynft] = useState<any | undefined>();
@@ -44,13 +36,13 @@ function MyNFTCollection() {
 
   const metadata = ProgramMetadata.from(meta);
 
-  const currentaccount = account?.address;
-
   const getMyNFT = () => {
     api.programState
       .read({ programId: programIDNFT, payload: "" }, metadata)
       .then((result) => {
         setFullState(result.toJSON());
+
+        console.log(fullState);
 
         const tokensForOwner: any = fullState.token.tokensForOwner ?? "";
 
@@ -62,8 +54,8 @@ function MyNFTCollection() {
 
         setTokensForOwnerState(tokensForOwner);
 
-        tokensForOwnerState.map((objeto: any) =>
-          objeto[0] === decodeAddress(currentaccount ?? "")
+        tokensForOwnerState.map((objeto: any) =>          
+          objeto[0] === (user ?? "")
             ? setAllmynft(objeto[1])
             : console.log("No NFT")
         );
@@ -85,11 +77,11 @@ function MyNFTCollection() {
     <div>
       {existNFT ? (
         mynftcollection.map((elemento: any) => (
-          <InfoNFT
-            name={elemento.name}
-            description={elemento.description}
-            media={elemento.media}
-            reference={elemento.reference}
+          <CollectionCard 
+            image={elemento.media}
+            title={elemento.name}
+            type={elemento.description.toLowerCase()}
+            value={elemento.reference}
           />
         ))
       ) : (
@@ -99,4 +91,4 @@ function MyNFTCollection() {
   );
 }
 
-export { MyNFTCollection };
+export { NftCollectionFromUser };

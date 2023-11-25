@@ -91,7 +91,7 @@ async fn main() {
             let (message, value_to_return) = state.buy_nft(
                 msg::source(), 
                 token_id, 
-                msg::value()
+                value
             ).await;
             
             msg::reply(message, value_to_return)
@@ -190,6 +190,11 @@ unsafe extern "C" fn state() {
     let message = msg::load()
         .expect("Error in decode 'RutzoStateAction'");
     match message {
+        RutzoStateQuery::UserIsRegister(user_address)=> {
+            let is_register = contract.games_information_by_user.contains_key(&user_address);
+            msg::reply(RutzoStateReply::UserIsRegister(is_register), 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+        },
         RutzoStateQuery::GameInformationById(game_index) => {
             let game_information = contract.games.get(game_index as usize);
             match game_information {

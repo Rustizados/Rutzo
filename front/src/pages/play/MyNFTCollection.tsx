@@ -6,7 +6,7 @@ import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "components/collection-card";
 import { ReactComponent as ShoppingCart } from "assets/images/shopping_cart.svg";
 import { ReactComponent as GameController } from "assets/images/game_controller.svg";
-import { EmptyCollection } from "./EmptyCollection";
+import { UnregisteredUser } from "./UnregisteredUser";
 import "./EmptyCollection.scss";
 import "./Collection.scss";
 
@@ -27,7 +27,7 @@ function MyNFTCollection() {
 
   const [allnfts, setAllnfts] = useState<any | undefined>([]);
   const [allmynft, setAllmynft] = useState<any | undefined>();
-  const [existNFT, setExistNFT] = useState<boolean>(true);
+  const [existNFT, setExistNFT] = useState<boolean>(false);
 
   const [tokensForOwnerState, setTokensForOwnerState] = useState<
     any | undefined
@@ -72,6 +72,8 @@ function MyNFTCollection() {
         tokensForOwnerState.forEach((objeto: any) => {
           if (objeto[0] === decodeAddress(currentaccount ?? "")) {
             foundNFT = true;
+            console.log("Se encontro!!!");
+
             setAllmynft(objeto[1]);
           }
         });
@@ -136,7 +138,7 @@ function MyNFTCollection() {
           )}
         </div>
       ) : (
-        <EmptyCollection />
+        <UnregisteredUser />
       )}
     </div>
   );
