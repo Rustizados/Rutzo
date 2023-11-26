@@ -56,8 +56,6 @@ function MyNFTCollection() {
       .then((result) => {
         setFullState(result.toJSON());
 
-        console.log(fullState);
-
         const tokensForOwner: any = fullState.token.tokensForOwner ?? "";
 
         const tokenMetadataById: any = fullState.token.tokenMetadataById ?? "";
@@ -97,14 +95,6 @@ function MyNFTCollection() {
             type={elemento.description.toLowerCase()}
             value={elemento.reference}
           />
-         /*
-          <InfoNFT
-            name={elemento.name}
-            description={elemento.description}
-            media={elemento.media}
-            reference={elemento.reference}
-          />
-          */
         ))
       ) : (
         <h1>No NFTs</h1>

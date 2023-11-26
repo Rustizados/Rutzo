@@ -1,20 +1,22 @@
+import { RegisterButton } from "components";
 import { ProgramMetadata } from "@gear-js/api";
 import { useAccount, useApi } from "@gear-js/react-hooks";
-import { MAIN_CONTRACT } from "consts";
+import { MAIN_CONTRACT, NFT_CONTRACT } from "consts";
 import { useState } from "react";
 import { MyNFTCollection } from "./MyNFTCollection";
-import { UnregisteredUser } from "./UnregisteredUser";
+import { UserEmptyAccount } from "./UserEmptyAccount";
 
 
 function Play() {
+  const [userDoRegister, setUserDoRegister] = useState(false);
+  const [hasEnoughCards, setHasEnoughCards] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const { api } = useApi();
   const { account } = useAccount();
+  const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
-  const setData = async () => {
-    console.log("Si entro");
-    
-    const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const setData = async () => {    
     const stateResult = await api
       .programState
       .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
@@ -30,14 +32,12 @@ function Play() {
       mainContractMetadata
     );
 
-    console.log("Gas necesario para el programa: ");
-    console.log(gas.toHuman().min_limit);
-    
-    console.log("Valor optenido async await: ");
-    console.log(account?.decodedAddress);
-    
-    console.log(stateFormated);
     setIsRegister(stateFormated.userIsRegister);
+
+    // if (!isRegister) return;
+
+    
+
   };
 
   setData();
@@ -46,12 +46,17 @@ function Play() {
     <div className="play-title">
       { 
         isRegister ? (
-          <h1>User is reegister!!!</h1>
+          <>
+            {  }
+            <h1>User is reegister!!!</h1>
+          </>
         ) : (
-          <UnregisteredUser />
+          <UserEmptyAccount>
+            <p className="alert">Register to obtain free cards</p>
+            <RegisterButton onRegister={setData} className="playcontainer" />
+          </UserEmptyAccount>
         )
       }
-      {/* <MyNFTCollection /> */}
     </div>
   );
 }

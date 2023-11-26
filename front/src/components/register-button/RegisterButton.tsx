@@ -3,28 +3,43 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { decodeAddress, ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "consts";
+import { HumanGasCalculated } from "types";
+import { AnyJson } from "@polkadot/types/types";
+import { gasToSpend } from "utils";
 
-function Register({ onRegister }: any) {
+function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
 
   // Add your programID
-  const programIDNFT = MAIN_CONTRACT.PROGRAM_ID; // "0x2cd2eefd93196e8adcb38eef6b40c476478fa9f0806f7a6c617fe02520381b1f"
+  const programIDNFT = MAIN_CONTRACT.PROGRAM_ID;
 
   // Add your metadata.txt
   const meta = MAIN_CONTRACT.METADATA;
 
   const metadata = ProgramMetadata.from(meta);
 
-  const message: any = {
-    destination: programIDNFT, // programId
-    payload: { Register }, // Add your data
-    gasLimit: 2099819245,
-    value: 0,
-  };
-
   const signer = async () => {
+    const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+
+    const gas = await api.program.calculateGas.handle(
+      account?.decodedAddress ?? "0x00",
+      MAIN_CONTRACT.PROGRAM_ID,
+      { Register: null },
+      0,
+      false,
+      mainContractMetadata
+    );
+
+
+    const message: any = {
+      destination: programIDNFT, // programId
+      payload: { Register: null }, // Add your data
+      gasLimit: gasToSpend(gas),
+      value: 0,
+    };
+
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
       (visibleAccount) => visibleAccount.address === localaccount
@@ -39,12 +54,10 @@ function Register({ onRegister }: any) {
 
       const transferExtrinsic = await api.message.send(message, metadata);
 
-      // const injector = await web3FromSource(accounts[0].meta.source);
       const injector = await web3FromSource(account.meta.source);
 
       transferExtrinsic
         .signAndSend(
-          // accounts[0].address,
           account?.decodedAddress,
           { signer: injector.signer },
           ({ status }) => {
@@ -72,6 +85,7 @@ function Register({ onRegister }: any) {
       alert.error("Account not available to sign");
     }
 
+    /*
     const unsub = api.gearEvents.subscribeToGearEvent(
       "UserMessageSent",
       ({
@@ -86,8 +100,9 @@ function Register({ onRegister }: any) {
         `);
       }
     );
+    */
   };
 
   return <Button text="Register" onClick={signer} className="alert" />;
 }
-export { Register };
+export { RegisterButton };

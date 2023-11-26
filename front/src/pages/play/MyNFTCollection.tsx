@@ -6,7 +6,7 @@ import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "components/collection-card";
 import { ReactComponent as ShoppingCart } from "assets/images/shopping_cart.svg";
 import { ReactComponent as GameController } from "assets/images/game_controller.svg";
-import { UnregisteredUser } from "./UnregisteredUser";
+import { UserEmptyAccount } from "./UserEmptyAccount";
 import "./EmptyCollection.scss";
 import "./Collection.scss";
 
@@ -138,7 +138,7 @@ function MyNFTCollection() {
           )}
         </div>
       ) : (
-        <UnregisteredUser />
+        <UserEmptyAccount />
       )}
     </div>
   );
