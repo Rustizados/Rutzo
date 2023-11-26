@@ -12,6 +12,7 @@ interface CardProps {
   value: number;
   price: number;
   onCardClick?: () => void;
+  children: any;
 }
 
 interface CardState {
@@ -50,6 +51,7 @@ class Card extends React.Component<CardProps, CardState> {
 
   render() {
     const { image, title, type, value, price } = this.props;
+    const { children } = this.props;
     const { dialogOpen } = this.state;
 
     return (
@@ -86,7 +88,9 @@ class Card extends React.Component<CardProps, CardState> {
               type={type}
               value={value}
               price={price}
-            />
+            >
+              { children }
+            </CardDialog>
           </Modal>
         )}
       </div>

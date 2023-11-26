@@ -7,7 +7,12 @@ import { HumanGasCalculated } from "types";
 import { AnyJson } from "@polkadot/types/types";
 import { gasToSpend } from "utils";
 
-function RegisterButton({ onRegister }: any) {
+interface MintNftButtonProps {
+  onMint: any;
+  defaultNftId: number
+}
+
+function MintNftButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
@@ -88,4 +93,4 @@ function RegisterButton({ onRegister }: any) {
 
   return <Button text="Register" onClick={signer} className="alert" />;
 }
-export { RegisterButton };
+export { MintNftButton };

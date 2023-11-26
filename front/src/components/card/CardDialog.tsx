@@ -11,6 +11,7 @@ interface CardDialogProps {
   type: string;
   value: number;
   price: number;
+  children: any
 }
 
 function CardDialog({
@@ -21,6 +22,7 @@ function CardDialog({
   type,
   value,
   price,
+  children
 }: CardDialogProps) {
   if (!isOpen) return null;
 
@@ -35,7 +37,8 @@ function CardDialog({
       <div>
         <PowerBar progress={value} />
       </div>
-      <MintNFT/>
+      { children }
+      {/* <MintNFT/> */}
     </div>
   );
 }

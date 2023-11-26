@@ -1,6 +1,7 @@
 import { NFT_CONTRACT } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
+import { RegisterButton } from "components";
 import { useApi } from "@gear-js/react-hooks";
 import { Card } from "../../components/card/Card";
 
@@ -12,7 +13,9 @@ function InfoNFT({ name, description, media, reference }: any) {
       type={description.toLowerCase()}
       value={reference}
       price={reference}
-    />
+    >
+      <RegisterButton />
+    </Card>
   );
 }
 

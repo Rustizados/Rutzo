@@ -22,7 +22,9 @@ function InfoNFT({ name, description, media, reference, onCardClick }: any) {
       value={reference}
       price={reference}
       onCardClick={onCardClick}
-    />
+    >
+      <p>avr</p>
+    </Card>
   );
 }
 

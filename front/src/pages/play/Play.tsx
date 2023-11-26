@@ -1,15 +1,17 @@
-import { RegisterButton } from "components";
+import { ReactComponent as ShoppingCart } from "assets/images/shopping_cart.svg";
+import { ReactComponent as GameController } from "assets/images/game_controller.svg";
+import { RegisterButton,MyNFTCollection } from "components";
 import { ProgramMetadata } from "@gear-js/api";
 import { useAccount, useApi } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "consts";
 import { useState } from "react";
-import { MyNFTCollection } from "./MyNFTCollection";
 import { UserEmptyAccount } from "./UserEmptyAccount";
-
+import "./Collection.scss";
 
 function Play() {
   const [userDoRegister, setUserDoRegister] = useState(false);
   const [hasEnoughCards, setHasEnoughCards] = useState(false);
+  const [numberOfNfts, setNumberOfNfts] = useState(0);
   const [isRegister, setIsRegister] = useState(false);
   const { api } = useApi();
   const { account } = useAccount();
@@ -23,20 +25,33 @@ function Play() {
     
     const stateFormated: any = stateResult.toJSON();
 
-    const gas = await api.program.calculateGas.handle(
-      account?.decodedAddress ?? "0x00",
-      MAIN_CONTRACT.PROGRAM_ID,
-      { Register: null },
-      0,
-      false,
-      mainContractMetadata
-    );
-
     setIsRegister(stateFormated.userIsRegister);
 
-    // if (!isRegister) return;
+    if (!isRegister) return;
 
-    
+    try {
+      const nftStateResult = await api
+        .programState
+        .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: "" }, nftContractMetadata);
+      const nftStateFormated: any = nftStateResult.toJSON();
+      console.log(nftStateFormated);
+      
+      const tokensForOwner: any = nftStateFormated.token.tokensForOwner ?? "";
+      const userNfts = tokensForOwner.find((user: any) => user[0] === account?.decodedAddress);
+      const totalNfts = userNfts[1].length;
+      if (userNfts && totalNfts > 2) {
+        setHasEnoughCards(true);
+        setNumberOfNfts(totalNfts);
+      } else {
+        console.log("No se encontroal usuario!!");
+        setHasEnoughCards(false);
+        setNumberOfNfts(0);
+      }
+
+    } catch (error) {
+      console.log(error);
+      setHasEnoughCards(false);
+    }
 
   };
 
@@ -46,14 +61,54 @@ function Play() {
     <div className="play-title">
       { 
         isRegister ? (
-          <>
-            {  }
-            <h1>User is reegister!!!</h1>
-          </>
+          <div>
+            {hasEnoughCards ? (
+              <div className="alert">
+                <h1>Your NFT collection</h1>
+                <MyNFTCollection />
+                <br />
+                <div className="playcontainer">
+                  <a href="/game">
+                    <GameController />
+                    PLAY
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {
+                  numberOfNfts > 0 ? (
+                    <div className="alert">
+                      <h1>You don&apos;t have enough NFTs</h1>
+                      <MyNFTCollection />
+                      <br />
+                      <div className="playcontainer">
+                        <div className="playcontainer">
+                          <a href="/marketplace">
+                            <ShoppingCart />
+                            MARKETPLACE
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <UserEmptyAccount>
+                      <p className="alert">Go to the store to get some nfts!</p>
+                      <div className="playcontainer">
+                        <a href="/marketplace" className="alert">
+                          MARKETPLACE
+                        </a>
+                      </div>
+                    </UserEmptyAccount>
+                  )
+                }
+              </div> 
+            )}
+          </div>
         ) : (
           <UserEmptyAccount>
             <p className="alert">Register to obtain free cards</p>
-            <RegisterButton onRegister={setData} className="playcontainer" />
+            <RegisterButton onRegister={setData} />
           </UserEmptyAccount>
         )
       }

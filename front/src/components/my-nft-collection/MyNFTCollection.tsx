@@ -80,7 +80,10 @@ function MyNFTCollection() {
 
         setMynftcollection(mynftscollection);
       })
-      .catch(({ message }: Error) => console.log(message));
+      .catch(({ message }: Error) => {
+        console.log("Hay pdo -------------------------------");
+        console.log(message);
+      });
   };
 
   getMyNFT();
