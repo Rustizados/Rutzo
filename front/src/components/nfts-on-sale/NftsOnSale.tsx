@@ -18,7 +18,7 @@ function InfoNFT({ name, description, media, reference }: any) {
   );
 }
 
-function MyNFTCollection() {
+export function NftsOnSale() {
   const { api } = useApi();
   const { account } = useAccount();
   const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
@@ -68,7 +68,6 @@ function MyNFTCollection() {
             title={elemento.name}
             type={elemento.description.toLowerCase()}
             value={elemento.reference}
-            key={nftId}
           />;
         })
       ) : (
@@ -77,5 +76,3 @@ function MyNFTCollection() {
     </div>
   );
 }
-
-export { MyNFTCollection };

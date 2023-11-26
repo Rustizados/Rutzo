@@ -1,11 +1,10 @@
 import { ReactComponent as ShoppingCart } from "assets/images/shopping_cart.svg";
 import { ReactComponent as GameController } from "assets/images/game_controller.svg";
-import { RegisterButton,MyNFTCollection } from "components";
+import { RegisterButton, MyNFTCollection, UserEmptyAccount } from "components";
 import { ProgramMetadata } from "@gear-js/api";
 import { useAccount, useApi } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "consts";
 import { useState } from "react";
-import { UserEmptyAccount } from "./UserEmptyAccount";
 import "./Collection.scss";
 
 function Play() {
@@ -32,22 +31,21 @@ function Play() {
     try {
       const nftStateResult = await api
         .programState
-        .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: "" }, nftContractMetadata);
-      const nftStateFormated: any = nftStateResult.toJSON();
-      console.log(nftStateFormated);
+        .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, ProgramMetadata.from(NFT_CONTRACT.METADATA));
       
-      const tokensForOwner: any = nftStateFormated.token.tokensForOwner ?? "";
-      const userNfts = tokensForOwner.find((user: any) => user[0] === account?.decodedAddress);
-      const totalNfts = userNfts[1].length;
-      if (userNfts && totalNfts > 2) {
-        setHasEnoughCards(true);
-        setNumberOfNfts(totalNfts);
-      } else {
-        console.log("No se encontroal usuario!!");
-        setHasEnoughCards(false);
-        setNumberOfNfts(0);
-      }
+      const nftStateFormated: any = nftStateResult.toJSON();
+      
+      const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
 
+      const totalNfts = tokensForOwner.length;
+
+      setNumberOfNfts(totalNfts);
+
+      if (totalNfts > 2) {
+        setHasEnoughCards(true);
+      } else {
+        setHasEnoughCards(false);
+      }
     } catch (error) {
       console.log(error);
       setHasEnoughCards(false);

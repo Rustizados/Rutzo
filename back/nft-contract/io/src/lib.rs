@@ -7,7 +7,7 @@ use gear_lib_old::non_fungible_token::{
     token::*,
     delegated::DelegatedApproveMessage
 };
-use gmeta::{In, Out, InOut, Metadata};
+use gmeta::{In, InOut, Metadata};
 use gstd::{prelude::*, ActorId};
 
 use primitive_types::H256;
@@ -22,7 +22,24 @@ impl Metadata for NFTMetadata {
     type Reply = ();
     type Others = ();
     type Signal = ();
-    type State = Out<IoNFT>;
+    type State = InOut<NFTStateQuery, NFTStateResponse>; //Out<IoNFT>;
+}
+
+#[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum NFTStateQuery {
+    TokensForOwner(ActorId),
+    #[default]
+    All
+}
+
+#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum NFTStateResponse {
+    TokensForOwner(Vec<(TokenId, TokenMetadata)>),
+    All(IoNFT)
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -49,22 +66,6 @@ pub struct InitNFT {
 pub struct Collection {
     pub name: String,
     pub description: String,
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTStateReply {
-    Text(String),
-    Num(u64),
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTStateQuery {
-    Text,
-    Num,
 }
 
 #[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]

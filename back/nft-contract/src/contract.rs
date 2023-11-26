@@ -18,7 +18,7 @@ use gstd::{
 //use nft_io::*;
 
 use nft_io::{
-    Collection, Constraints, InitNFT, IoNFT, NFTAction, NFTEvent, Nft, State
+    Collection, Constraints, InitNFT, IoNFT, NFTAction, NFTEvent, Nft, State, NFTStateQuery, NFTStateResponse
 };
 use primitive_types::{H256, U256};
 
@@ -379,8 +379,34 @@ fn common_state() -> IoNFT {
 
 #[no_mangle]
 extern "C" fn state() {
-    reply(common_state())
-        .expect("Failed to encode or reply with `<NFTMetadata as Metadata>::State` from `state()`");
+    //reply(common_state())
+     //   .expect("Failed to encode or reply with `<NFTMetadata as Metadata>::State` from `state()`");
+    
+    let state_query = msg::load()
+        .expect("Error decoding NFTStateQuery");
+    
+    match state_query {
+        NFTStateQuery::TokensForOwner(user_id) => {
+            let nft = static_mut_state();
+            let mut  tokens_metadata = Vec::new();
+            if let Some((_owner, token_ids)) = nft
+                .token
+                .tokens_for_owner
+                .iter()
+                .find(|(id, _tokens)| user_id.eq(id))
+            {
+                for token_id in token_ids {
+                    tokens_metadata.push((token_id.clone(), token_metadata_helper(token_id, nft).unwrap()));
+                }
+            }
+            msg::reply(NFTStateResponse::TokensForOwner(tokens_metadata),0)
+                .expect("msg");
+        },
+        NFTStateQuery::All => {
+            msg::reply(NFTStateResponse::All(common_state()),0)
+                .expect("msg");
+        }
+    }
 }
 
 fn reply(payload: impl Encode) -> GstdResult<MessageId> {
