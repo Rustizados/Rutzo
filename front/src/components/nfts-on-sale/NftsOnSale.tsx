@@ -26,11 +26,17 @@ export function NftsOnSale() {
       return;
     }
 
+    // convert value into a valid value in Vara
+    const parser: AnyNumber = Number(price.toString()) * 1000000000000;
+
+    console.log("To mint: ", parser.toString());
+    
+
     if (Number(account.balance.value)  < Number(price.toString())) {
       alert.error(`insufficient funds: ${account.balance.value} < ${price.toString()}`);
       return;
     }
-    
+
     const gas = await api.program.calculateGas.handle(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
@@ -44,7 +50,7 @@ export function NftsOnSale() {
       destination: MAIN_CONTRACT.PROGRAM_ID, // programId
       payload: { BuyNFT: [tokenId] }, // Add your data
       gasLimit: gasToSpend(gas),
-      value: price,  // Aqui es donde pasa el error, se manda el valor de 3
+      value: parser,  // Aqui es donde pasa el error, se manda el valor de 3
                      // checando el valor de este en el estado, pero, no permite 
                      // mandar menos de 10 TVaras
     };
