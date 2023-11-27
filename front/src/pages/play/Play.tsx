@@ -17,7 +17,9 @@ function Play() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
   const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
-  const setData = async () => {    
+  const setData = async () => {   
+    if (!account || !api) return; 
+    
     const stateResult = await api
       .programState
       .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);

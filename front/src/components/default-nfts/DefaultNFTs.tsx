@@ -19,6 +19,8 @@ function DefaultNfts() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   const mintDefaultNft = async (nftId: number) => {
+    if (!api) return;
+
     const gas = await api.program.calculateGas.handle(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
@@ -70,6 +72,8 @@ function DefaultNfts() {
   }
 
   const setDefaultsNfts = async () => {
+    if (!api) return;
+
     const stateResult1 = await api
       .programState
       .read({ 

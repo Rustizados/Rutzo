@@ -23,25 +23,15 @@ function MyNFTCollection() {
   const { account } = useAccount();
   const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
 
-  const alldatanfts: any[] = [];
-
-  const mynftscollection: any[] = [];
-
   // Add your programID
   const programIDNFT = NFT_CONTRACT.PROGRAM_ID;
 
-  // Add your metadata.txt
-  const meta = NFT_CONTRACT.METADATA;
-
-  const metadata = ProgramMetadata.from(meta);
-
-  const currentaccount = account?.address;
-
-
+  const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
   const getMyNFT = () => {
+    if (!api) return;
     api.programState
-      .read({ programId: programIDNFT, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, metadata)
+      .read({ programId: programIDNFT, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftMetadata)
       .then((result) => {
 
         const nftStateFormated: any = result.toJSON();

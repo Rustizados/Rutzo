@@ -101,7 +101,10 @@ function MainGame() {
   };
 
   useEffect(() => {
+    /*
     async function getMyNFT() {
+      if (!api) return;
+
       const programIDNFT = NFT_CONTRACT.PROGRAM_ID;
       try {
         const result = await api.programState.read(
@@ -140,7 +143,10 @@ function MainGame() {
     }
 
     getMyNFT();
-  }, [api.programState, currentAccount, metadata]);
+    */
+  // }, [api?.programState, currentAccount, metadata]);
+  }, []);
+
 
   const cardStyles = { border: "none", background: "transparent" };
   const containerStyles = {

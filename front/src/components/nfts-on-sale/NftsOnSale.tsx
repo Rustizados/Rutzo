@@ -1,74 +1,149 @@
-import { decodeAddress, ProgramMetadata } from "@gear-js/api";
+import { decodeAddress, ProgramMetadata, VoucherIssued } from "@gear-js/api";
 import { useState } from "react";
-import { useApi, useAccount } from "@gear-js/react-hooks";
-import { CollectionCard } from "components/collection-card";
+import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
+import { Card } from "components/card/Card";
 import { NFT_CONTRACT, MAIN_CONTRACT } from "consts";
+import { gasToSpend } from "utils";
+import { web3FromSource } from "@polkadot/extension-dapp";
+import { Button } from "@gear-js/ui";
 import process from "process";
-import { AnyJson } from "@polkadot/types/types";
-
-// non-essential extra component
-function InfoNFT({ name, description, media, reference }: any) {
-  return (
-    <CollectionCard
-      image={media}
-      title={name}
-      type={description.toLowerCase()}
-      value={reference}
-    />
-  );
-}
+import { AnyJson, AnyNumber } from "@polkadot/types/types";
+import { u128 } from "@polkadot/types";
 
 export function NftsOnSale() {
   const { api } = useApi();
-  const { account } = useAccount();
+  const { account, accounts } = useAccount();
+  const alert = useAlert();
   const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
+  const [nftsPrices, setNftsPrices] = useState<any>([])
 
-  const alldatanfts: any[] = [];
+  const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
+  const mainMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
-  const mynftscollection: any[] = [];
+  const butNft = async (tokenId: number, price: AnyNumber) => {
+    if (!account) {
+      alert.error("Account not available to sign");
+      return;
+    }
 
-  // Add your programID
-  const programIDNFT = NFT_CONTRACT.PROGRAM_ID;
+    if (Number(account.balance.value)  < Number(price.toString())) {
+      alert.error(`insufficient funds: ${account.balance.value} < ${price.toString()}`);
+      return;
+    }
+    
+    const gas = await api.program.calculateGas.handle(
+      account?.decodedAddress ?? "0x00",
+      MAIN_CONTRACT.PROGRAM_ID,
+      { BuyNFT: [tokenId] },
+      0,
+      false,
+      mainMetadata
+    );
 
-  // Add your metadata.txt
-  const meta = NFT_CONTRACT.METADATA;
+    const message: any = {
+      destination: MAIN_CONTRACT.PROGRAM_ID, // programId
+      payload: { BuyNFT: [tokenId] }, // Add your data
+      gasLimit: gasToSpend(gas),
+      value: price,  // Aqui es donde pasa el error, se manda el valor de 3
+                     // checando el valor de este en el estado, pero, no permite 
+                     // mandar menos de 10 TVaras
+    };
 
-  const metadata = ProgramMetadata.from(meta);
+    const localaccount = account?.address;
+    const isVisibleAccount = accounts.some(
+      (visibleAccount) => visibleAccount.address === localaccount
+    );
 
-  const currentaccount = account?.address;
+    if (isVisibleAccount) {
+      // Create a message extrinsic
+
+      if (!account) {
+        return;
+      }
+
+      // const transferExtrinsic1 = await api.message.send({
+      //   destination: MAIN_CONTRACT.PROGRAM_ID,
+      //   payload: { Register: null },
+      //   gasLimit: gasToSpend(gas),
+      //   value: 0,
+      //   prepaid: true,
+      //   account: account.decodedAddress
+      // }, mainMetadata);
+
+
+      const transferExtrinsic = await api.message.send(message, mainMetadata);
+
+      const injector = await web3FromSource(account.meta.source);
+
+      transferExtrinsic
+        .signAndSend(
+          account?.decodedAddress,
+          { signer: injector.signer },
+          ({ status }) => {
+            if (status.isInBlock) {
+              console.log(
+                `Completed at block hash #${status.asInBlock.toString()}`
+              );
+              alert.success(`Block hash #${status.asInBlock.toString()}`);
+            } else {
+              console.log(`Current status: ${status.type}`);
+              if (status.type === "Finalized") {
+                alert.success(status.type);
+              }
+            }
+          }
+        )
+        .catch((error: any) => {
+          console.log(":( transaction failed", error);
+        });
+    } else {
+      alert.error("Account not available to sign");
+    }
+  }
+
+  const setData = async () => {
+    if (!api) return;
 
 
 
-  const getMyNFT = () => {
-    api.programState
-      .read({ programId: programIDNFT, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, metadata)
-      .then((result) => {
+    const stateNft = await api
+      .programState
+      .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: MAIN_CONTRACT.PROGRAM_ID } }, nftMetadata);
+    const nftStateFormated: any = stateNft.toJSON();
+    
+    const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
 
-        const nftStateFormated: any = result.toJSON();
-      
-        const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
+    const mainState = await api
+      .programState
+      .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { NFTsOnSale: null } }, mainMetadata);
+    const mainStateFormated: any = mainState.toJSON();
+    
+    const nftsOnSaleFormated: [any] = mainStateFormated.nfTsOnSale ?? [];
 
-        setTokensForOwnerState(tokensForOwner);
+    setNftsPrices(nftsOnSaleFormated);
+    setTokensForOwnerState(tokensForOwner);
+  }
 
-      })
-      .catch(({ message }: Error) => {
-        console.log(message);
-      });
-  };
-
-  getMyNFT();
+  setData();
 
   return (
     <div>
       {tokensForOwnerState.length > 0 ? (
         tokensForOwnerState.map((element: any) => {
           const [nftId, elemento] = element;
-          return <CollectionCard 
+          const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
+          return <Card 
             image={elemento.media}
             title={elemento.name}
             type={elemento.description.toLowerCase()}
             value={elemento.reference}
-          />;
+            price={nftPriceData.value}
+            key={nftId}
+          >
+            <Button text={`buy for ${nftPriceData.value} TVara`} onClick={() => {
+              butNft(nftPriceData.nftPriceData, nftPriceData.value as u128);
+            }} />
+          </Card>;
         })
       ) : (
         <h1>No NFTs</h1>

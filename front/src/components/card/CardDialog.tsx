@@ -1,5 +1,4 @@
 import styles from './CardDialog.module.scss';
-import { MintNFT } from './MintNFT';
 import { Icon } from '../icon';
 import { PowerBar } from '../power';
 

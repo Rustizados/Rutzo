@@ -22,6 +22,8 @@ const meta =
 const metadata = ProgramMetadata.from(meta);
 
   const gameStatus = () => {
+    if (!api) return;
+
     api.programState
       .read({ programId: programIDNFT, payload: "" }, metadata)
       .then((result) => {

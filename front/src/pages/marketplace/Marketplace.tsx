@@ -2,10 +2,8 @@ import { MAIN_CONTRACT } from "consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { useState } from "react";
 import { ReactComponent as Banner } from "assets/images/marketplace.svg";
-import { DefaultNfts, MyNFTCollection, RegisterButton } from "components";
+import { DefaultNfts, MyNFTCollection, RegisterButton, NftsOnSale } from "components";
 import { ProgramMetadata } from "@gear-js/api";
-
-import { AllNFTCollection } from "./AllNFTCollection";
 import "./Marketplace.scss";
 
 
@@ -18,6 +16,8 @@ function Marketplace() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   const setData = async () => {    
+    if (!api) return;
+
     const stateResult = await api
       .programState
       .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
@@ -61,10 +61,10 @@ function Marketplace() {
               <div className="cards-container">
                 <DefaultNfts />
                 <br />
-                <h2 style={{ marginBottom: 30, marginTop: 10 }}>
-                  NFTs for sale
-                </h2>
-                <MyNFTCollection />
+                { totalNftsToMint !== 0 && <h2 style={{ marginBottom: 30, marginTop: 10 }}>
+                    NFTs for sale
+                  </h2>}
+                <NftsOnSale />
               </div>
             </div>
           </>

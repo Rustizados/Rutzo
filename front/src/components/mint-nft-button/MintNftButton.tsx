@@ -28,6 +28,8 @@ function MintNftButton({ onRegister }: any) {
   const signer = async () => {
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
+    if (!api || !accounts) return;
+
     const gas = await api.program.calculateGas.handle(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,

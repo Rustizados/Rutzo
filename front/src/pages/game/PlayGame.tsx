@@ -39,6 +39,8 @@ let cardid= 2;
   };
 
   const GameStatus = () => {
+    if (!api) return;
+
     api.programState
       .read({ programId: programIDNFT, payload: "" }, metadata)
       .then((result) => {
@@ -63,6 +65,8 @@ let cardid= 2;
 
 
   const signer = async () => {
+    if (!accounts || !api) return;
+
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
       (visibleAccount) => visibleAccount.address === localaccount
