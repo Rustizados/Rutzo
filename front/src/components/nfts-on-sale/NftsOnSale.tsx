@@ -2,7 +2,7 @@ import { decodeAddress, ProgramMetadata, VoucherIssued } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
 import { Card } from "components/card/Card";
-import { NFT_CONTRACT, MAIN_CONTRACT } from "consts";
+import { NFT_CONTRACT, MAIN_CONTRACT, ONE_TVARA_VALUE } from "consts";
 import { gasToSpend } from "utils";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "@gear-js/ui";
@@ -27,7 +27,16 @@ export function NftsOnSale() {
     }
 
     // convert value into a valid value in Vara
-    const parser: AnyNumber = Number(price.toString()) * 1000000000000;
+    const nftParcialPrice = Number(price.toString());
+
+    let finalPrice: AnyNumber;
+    if (nftParcialPrice < 10) {
+      finalPrice = (nftParcialPrice + 10) * ONE_TVARA_VALUE;
+    } else {
+      finalPrice = nftParcialPrice * ONE_TVARA_VALUE;
+    }
+  
+    const parser: AnyNumber = Number(price.toString()) * ONE_TVARA_VALUE;
 
     console.log("To mint: ", parser.toString());
     
@@ -69,17 +78,7 @@ export function NftsOnSale() {
       if (!account) {
         return;
       }
-
-      // const transferExtrinsic1 = await api.message.send({
-      //   destination: MAIN_CONTRACT.PROGRAM_ID,
-      //   payload: { Register: null },
-      //   gasLimit: gasToSpend(gas),
-      //   value: 0,
-      //   prepaid: true,
-      //   account: account.decodedAddress
-      // }, mainMetadata);
-
-
+      
       const transferExtrinsic = await api.message.send(message, mainMetadata);
 
       const injector = await web3FromSource(account.meta.source);
@@ -112,8 +111,6 @@ export function NftsOnSale() {
 
   const setData = async () => {
     if (!api) return;
-
-
 
     const stateNft = await api
       .programState
