@@ -10,9 +10,9 @@ interface CardProps {
   title: string;
   type: string;
   value: number;
-  price: number;
+  price?: number;
   onCardClick?: () => void;
-  children: any;
+  children?: any;
 }
 
 interface CardState {
@@ -87,7 +87,7 @@ class Card extends React.Component<CardProps, CardState> {
               title={title}
               type={type}
               value={value}
-              price={price}
+              price={price ?? 0}
             >
               { children }
             </CardDialog>

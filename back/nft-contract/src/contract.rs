@@ -15,7 +15,6 @@ use gstd::{
     Vec,
     collections::HashMap
 };
-//use nft_io::*;
 
 use nft_io::{
     Collection, Constraints, InitNFT, IoNFT, NFTAction, NFTEvent, Nft, State, NFTStateQuery, NFTStateResponse
@@ -31,7 +30,8 @@ pub struct Contract {
     pub transactions: HashMap<H256, NFTEvent>,
     pub collection: Collection,
     pub constraints: Constraints,
-    pub main_contract: ActorId
+    pub main_contract: ActorId,
+    pub users_transactions_id: HashMap<ActorId, u64>
 }
 
 static mut CONTRACT: Option<Contract> = None;
@@ -61,12 +61,26 @@ unsafe extern "C" fn init() {
 unsafe extern "C" fn handle() {
     let action: NFTAction = msg::load().expect("Could not load NFTAction");
     let nft = CONTRACT.get_or_insert(Default::default());
+    let caller = msg::source();
+    if !nft.users_transactions_id.contains_key(&caller) {
+        nft.users_transactions_id.insert(caller, 0);
+    }
     match action {
         NFTAction::Mint {
             transaction_id,
             token_metadata,
         } => {
             nft.check_constraints();
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::Transfer(MyNFTCore::mint(nft, token_metadata))
@@ -79,6 +93,16 @@ unsafe extern "C" fn handle() {
             transaction_id,
             token_id,
         } => {
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::Transfer(NFTCore::burn(nft, token_id))
@@ -92,6 +116,16 @@ unsafe extern "C" fn handle() {
             to,
             token_id,
         } => {
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::Transfer(NFTCore::transfer(nft, &to, token_id))
@@ -106,6 +140,16 @@ unsafe extern "C" fn handle() {
             token_id,
             amount,
         } => {
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::TransferPayout(NFTCore::transfer_payout(nft, &to, token_id, amount))
@@ -126,6 +170,16 @@ unsafe extern "C" fn handle() {
             to,
             token_id,
         } => {
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::Approval(NFTCore::approve(nft, &to, token_id))
@@ -160,6 +214,16 @@ unsafe extern "C" fn handle() {
             message,
             signature,
         } => {
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     NFTEvent::Approval(NFTCore::delegated_approve(nft, message, signature))
@@ -174,6 +238,16 @@ unsafe extern "C" fn handle() {
             minter_id,
         } => {
             nft.check_constraints();
+            let transaction_id = if caller != nft.main_contract {
+                let actual_id = nft.users_transactions_id.get(&caller).unwrap().clone();
+                nft.users_transactions_id
+                    .entry(caller)
+                    .and_modify(|actual_transaction_id| *actual_transaction_id = *actual_transaction_id + 1)
+                    .or_insert(0);
+                actual_id
+            } else {
+                transaction_id
+            };
             msg::reply(
                 nft.process_transaction(transaction_id, |nft| {
                     nft.constraints.authorized_minters.push(minter_id);
@@ -184,7 +258,6 @@ unsafe extern "C" fn handle() {
             .expect("Error during replying with `NFTEvent::Approval`");
         },
         NFTAction::NFTData(token_id) => {
-            let caller = msg::source();
             if caller != nft.main_contract && caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -204,7 +277,6 @@ unsafe extern "C" fn handle() {
                 .expect("Error during replying with 'NFTEvent::NFTData'");
         },
         NFTAction::NFTDataFromUsers(users) => {
-            let caller = msg::source();
             if caller != nft.main_contract && caller != nft.owner  {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -233,7 +305,7 @@ unsafe extern "C" fn handle() {
                 .expect("Error during replying with 'NFTEvent::AllNFTInformation'");
         },
         NFTAction::SetMainContract(contract_address) => {
-            if msg::source() != nft.owner {
+            if caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
                 return;
@@ -247,7 +319,6 @@ unsafe extern "C" fn handle() {
             to,
             nfts
         } => {
-            let caller = msg::source();
             if caller != nft.owner && caller != nft.main_contract {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -273,7 +344,6 @@ unsafe extern "C" fn handle() {
             .expect("Error during replying with `NFTEvent::Transfer`");
         },
         NFTAction::BurnAllNFTS => {
-            let caller = msg::source();
             if caller != nft.owner && caller != nft.main_contract {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -290,7 +360,6 @@ unsafe extern "C" fn handle() {
                 .expect("Error during replying with 'NFTEvent::AllBurned'");
         },
         NFTAction::DeleteContract => {
-            let caller = msg::source();
             if caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -399,7 +468,26 @@ extern "C" fn state() {
                     tokens_metadata.push((token_id.clone(), token_metadata_helper(token_id, nft).unwrap()));
                 }
             }
-            msg::reply(NFTStateResponse::TokensForOwner(tokens_metadata),0)
+            msg::reply(NFTStateResponse::TokensForOwner(tokens_metadata), 0)
+                .expect("msg");
+        },
+        NFTStateQuery::TokenById(token_id) => {
+            let nft = static_mut_state();
+            let token_metadata = nft
+                .token
+                .owner_by_id
+                .iter()
+                .find(|(i, _)| token_id.eq(i));
+                // .map(|(token_id, _)| token_metadata_helper(token_id, nft));
+            
+            
+            let token_metadata_to_send = if let Some((token_id, _)) = token_metadata {
+                token_metadata_helper(token_id, nft)
+            } else {
+                None  
+            };
+            
+            msg::reply(NFTStateResponse::TokenData(token_metadata_to_send), 0)
                 .expect("msg");
         },
         NFTStateQuery::All => {
@@ -451,7 +539,8 @@ impl From<&Contract> for State {
             transactions,
             collection,
             constraints,
-            main_contract: _
+            main_contract:  _,
+            users_transactions_id: _
         } = value;
 
         let owners = token

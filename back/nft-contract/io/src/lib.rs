@@ -30,6 +30,7 @@ impl Metadata for NFTMetadata {
 #[scale_info(crate = gstd::scale_info)]
 pub enum NFTStateQuery {
     TokensForOwner(ActorId),
+    TokenById(TokenId),
     #[default]
     All
 }
@@ -39,6 +40,7 @@ pub enum NFTStateQuery {
 #[scale_info(crate = gstd::scale_info)]
 pub enum NFTStateResponse {
     TokensForOwner(Vec<(TokenId, TokenMetadata)>),
+    TokenData(Option<TokenMetadata>),
     All(IoNFT)
 }
 

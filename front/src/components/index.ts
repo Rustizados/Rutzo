@@ -6,6 +6,9 @@ import { RegisterButton } from './register-button/RegisterButton';
 import { DefaultNfts } from './default-nfts/DefaultNFTs';
 import { UserEmptyAccount } from './user-empty-account/UserEmptyAccount';
 import { Card } from './card/Card';
+import { Facedowncard } from './facedowncard/facedowncard';
+import { PlayButton } from './play-button/PlayButton';
+import { BoardGame } from './board-game/BoardGame';
 
 export { 
     Header, 
@@ -17,5 +20,8 @@ export {
     RegisterButton,
     DefaultNfts,
     Card,
-    UserEmptyAccount
+    UserEmptyAccount,
+    Facedowncard,
+    PlayButton,
+    BoardGame
 };

@@ -22,6 +22,7 @@ function MyNFTCollection() {
   const { api } = useApi();
   const { account } = useAccount();
   const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
+  const [tokensLoaded, setTokensLoaded] = useState(false);
 
   // Add your programID
   const programIDNFT = NFT_CONTRACT.PROGRAM_ID;
@@ -29,7 +30,7 @@ function MyNFTCollection() {
   const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
   const getMyNFT = () => {
-    if (!api) return;
+    if (!api || tokensLoaded) return;
     api.programState
       .read({ programId: programIDNFT, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftMetadata)
       .then((result) => {
@@ -44,6 +45,8 @@ function MyNFTCollection() {
       .catch(({ message }: Error) => {
         console.log(message);
       });
+    
+    setTokensLoaded(true);
   };
 
   getMyNFT();

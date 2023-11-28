@@ -8,12 +8,11 @@ import { useState } from "react";
 import "./Collection.scss";
 
 function Play() {
-  const [userDoRegister, setUserDoRegister] = useState(false);
+  const { api } = useApi();
+  const { account } = useAccount();
   const [hasEnoughCards, setHasEnoughCards] = useState(false);
   const [numberOfNfts, setNumberOfNfts] = useState(0);
   const [isRegister, setIsRegister] = useState(false);
-  const { api } = useApi();
-  const { account } = useAccount();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
   const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 

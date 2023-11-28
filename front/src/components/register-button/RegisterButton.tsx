@@ -1,10 +1,8 @@
 import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { decodeAddress, ProgramMetadata, VoucherIssued } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "consts";
-import { HumanGasCalculated } from "types";
-import { AnyJson } from "@polkadot/types/types";
 import { gasToSpend } from "utils";
 
 function RegisterButton({ onRegister }: any) {
@@ -52,15 +50,6 @@ function RegisterButton({ onRegister }: any) {
       if (!account) {
         return;
       }
-
-      const transferExtrinsic1 = await api.message.send({
-        destination: MAIN_CONTRACT.PROGRAM_ID,
-        payload: { Register: null },
-        gasLimit: gasToSpend(gas),
-        value: 0,
-        prepaid: true,
-        account: account.decodedAddress
-      }, metadata);
 
       const transferExtrinsic = await api.message.send(message, metadata);
 

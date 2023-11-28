@@ -41,10 +41,13 @@ export function NftsOnSale() {
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
       { BuyNFT: [tokenId] },
-      0,
+      parser,
       false,
       mainMetadata
     );
+
+    console.log("Gas spend: ", gasToSpend(gas));
+    
 
     const message: any = {
       destination: MAIN_CONTRACT.PROGRAM_ID, // programId

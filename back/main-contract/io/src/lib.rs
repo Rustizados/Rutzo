@@ -20,6 +20,8 @@ pub type DataFromContract = Vec<(ActorId, Vec<TokenMetadata>)>;
 pub type Power = u64;
 pub type UserNFTS = (ActorId, Vec<TokenMetadata>);
 
+pub const ONE_TVARA_VALUE: u128 = 1000000000000;
+
 impl Metadata for ProgramMetadata {
     type Init = In<InitContractData>;
     type Handle = InOut<RutzoAction, RutzoEvent>;
@@ -307,7 +309,7 @@ pub enum RutzoAction {
     SetContractToSendData(ActorId),
     RestoreInformationFromOldMainContract,
     GetAllInformation,
-    DeleteContract
+    DeleteContract,
 }
 
 #[derive(Encode, Decode, TypeInfo, Eq, PartialEq)]
@@ -356,10 +358,6 @@ pub enum RutzoEvent {
     NFTTypeIsIncorrect((TokenId, String)),
     ContractsData(DataFromContract),
     ContractToReceiveDataNotSet,
-    
-    TestTokenMetadata((Option<TokenMetadata>, bool)),
-    TokenDoesNotExist(TokenId),
-    TokenExist(TokenId)
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -458,7 +456,8 @@ pub struct UserGameData {
     pub user_id: ActorId,
     pub chosen_nft: TokenId,
     pub nft_type: NFTCardType,
-    pub nft_power: u8
+    pub nft_power: u8,
+    pub nft_data: TokenMetadata
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]
@@ -713,7 +712,7 @@ impl Contract {
         }
         
         let token_on_sale_value = match self.nfts_for_sale.get(&token_id) {
-            Some(value) =>* value,
+            Some(value) => (*value) * ONE_TVARA_VALUE,
             None => return (RutzoEvent::NftWithTokenIdDoesNotExists(token_id), value)
         };
         
@@ -738,7 +737,7 @@ impl Contract {
         
         self.nfts_for_sale.remove(&token_id);
         
-        if self.contract_balance > 10 {
+        if self.contract_balance > 10 * ONE_TVARA_VALUE {
             let profit = self.contract_balance;
             self.contract_balance = 0;
             msg::send(self.owner, RutzoEvent::Profits(profit), profit)
@@ -938,7 +937,8 @@ impl Contract {
                         user_id,
                         chosen_nft: token_id,
                         nft_type,
-                        nft_power
+                        nft_power,
+                        nft_data
                     },
                     user_2: None,
                     match_state: MatchState::default()
@@ -958,7 +958,8 @@ impl Contract {
             user_id,
             chosen_nft: token_id,
             nft_type: nft_type.clone(),
-            nft_power
+            nft_power,
+            nft_data
         });
         
         let user1_power = game_data.user_1.nft_power;
