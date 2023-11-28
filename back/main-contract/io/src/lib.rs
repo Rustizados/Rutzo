@@ -888,6 +888,8 @@ impl Contract {
             token_id
         ).await;
                                 
+        
+                                
         let answer = if answer.is_err() || answer.clone().unwrap() == NFTEvent::MainContractIsNotApproved {
             return RutzoEvent::NFTIsNotApprovedByMainContract(token_id);
         } else {

@@ -257,6 +257,18 @@ unsafe extern "C" fn handle() {
             )
             .expect("Error during replying with `NFTEvent::Approval`");
         },
+        NFTAction::TranserNFTToUser {
+            to,
+            token_id,
+        } => {
+            if caller != nft.main_contract && caller != nft.owner {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            
+            
+        },
         NFTAction::NFTData(token_id) => {
             if caller != nft.main_contract && caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
@@ -264,14 +276,13 @@ unsafe extern "C" fn handle() {
                 return;
             }
             
-            if !NFTCore::is_approved_to(nft, &caller, token_id) {
-                msg::reply(NFTEvent::MainContractIsNotApproved, 0)
+            let nft_exists = nft.token.token_metadata_by_id.contains_key(&token_id);
+            
+            if !nft_exists {
+                msg::reply(NFTEvent::TokenIdNotExists(token_id), 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
                 return;
             }
-            
-            //msg::reply(NFTEvent::NFTData(None), 0)
-            //    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
             
             msg::reply(NFTEvent::NFTData(token_metadata_helper(&token_id, nft)), 0)
                 .expect("Error during replying with 'NFTEvent::NFTData'");

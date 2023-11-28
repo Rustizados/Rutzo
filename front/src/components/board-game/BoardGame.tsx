@@ -58,10 +58,18 @@ function BoardGame() {
     const cardSelected = (tokenId: any, selected: boolean) => {
       if (!selected) {
         const nftSelected = tokensForOwnerState.find((token: any) => token[0] === tokenId);
+        const actualSelectedCards = [nftSelected, ...selectedCards];
+        let actualTokensCards = tokensForOwnerState.filter((token: any) => token[0] !== tokenId);
+        if (actualSelectedCards.length > 3) {
+          console.log("ES AYOOOOOR");
+          actualTokensCards = [actualSelectedCards.pop(), ...actualTokensCards];
+        }
         setTokensForOwnerState(
-          tokensForOwnerState.filter((token: any) => token[0] !== tokenId)
+          actualTokensCards
         );
-        setSelectedCards([nftSelected, ...selectedCards]);
+        setSelectedCards(
+          actualSelectedCards
+        );
         return;
       }
       const nftSelected = selectedCards.find((token: any) => token[0] === tokenId);

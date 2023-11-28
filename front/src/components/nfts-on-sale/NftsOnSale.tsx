@@ -26,6 +26,9 @@ export function NftsOnSale() {
       return;
     }
 
+    console.log("NFT QUE SE VA A COMPRAR: ", tokenId);
+    
+
     // convert value into a valid value in Vara
     const nftParcialPrice = Number(price.toString());
 
@@ -36,9 +39,7 @@ export function NftsOnSale() {
       finalPrice = nftParcialPrice * ONE_TVARA_VALUE;
     }
   
-    const parser: AnyNumber = Number(price.toString()) * ONE_TVARA_VALUE;
-
-    console.log("To mint: ", parser.toString());
+    console.log("To mint: ", finalPrice.toString());
     
 
     if (Number(account.balance.value)  < Number(price.toString())) {
@@ -46,26 +47,31 @@ export function NftsOnSale() {
       return;
     }
 
+    console.log("AVR SE HARA EL RESPECTIVO CALCULO DE GAS");
+    
+
     const gas = await api.program.calculateGas.handle(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
       { BuyNFT: [tokenId] },
-      parser,
+      finalPrice,
       false,
       mainMetadata
     );
 
     console.log("Gas spend: ", gasToSpend(gas));
     
-
+    console.log("SE MANDARA LA PARTE PARA CREAR EL MENSAJE:");
+    
     const message: any = {
-      destination: MAIN_CONTRACT.PROGRAM_ID, // programId
-      payload: { BuyNFT: [tokenId] }, // Add your data
+      destination: MAIN_CONTRACT.PROGRAM_ID,
+      payload: { BuyNFT: [tokenId] }, 
       gasLimit: gasToSpend(gas),
-      value: parser,  // Aqui es donde pasa el error, se manda el valor de 3
-                     // checando el valor de este en el estado, pero, no permite 
-                     // mandar menos de 10 TVaras
+      value: finalPrice,
     };
+
+    console.log("SE CREO CORRECTAMENTE EL MENSAJE");
+    
 
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
@@ -78,11 +84,16 @@ export function NftsOnSale() {
       if (!account) {
         return;
       }
-      
+
       const transferExtrinsic = await api.message.send(message, mainMetadata);
+
+      console.log("SE TERMINO DE CREAR EL EXTRINSIC PARA EL MENSAJE");
+      
 
       const injector = await web3FromSource(account.meta.source);
 
+      console.log("MANDANDO MENSAJEEEEE");
+      
       transferExtrinsic
         .signAndSend(
           account?.decodedAddress,
@@ -147,7 +158,7 @@ export function NftsOnSale() {
             key={nftId}
           >
             <Button text={`buy for ${nftPriceData.value} TVara`} onClick={() => {
-              butNft(nftPriceData.nftPriceData, nftPriceData.value as u128);
+              butNft(nftId, nftPriceData.value as u128);
             }} />
           </Card>;
         })

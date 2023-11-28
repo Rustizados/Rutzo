@@ -42,10 +42,9 @@ function DefaultNfts() {
       value: 0,
     };
 
-
     const transferExtrinsic = await api.message.send(message, mainContractMetadata);
 
-    const injector = await web3FromSource(account.meta.source);
+    const injector = await web3FromSource(account.meta.source);    
 
     transferExtrinsic
       .signAndSend(

@@ -25,18 +25,24 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       mainContractMetadata
     );
 
+    console.log(nftContractMetadata.getTypeDef(17));
+
     const gasNftContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
         NFT_CONTRACT.PROGRAM_ID,
         { Approve: {
-            transaction_id: [0],
-            to: [MAIN_CONTRACT.PROGRAM_ID],
-            token_id: [tokenId]
+            transaction_id: 0,
+            to: MAIN_CONTRACT.PROGRAM_ID,
+            token_id: tokenId
         }},
         0,
         false,
-        mainContractMetadata
+        nftContractMetadata
     );
+
+    console.log("Gas gastado para nft: ", gasToSpend(gasNftContract));
+    console.log("Gas gastado para main contract: ", gasToSpend(gasMainContract));
+    
 
     const messageMainContract: any = {
       destination: MAIN_CONTRACT.PROGRAM_ID, // programId
@@ -48,9 +54,9 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
     const messageNftContract: any = {
         destination: NFT_CONTRACT.PROGRAM_ID, // programId
         payload: { Approve: {
-            transaction_id: [0],
-            to: [MAIN_CONTRACT.PROGRAM_ID],
-            token_id: [tokenId]
+            transaction_id: 0,
+            to: MAIN_CONTRACT.PROGRAM_ID,
+            token_id: tokenId
         }}, // Add your data
         gasLimit: gasToSpend(gasNftContract),
         value: 0,
@@ -90,6 +96,8 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
+                console.log("SE TERMINO EL PROCESO DELNFT ----------------");
+                
                 alert.success(status.type);
               }
             }
@@ -98,8 +106,11 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       } catch(error) {
         console.log(":( transaction failed", error);
         onError();
-        return;
+        // return;
       }
+
+      console.log("TERMINADO EL MENSAJE A NFT");
+      
 
       const transferExtrinsicMain = await api.message.send(messageMainContract, mainContractMetadata);
 
@@ -117,6 +128,8 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
+                console.log("Se termino el proceso de main contract =========");
+                
                 alert.success(status.type);
               }
             }
@@ -127,9 +140,14 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
         onError();
       }
 
+      console.log("TERMINADO EL MENSAJE AL MAIN CONTRACT");
+      
+
     } else {
       alert.error("Account not available to sign");
     }
+    console.log("PRESSED ");
+    
   };
 
   return <Button text="Play" onClick={signer} />;

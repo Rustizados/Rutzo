@@ -121,6 +121,10 @@ pub enum NFTAction {
         transaction_id: u64,
         minter_id: ActorId,
     },
+    TranserNFTToUser {
+        to: ActorId,
+        token_id: TokenId
+    },
     NFTData(TokenId),
     NFTDataFromUsers(Vec<ActorId>),
     SetMainContract(ActorId),
@@ -153,6 +157,7 @@ pub enum NFTEvent {
         minter_id: ActorId,
     },
     NFTData(Option<TokenMetadata>),
+    TokenIdNotExists(TokenId),
     AllNFTInformation(Vec<(ActorId, Vec<TokenMetadata>)>),
     ActionOnlyForMainContract,
     MainContractIsNotApproved,
