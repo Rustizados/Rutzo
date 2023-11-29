@@ -19,16 +19,106 @@ function BoardGame() {
     const [cardToPlay, setCardToPlay] = useState<any | null>(null);
     const [nftsLoaded, setNftsLoaded] = useState(false);
     const [userInMatch, setUserInMatch] = useState(false);
+    const [userMatchId, setUserMatchId] = useState<number>(-1);
+    const [matchInProgress, setMatchInProgress] = useState(false);
+    const [actualUserInMatch, setActualUserInMatch] = useState("0x00");
   
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
     const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
+
+    const ActualMatchOfUser = async (): Promise<number> => {
+      const stateResult = await api
+        .programState
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { PlayerIsInMatch: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
+    
+      const stateFormated: any = stateResult.toJSON();
+
+      return stateFormated.playerInMatch ?? -1;
+    }
+
+    const lastMatchOfUser = async (): Promise<number> => {
+      const stateResult = await api
+        .programState
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { PlayerInformation: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
+    
+      const stateFormated: any = stateResult.toJSON();
+
+      return stateFormated.playerInformation.recentPastGame ?? -1;
+    }
   
-    const checkMatchStatus = async () => {
+    const checkMatchStatus = async (matchId: number) => {
       if (!api) return;
       const stateResult = await api
         .programState
-        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
-    
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [matchId] } }, mainContractMetadata);
+      
+      const stateFormated: any = stateResult.toJSON();
+      const status = Object.keys(stateFormated)[0];
+      console.log("ESTATUS DE LA PARTIDA:");
+      console.log(stateFormated);
+      console.log(status);
+      if (status === 'matchDoesNotExists') {
+        console.log("La partida no existe!!");
+        return;
+      }
+
+      console.log("LA PARTIDA EXISTEEEE ---------------------");
+      console.log(stateFormated);
+      const matchState = Object.keys(stateFormated.matchState)[0];
+      console.log(matchState);
+      
+      if (matchState === 'inProgress') {
+        setMatchInProgress(true);
+      }
+
+      console.log("OTRAS ACCIONUES SE REQUIEREN");
+      
+      
+    }
+
+    const setActualSelectedCardFromMatch = async (matchId: number) => {
+      if (!api) return;
+      const stateResult = await api
+        .programState
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [matchId] } }, mainContractMetadata);
+      
+      const stateFormated: any = stateResult.toJSON();
+      console.log("Datos de la partida donde esta el usuario:");
+      console.log(stateFormated);
+
+      const { user1 } = stateFormated.gameInformation;
+      const tokenId = user1.chosenNft;
+
+      if (tokensForOwnerState.length === 0) return;
+
+      console.log(tokensForOwnerState);
+      const selectedNft = tokensForOwnerState.find((nft: any) => nft[0] === tokenId);
+
+      setCardToPlay(selectedNft);
+
+      setTokensForOwnerState(
+        tokensForOwnerState.filter((nft: any) => nft[0] !== tokenId)
+      );
+
+      setMatchInProgress(true);
+    }
+
+    const handlePlayButton = async () => {
+      const matchId = await ActualMatchOfUser();
+      console.log("Button El usuario esta en la partida:");
+      console.log(matchId);
+
+      if (matchId === -1) {
+        setUserInMatch(true);
+        setUserMatchId(matchId);
+        return;
+      } 
+
+      console.log("El usuario en la partida que estaba ya ");
+
+      const lastMatchId = await lastMatchOfUser();
+
+
     }
   
     const setStateWithoutSelectedCards = (cards: [any], cardsSelected: [any]) => {
@@ -61,7 +151,6 @@ function BoardGame() {
         const actualSelectedCards = [nftSelected, ...selectedCards];
         let actualTokensCards = tokensForOwnerState.filter((token: any) => token[0] !== tokenId);
         if (actualSelectedCards.length > 3) {
-          console.log("ES AYOOOOOR");
           actualTokensCards = [actualSelectedCards.pop(), ...actualTokensCards];
         }
         setTokensForOwnerState(
@@ -79,24 +168,59 @@ function BoardGame() {
       setTokensForOwnerState([nftSelected, ...tokensForOwnerState]);
     }
   
-    const setData = () => {
-      if (!api || nftsLoaded) return;
+    const setData = async () => {
+      if (!api) return;
+
+      // await checkMatchStatus(0);
+      // const lastMatch = await lastMatchOfUser();
+      // console.log("USER INFORMATION: ");
+      // console.log(lastMatch);
+      if (actualUserInMatch !== account?.decodedAddress) {
+        setTokensForOwnerState([]);
+        setSelectedCards([]);
+        setCardToPlay(null);
+        setUserMatchId(-1);
+        setUserInMatch(false);
+        setMatchInProgress(false);
+        setNftsLoaded(false);
+        setMatchInProgress(false);
+        setActualUserInMatch(account?.decodedAddress ?? "0x00");
+      }
       
-      api.programState
-        .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftContractMetadata)
-        .then((result) => {
-  
-          const nftStateFormated: any = result.toJSON();
+      if (!nftsLoaded) {
+        console.log("CARGANDO NFTS");
         
-          const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
-  
-          setStateWithoutSelectedCards(tokensForOwner, selectedCards);
-          // setTokensForOwnerState(tokensForOwner);
-        })
-        .catch(({ message }: Error) => {
-          console.log(message);
-        });
-      setNftsLoaded(true);
+        const resultNfts = await api.programState
+          .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftContractMetadata);
+    
+        const nftStateFormated: any = resultNfts.toJSON();
+      
+        const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
+
+        setStateWithoutSelectedCards(tokensForOwner, selectedCards);
+        // setTokensForOwnerState(tokensForOwner);
+
+        setNftsLoaded(true);
+      }
+
+      if (!userInMatch) {
+        const matchId = await ActualMatchOfUser();
+
+        if (matchId !== -1) {
+          console.log("El usuario esta en la partida:");
+          console.log(matchId);
+          await setActualSelectedCardFromMatch(matchId);
+          setUserMatchId(matchId);
+          setUserInMatch(true);
+          setMatchInProgress(true);
+        }
+        setActualUserInMatch(account?.decodedAddress ?? "0x00");
+      }
+
+      if (matchInProgress) {
+        console.log("=============LA PARTIDA ESTA EN PROGRESOOOOOOOOOOOOOOO==================");
+        
+      }
     };
   
     setData();
@@ -106,12 +230,6 @@ function BoardGame() {
       justifyContent: "center",
       alignItems: "center",
     };
-  
-    useEffect(() => {
-      if (!userPressPlayButton) return;
-      console.log("Se inicio la partida!");
-    }, [userPressPlayButton])
-  
   
     return (
       <div>
@@ -190,14 +308,19 @@ function BoardGame() {
   
                 <div className="buttonArea ">
                   {cardToPlay && (
-                    <PlayButton 
-                      onJoiningGame={() => {setUserPressPlayButton(true)}}
-                      tokenId={cardToPlay[0]}
-                    />
-                    // <PlayGame
-                    //   name={cardToPlay.name}
-                    //   reference={cardToPlay.reference}
-                    // />
+                    <div>
+                      {
+                        !userInMatch ? (
+                          <PlayButton 
+                            onJoiningGame={() => handlePlayButton()} // {setUserPressPlayButton(true)}}
+                            tokenId={cardToPlay[0]}
+                          />
+                        ) : (
+                          <h2>Searching oponent...</h2>
+                        )
+                      }
+                      
+                    </div>
                   )}
                 </div>
               </div>

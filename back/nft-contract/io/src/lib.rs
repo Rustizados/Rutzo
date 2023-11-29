@@ -122,6 +122,7 @@ pub enum NFTAction {
         minter_id: ActorId,
     },
     TranserNFTToUser {
+        transaction_id: u64,        
         to: ActorId,
         token_id: TokenId
     },

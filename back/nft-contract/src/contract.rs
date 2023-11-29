@@ -258,6 +258,7 @@ unsafe extern "C" fn handle() {
             .expect("Error during replying with `NFTEvent::Approval`");
         },
         NFTAction::TranserNFTToUser {
+            transaction_id,
             to,
             token_id,
         } => {
@@ -267,7 +268,13 @@ unsafe extern "C" fn handle() {
                 return;
             }
             
-            
+            msg::reply(
+                nft.process_transaction(transaction_id, |nft| {
+                    NFTEvent::Transfer(MyNFTCore::transfer_nft(nft, &to, token_id))
+                }),
+                0,
+            )
+            .expect("Error during replying with `NFTEvent::Transfer`");
         },
         NFTAction::NFTData(token_id) => {
             if caller != nft.main_contract && caller != nft.owner {
@@ -322,6 +329,7 @@ unsafe extern "C" fn handle() {
                 return;
             }
             nft.main_contract = contract_address;
+            nft.constraints.authorized_minters.push(contract_address);
             
             msg::reply(NFTEvent::MainContractSet, 0)
                 .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -384,6 +392,7 @@ unsafe extern "C" fn handle() {
 
 pub trait MyNFTCore: NFTCore {
     fn mint(&mut self, token_metadata: TokenMetadata) -> NFTTransfer;
+    fn transfer_nft(&mut self, to: &ActorId, token_id: TokenId) -> NFTTransfer;
 }
 
 impl MyNFTCore for Contract {
@@ -391,6 +400,42 @@ impl MyNFTCore for Contract {
         let transfer = NFTCore::mint(self, &msg::source(), self.token_id, Some(token_metadata));
         self.token_id = self.token_id.saturating_add(U256::one());
         transfer
+    }
+    
+    fn transfer_nft(&mut self, to: &ActorId, token_id: TokenId) -> NFTTransfer {
+        // Get actual owner
+         let owner = *self.token
+            .owner_by_id
+            .get(&token_id)
+            .expect("NonFungibleToken: token does not exist");
+            
+        // assign new owner
+        self.token
+            .owner_by_id
+            .entry(token_id)
+            .and_modify(|owner| *owner = *to);
+                
+        // push token to new owner
+        self.token
+            .tokens_for_owner
+            .entry(*to)
+            .and_modify(|tokens| tokens.push(token_id))
+            .or_insert_with(|| vec![token_id]);
+            
+        // remove token from old owner
+        self.token
+            .tokens_for_owner
+            .entry(owner)
+            .and_modify(|tokens| tokens.retain(|&token| token != token_id));
+            
+        // remove approvals if any
+        self.token.token_approvals.remove(&token_id);
+         
+        NFTTransfer {
+            from: owner,
+            to: *to,
+            token_id
+        }
     }
 }
 

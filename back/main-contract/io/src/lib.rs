@@ -5,7 +5,7 @@ use gear_lib_old::non_fungible_token::{
 };
 use nft_io::{ NFTAction, NFTEvent };
 use gmeta::{In, InOut, Metadata};
-use gstd::{prelude::*, ActorId, collections::BTreeMap, msg, errors::Error, exec};
+use gstd::{prelude::*, ActorId, collections::HashMap, msg, errors::Error, exec};
 
 pub struct ProgramMetadata;
 
@@ -489,15 +489,15 @@ pub struct Contract {
     pub nft_contract: Option<NftContractId>,
     pub games: Vec<MatchInformation>,
     pub games_waiting: Vec<GameId>,
-    pub games_information_by_user: BTreeMap<UserId, UserData>,
+    pub games_information_by_user: HashMap<UserId, UserData>,
     pub game_id: GameId,
-    pub tokens_metadata_default: BTreeMap<u8, TokenMetadata>,
-    pub nfts_for_sale: BTreeMap<TokenId, NFTPrice>,
-    pub default_tokens_minted_by_id: BTreeMap<UserId, UserDefaultMints>,
+    pub tokens_metadata_default: HashMap<u8, TokenMetadata>,
+    pub nfts_for_sale: HashMap<TokenId, NFTPrice>,
+    pub default_tokens_minted_by_id: HashMap<UserId, UserDefaultMints>,
     pub approved_minters: Vec<UserId>,
     pub transaction_id: TransactionId,
-    pub pending_transfers: BTreeMap<UserId, (UserId, TokenId)>,
-    pub sales: BTreeMap<ActorId, TokenId>,
+    pub pending_transfers: HashMap<UserId, (UserId, TokenId)>,
+    pub sales: HashMap<ActorId, TokenId>,
     pub contract_balance: u128,
     pub accept_data_from: Option<ActorId>,
     pub send_data_to: Option<ActorId>
@@ -563,6 +563,29 @@ impl Contract {
         )
         .expect("Error in sending a message 'NFTAction::Mint' to nft contract")
         .await
+    }
+    
+    pub async fn transfer_match_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
+        match msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            nft_contract, 
+            NFTAction::TranserNFTToUser { 
+                transaction_id, 
+                to, 
+                token_id
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::Transfer' to nft contract")
+        .await {
+            Ok(nft_event) => {
+                let NFTEvent::Transfer(_) = nft_event else { 
+                    panic!("Unexpected answer from nft contract"); 
+                };
+                Ok(nft_event)
+            },
+            Err(_) => Err(())
+        }
     }
     
     pub async fn transfer_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
@@ -849,7 +872,11 @@ impl Contract {
             return RutzoEvent::AccountAlreadyExist(user_id);
         }
       
-        self.games_information_by_user.insert(user_id, Default::default());       
+        self.games_information_by_user.insert(user_id, UserData {
+            current_game: None,
+            recent_past_game: None,
+            past_games: vec![]
+        });       
         self.default_tokens_minted_by_id.insert(user_id, UserDefaultMints {
             nfts_minted: Vec::new(),
             can_mint: true
@@ -868,7 +895,7 @@ impl Contract {
         }
             
         if let Some(&(to, token_id)) = self.pending_transfers.get(&user_id) {
-            if Contract::transfer_nft(
+            if Contract::transfer_match_nft (
                 self.nft_contract.unwrap(),
                 to, 
                 token_id,
@@ -888,17 +915,19 @@ impl Contract {
             token_id
         ).await;
                                 
-        
+        if answer.is_err() {
+            return RutzoEvent::CommunicationError(self.nft_contract.unwrap());
+        }
                                 
-        let answer = if answer.is_err() || answer.clone().unwrap() == NFTEvent::MainContractIsNotApproved {
-            return RutzoEvent::NFTIsNotApprovedByMainContract(token_id);
+        if let  NFTEvent::TokenIdNotExists(token_id) = answer.clone().unwrap() {
+            return RutzoEvent::NftWithTokenIdDoesNotExists(token_id);
+        }
+                                
+        let answer = if answer.clone().unwrap() == NFTEvent::ActionOnlyForMainContract {
+            return RutzoEvent::ContractIsNotTheMain;
         } else {
             answer.unwrap()  
         };
-                                
-        if answer == NFTEvent::ActionOnlyForMainContract {
-            return RutzoEvent::ContractIsNotTheMain;
-        }
                                      
         let nft_data = match answer {
             NFTEvent::NFTData(nft_token_metadata) => {
@@ -932,7 +961,7 @@ impl Contract {
             );
         }
         
-        let (game_data, game_id) = match self.games_waiting.pop() {
+        let (mut game_data, game_id) = match self.games_waiting.pop() {
             None => {
                 self.games.push(MatchInformation {
                     user_1: UserGameData {
@@ -951,10 +980,13 @@ impl Contract {
                 
                 return RutzoEvent::MatchCreated;
             },
-            Some(game_id) => {                
-                (&mut self.games[game_id], game_id)
+            Some(game_id) => {              
+                // self.set_player_in_current_game(user_id, game_id);  
+                (self.games[game_id].clone(), game_id)
             }
         };
+        
+
         
         game_data.user_2 = Some(UserGameData {
             user_id,
@@ -987,6 +1019,9 @@ impl Contract {
             MatchResult::PlayerOneWins => (user1_id, user_id, token_id, false),
             MatchResult::PlayerTwoWins => (user_id, user1_id, game_data.user_1.chosen_nft, false)
         };
+        
+        self.player_finish_game(winner, game_id);
+        self.player_finish_game(loser, game_id);
                 
         if !is_draw {
             game_data.match_state = MatchState::Finished { 
@@ -997,12 +1032,10 @@ impl Contract {
             game_data.match_state = MatchState::Draw;
         }
         
-        
-        self.player_finish_game(winner, game_id);
-        self.player_finish_game(loser, game_id);
+        self.games[game_id] = game_data;
         
         if !is_draw {
-            if Contract::transfer_nft(
+            if Contract::transfer_match_nft(
                 self.nft_contract.unwrap(),
                 winner, 
                 token_id,
@@ -1025,19 +1058,17 @@ impl Contract {
             .and_modify(|user_game_data| {
                 user_game_data.current_game = Some(game_id);
                 user_game_data.recent_past_game = None;
-            })
-            .or_default();
+            });
     }
     
     pub fn player_finish_game(&mut self, user_id: ActorId, game_id: usize) {
         self.games_information_by_user
             .entry(user_id)
             .and_modify(|user_game_data| {
-                user_game_data.past_games.push(game_id);
                 user_game_data.recent_past_game = Some(game_id);
                 user_game_data.current_game = None;
-            })
-            .or_default();
+                user_game_data.past_games.push(game_id);
+            });
     }
 }
 

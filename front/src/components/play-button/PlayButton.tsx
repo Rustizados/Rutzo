@@ -25,23 +25,8 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       mainContractMetadata
     );
 
-    console.log(nftContractMetadata.getTypeDef(17));
-
-    const gasNftContract = await api.program.calculateGas.handle(
-        account?.decodedAddress ?? "0x00",
-        NFT_CONTRACT.PROGRAM_ID,
-        { Approve: {
-            transaction_id: 0,
-            to: MAIN_CONTRACT.PROGRAM_ID,
-            token_id: tokenId
-        }},
-        0,
-        false,
-        nftContractMetadata
-    );
-
-    console.log("Gas gastado para nft: ", gasToSpend(gasNftContract));
     console.log("Gas gastado para main contract: ", gasToSpend(gasMainContract));
+    console.log("NFT QUE SE USARA: ", tokenId);
     
 
     const messageMainContract: any = {
@@ -50,17 +35,6 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       gasLimit: gasToSpend(gasMainContract),
       value: 0,
     };
-
-    const messageNftContract: any = {
-        destination: NFT_CONTRACT.PROGRAM_ID, // programId
-        payload: { Approve: {
-            transaction_id: 0,
-            to: MAIN_CONTRACT.PROGRAM_ID,
-            token_id: tokenId
-        }}, // Add your data
-        gasLimit: gasToSpend(gasNftContract),
-        value: 0,
-    }
 
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
@@ -75,42 +49,6 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       }
 
       const injector = await web3FromSource(account.meta.source);
-
-      const transferExtrinsicNft = await api.message.send(messageNftContract, nftContractMetadata);
-
-      try {
-        await transferExtrinsicNft
-        .signAndSend(
-          account?.decodedAddress,
-          { signer: injector.signer },
-          ({ status }) => {
-            if (status.isInBlock) {
-              console.log(
-                `Completed at block hash #${status.asInBlock.toString()}`
-              );
-              alert.success(`Block hash #${status.asInBlock.toString()}`);
-
-              if (onJoiningGame) {
-                onJoiningGame();
-              }
-            } else {
-              console.log(`Current status: ${status.type}`);
-              if (status.type === "Finalized") {
-                console.log("SE TERMINO EL PROCESO DELNFT ----------------");
-                
-                alert.success(status.type);
-              }
-            }
-          }
-        )
-      } catch(error) {
-        console.log(":( transaction failed", error);
-        onError();
-        // return;
-      }
-
-      console.log("TERMINADO EL MENSAJE A NFT");
-      
 
       const transferExtrinsicMain = await api.message.send(messageMainContract, mainContractMetadata);
 
@@ -129,7 +67,7 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 console.log("Se termino el proceso de main contract =========");
-                
+                onJoiningGame();
                 alert.success(status.type);
               }
             }
@@ -140,14 +78,9 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
         onError();
       }
 
-      console.log("TERMINADO EL MENSAJE AL MAIN CONTRACT");
-      
-
     } else {
       alert.error("Account not available to sign");
     }
-    console.log("PRESSED ");
-    
   };
 
   return <Button text="Play" onClick={signer} />;
