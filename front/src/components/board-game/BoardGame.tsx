@@ -22,9 +22,22 @@ function BoardGame() {
     const [userMatchId, setUserMatchId] = useState<number>(-1);
     const [matchInProgress, setMatchInProgress] = useState(false);
     const [actualUserInMatch, setActualUserInMatch] = useState("0x00");
+    const [matchCreated, setMatchCreated] = useState(false);
   
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
     const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
+
+    const resetBoard = () => {
+      setTokensForOwnerState([]);
+      setSelectedCards([]);
+      setCardToPlay(null);
+      setUserMatchId(-1);
+      setUserInMatch(false);
+      setMatchInProgress(false);
+      setNftsLoaded(false);
+      setMatchInProgress(false);
+      setActualUserInMatch(account?.decodedAddress ?? "0x00");
+    }
 
     const ActualMatchOfUser = async (): Promise<number> => {
       const stateResult = await api
@@ -45,36 +58,6 @@ function BoardGame() {
 
       return stateFormated.playerInformation.recentPastGame ?? -1;
     }
-  
-    const checkMatchStatus = async (matchId: number) => {
-      if (!api) return;
-      const stateResult = await api
-        .programState
-        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [matchId] } }, mainContractMetadata);
-      
-      const stateFormated: any = stateResult.toJSON();
-      const status = Object.keys(stateFormated)[0];
-      console.log("ESTATUS DE LA PARTIDA:");
-      console.log(stateFormated);
-      console.log(status);
-      if (status === 'matchDoesNotExists') {
-        console.log("La partida no existe!!");
-        return;
-      }
-
-      console.log("LA PARTIDA EXISTEEEE ---------------------");
-      console.log(stateFormated);
-      const matchState = Object.keys(stateFormated.matchState)[0];
-      console.log(matchState);
-      
-      if (matchState === 'inProgress') {
-        setMatchInProgress(true);
-      }
-
-      console.log("OTRAS ACCIONUES SE REQUIEREN");
-      
-      
-    }
 
     const setActualSelectedCardFromMatch = async (matchId: number) => {
       if (!api) return;
@@ -83,15 +66,15 @@ function BoardGame() {
         .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [matchId] } }, mainContractMetadata);
       
       const stateFormated: any = stateResult.toJSON();
-      console.log("Datos de la partida donde esta el usuario:");
-      console.log(stateFormated);
+      // console.log("Datos de la partida donde esta el usuario:");
+      // console.log(stateFormated);
 
       const { user1 } = stateFormated.gameInformation;
       const tokenId = user1.chosenNft;
 
       if (tokensForOwnerState.length === 0) return;
 
-      console.log(tokensForOwnerState);
+      // console.log(tokensForOwnerState);
       const selectedNft = tokensForOwnerState.find((nft: any) => nft[0] === tokenId);
 
       setCardToPlay(selectedNft);
@@ -108,17 +91,44 @@ function BoardGame() {
       console.log("Button El usuario esta en la partida:");
       console.log(matchId);
 
-      if (matchId === -1) {
+      if (matchId !== -1) {
         setUserInMatch(true);
         setUserMatchId(matchId);
+        setMatchCreated(true);
         return;
-      } 
+      }
 
-      console.log("El usuario en la partida que estaba ya ");
+      console.log("El usuario ingreso a una partida ya comenzada!!!");
+
+      setUserInMatch(true);
 
       const lastMatchId = await lastMatchOfUser();
+      console.log("Ultima partida que jugo el jugador: ", lastMatchId);
 
+      const matchInformationStateResponse = await api
+        .programState
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [lastMatchId] } }, mainContractMetadata);
+      const matchInformationState: any = matchInformationStateResponse.toJSON();
+      console.log("MOSTRANDO INFORMACION DE LA PARTIDA YA EXISTENTE!!");
+      console.log(matchInformationState);
 
+      const { winner } =  matchInformationState.matchState.finished;
+
+      console.log("WINNER = ", winner);
+      
+
+      if (winner === account?.decodedAddress) {
+        console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        setTimeout(() => {
+          resetBoard();
+        }, 1000);
+      } else {
+        console.log("se perdio u................u");
+        setTimeout(() => {
+          resetBoard();
+        }, 1000);
+      }
+      
     }
   
     const setStateWithoutSelectedCards = (cards: [any], cardsSelected: [any]) => {
@@ -140,7 +150,7 @@ function BoardGame() {
     }
   
     const removeCardToPlay = (card: any) => {
-      if (userInMatch) return;
+      if (userInMatch || matchInProgress) return;
       setSelectedCards([card, ...selectedCards]);
       setCardToPlay(null);
     }
@@ -176,15 +186,9 @@ function BoardGame() {
       // console.log("USER INFORMATION: ");
       // console.log(lastMatch);
       if (actualUserInMatch !== account?.decodedAddress) {
-        setTokensForOwnerState([]);
-        setSelectedCards([]);
-        setCardToPlay(null);
-        setUserMatchId(-1);
-        setUserInMatch(false);
-        setMatchInProgress(false);
-        setNftsLoaded(false);
-        setMatchInProgress(false);
-        setActualUserInMatch(account?.decodedAddress ?? "0x00");
+        console.log("Se va a formatear el tablero este!");
+        
+        resetBoard();
       }
       
       if (!nftsLoaded) {
@@ -207,23 +211,110 @@ function BoardGame() {
         const matchId = await ActualMatchOfUser();
 
         if (matchId !== -1) {
-          console.log("El usuario esta en la partida:");
-          console.log(matchId);
           await setActualSelectedCardFromMatch(matchId);
           setUserMatchId(matchId);
           setUserInMatch(true);
           setMatchInProgress(true);
+          setMatchCreated(true);
         }
         setActualUserInMatch(account?.decodedAddress ?? "0x00");
-      }
-
-      if (matchInProgress) {
-        console.log("=============LA PARTIDA ESTA EN PROGRESOOOOOOOOOOOOOOO==================");
-        
       }
     };
   
     setData();
+
+    useEffect(() => {
+      if (!matchInProgress || userMatchId === -1 || !matchCreated || !cardToPlay) {
+        console.log("Partida sin iniciar, cancelando use effect //////////////////////////////////////");
+        console.log("CON CARTA:");
+        console.log(cardToPlay);
+        return;        
+      }
+
+      const resetBoardUseEffect = () => {
+        console.log("SE VA A FORMATEAR TODOOOOOOOOOOOOOOOOOOOOOOOOOO USE EFEEEEEEEEEEEEEECT");
+        setTokensForOwnerState([]);
+        setSelectedCards([]);
+        setCardToPlay(null);
+        setUserMatchId(-1);
+        setUserInMatch(false);
+        setMatchInProgress(false);
+        setNftsLoaded(false);
+        setMatchInProgress(false);
+        setActualUserInMatch(account?.decodedAddress ?? "0x00");
+      }
+
+      const checkMatchStatus = async () => {
+        if (!api) return;
+
+        let matchFinished = false;
+        let state;
+        /* eslint-disable no-await-in-loop */
+        while (!matchFinished) {
+          const stateResult = await api
+            .programState
+            .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [userMatchId] } }, mainContractMetadata);
+          
+          const stateFormated: any = stateResult.toJSON();
+          const status = Object.keys(stateFormated)[0];
+          if (status === 'matchDoesNotExists') {
+            console.log("La partida no existe!!");
+            break;
+          }
+
+          const matchState = Object.keys(stateFormated.matchState)[0];
+          
+          if (matchState !== 'inProgress') {
+            matchFinished = true;
+          }
+        }
+
+        console.log("OTRAS ACCIONUES SE REQUIEREN ================");
+        console.log("MATCH ID: ", userMatchId);
+        
+
+        const matchInformationStateResult = await api
+          .programState
+          .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [userMatchId] } }, mainContractMetadata);
+        const matchInformationState: any = matchInformationStateResult.toJSON();
+        // const { user1 } = matchInformationState.gameInformation;
+        // const { user2 } = matchInformationState.gameInformation;
+
+        console.log("MOSTRANDO INFORMACION DE LA PARTIDA ACTUAL POR SI SE GANO O PERDIO");
+        console.log(matchInformationState);
+
+        const { winner } =  matchInformationState.matchState.finished;
+
+        console.log("WINNER = ", winner);
+        
+
+        if (winner === account?.decodedAddress) {
+          console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+          setTimeout(() => {
+            resetBoardUseEffect();
+          }, 1000);
+        } else {
+          console.log("se perdio u................u");
+          setTimeout(() => {
+            resetBoardUseEffect();
+          }, 1000);
+        }
+          
+        
+      }
+
+      console.log("LA PARTIDA VA A COMENZAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log("PARTIDA A LA QUE SE UNIRA EL VATO: ", userMatchId);
+      console.log("Se jugara con la carta: ");
+      console.log(cardToPlay);
+      
+      
+      
+      checkMatchStatus();
+
+
+    }, [matchInProgress, cardToPlay, userMatchId, api, account, mainContractMetadata, matchCreated])
+    
   
     const containerStyles = {
       display: "flex",
@@ -313,7 +404,7 @@ function BoardGame() {
                         !userInMatch ? (
                           <PlayButton 
                             onJoiningGame={() => handlePlayButton()} // {setUserPressPlayButton(true)}}
-                            tokenId={cardToPlay[0]}
+                            tokenId={Number(cardToPlay[0])}
                           />
                         ) : (
                           <h2>Searching oponent...</h2>
