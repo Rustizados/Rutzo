@@ -33,7 +33,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
     const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
 
     if (!voucherExists) {
-      alert.error("voucher does not exist!");
+      alert.error("Voucher does not exist!");
       return;
     }
 

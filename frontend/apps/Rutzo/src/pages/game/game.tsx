@@ -73,7 +73,7 @@ function Game() {
                       </div>
                     ) : (
                       <UserEmptyAccount>
-                        <p className="alert">Go to the store to get some nfts!</p>
+                        <p className="alert">Go to the marketplace and get some cool NFTs!</p>
                         <div className="playcontainer">
                           <a href="/marketplace" className="alert">
                             MARKETPLACE
@@ -88,7 +88,7 @@ function Game() {
           </div>
         ) : (
           <UserEmptyAccount>
-            <p className="alert">Register to obtain free cards</p>
+            <p className="alert">Register to get free cards</p>
             <RegisterButton onRegister={setData} />
           </UserEmptyAccount>
         )

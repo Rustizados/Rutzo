@@ -203,7 +203,7 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
             price={nftPriceData.value}
             key={nftId}
           >
-            <Button text={`buy for ${nftPriceData.value} TVara`} onClick={() => {
+            <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
               butNft(nftId, nftPriceData.value as u128);
             }} />
           </Card>;
