@@ -26,15 +26,6 @@ function RegisterButton({ onRegister }: any) {
   const registerUser = async () => {
     if (!account || !api || !accounts) return;
 
-    const gas = await api.program.calculateGas.handle(
-      account?.decodedAddress ?? "0x00",
-      MAIN_CONTRACT.PROGRAM_ID,
-      { Register: null },
-      0,
-      true,
-      mainContractMetadata
-    );
-
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
       (visibleAccount) => visibleAccount.address === localaccount
@@ -44,6 +35,15 @@ function RegisterButton({ onRegister }: any) {
       // Create a message extrinsic
 
       const { signer } = await web3FromSource(account.meta.source);
+
+      const gas = await api.program.calculateGas.handle(
+        account?.decodedAddress ?? "0x00",
+        MAIN_CONTRACT.PROGRAM_ID,
+        { Register: null },
+        0,
+        true,
+        mainContractMetadata
+      );
 
       const transferExtrinsic = api.message.send({
         destination: MAIN_CONTRACT.PROGRAM_ID,

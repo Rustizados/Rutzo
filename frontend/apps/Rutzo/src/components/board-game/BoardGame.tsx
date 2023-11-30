@@ -169,12 +169,12 @@ function BoardGame() {
       
       let cardToShow;
       let userWin = false;
-      if (winner === account?.decodedAddress) {
+      if (matchInformationState.gameInformation.user2.userId === account?.decodedAddress) {
         console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        cardToShow = matchInformationState.gameInformation.user2.nftData;
+        cardToShow = matchInformationState.gameInformation.user1.nftData;
         userWin = true;
       } else {
-        cardToShow = matchInformationState.gameInformation.user1.nftData;
+        cardToShow = matchInformationState.gameInformation.user2.nftData;
         console.log("se perdio u................u");
       }
 
@@ -235,10 +235,6 @@ function BoardGame() {
       console.log("MOSTRANDO INFORMACION DE LA PARTIDA YA EXISTENTE!!");
       console.log(matchInformationState);
 
-      const { winner } =  matchInformationState.matchState.finished;
-
-      console.log("WINNER = ", winner);
-
       const matchInformationStateResult = await api
           .programState
           .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [lastMatchId] } }, mainContractMetadata);
@@ -247,11 +243,15 @@ function BoardGame() {
       console.log("MOSTRANDO INFORMACION DE LA PARTIDA ACTUAL POR SI SE GANO O PERDIO");
       console.log(matchInformationState);
 
+      const { winner } =  matchInformationState.matchState.finished;
       console.log("WINNER = ", winner);
+
+      console.log(matchInformationState.gameInformation.user2.userId);
+      
       
       let cardToShow;
       let userWin = false;
-      if (winner === account?.decodedAddress) {
+      if (matchInformationState.gameInformation.user2.userId === account?.decodedAddress) {
         console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         cardToShow = matchInformationState.gameInformation.user1.nftData
         userWin = true;
