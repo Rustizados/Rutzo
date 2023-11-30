@@ -63,7 +63,7 @@ function MyNFTCollection() {
           />;
         })
       ) : (
-        <h1>No NFTs</h1>
+        <h1>You don't have NFTS</h1>
       )}
     </div>
   );
