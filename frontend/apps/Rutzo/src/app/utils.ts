@@ -96,3 +96,5 @@ export const gasToSpend = (gasInfo: GasInfo): bigint => {
   const gasLimit: bigint = BigInt(minLimit.replaceAll(',', ''));
   return gasLimit;
 }
+
+export const sleepReact = (ms: number) => new Promise(r => setTimeout(r, ms));

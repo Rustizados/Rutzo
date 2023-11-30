@@ -5,7 +5,7 @@ import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 
-function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
+function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
@@ -15,13 +15,6 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
   const signer = async () => {
 
     if (!account || !accounts || !api) return;
-
-    // const messageMainContract: any = {
-    //   destination: MAIN_CONTRACT.PROGRAM_ID, // programId
-    //   payload: { PlayGame: [tokenId] }, // Add your data
-    //   gasLimit: gasToSpend(gasMainContract),
-    //   value: 0,
-    // };
 
     const localaccount = account?.address;
     const isVisibleAccount = accounts.some(
@@ -41,6 +34,9 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
         alert.error("voucher does not exist!");
         return;
       }
+
+      console.log("SE JUGARA CON EL NFT: ", tokenId);
+      
 
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
@@ -75,6 +71,9 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
+              if (onPressed) {
+                onPressed();
+              }
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
@@ -88,47 +87,6 @@ function PlayButton({ onJoiningGame, onError=()=>{}, tokenId }: any) {
       } catch(error: any) {
         console.log(":( transaction failed", error);
       }
-
-
-
-
-
-
-
-
-
-
-
-      // const injector = await web3FromSource(account.meta.source);
-
-      // const transferExtrinsicMain = await api.message.send(messageMainContract, mainContractMetadata);
-
-      // try {
-      //   await transferExtrinsicMain
-      //   .signAndSend(
-      //     account?.decodedAddress,
-      //     { signer: injector.signer },
-      //     ({ status }) => {
-      //       if (status.isInBlock) {
-      //         console.log(
-      //           `Completed at block hash #${status.asInBlock.toString()}`
-      //         );
-      //         alert.success(`Block hash #${status.asInBlock.toString()}`);
-      //       } else {
-      //         console.log(`Current status: ${status.type}`);
-      //         if (status.type === "Finalized") {
-      //           console.log("Se termino el proceso de main contract =========");
-      //           onJoiningGame();
-      //           alert.success(status.type);
-      //         }
-      //       }
-      //     }
-      //   )
-      // } catch(error) {
-      //   console.log(":( transaction failed", error);
-      //   onError();
-      // }
-
     } else {
       alert.error("Account not available to sign");
     }

@@ -309,6 +309,7 @@ pub enum RutzoAction {
     SetContractToSendData(ActorId),
     RestoreInformationFromOldMainContract,
     GetAllInformation,
+    GetProfits,
     DeleteContract,
 }
 
@@ -760,13 +761,6 @@ impl Contract {
         
         self.nfts_for_sale.remove(&token_id);
         
-        if self.contract_balance > 15* ONE_TVARA_VALUE {
-            let profit = self.contract_balance;
-            self.contract_balance = 0;
-            msg::send(self.owner, RutzoEvent::Profits(profit), profit)
-                .expect("Error sending profits to owner!");
-        }
-        
         (RutzoEvent::NFTContractSaved, value_to_return)
     }
     
@@ -1031,7 +1025,7 @@ impl Contract {
         self.player_finish_game(loser, game_id);
         
         if !is_draw {
-            if Contract::transfer_nft(
+            if Contract::transfer_match_nft(
                 self.nft_contract.unwrap(),
                 winner, 
                 token_id,

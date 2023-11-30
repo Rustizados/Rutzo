@@ -85,46 +85,6 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
     } catch(error: any) {
       console.log(":( transaction failed", error);
     }
-
-
-
-
-
-
-
-    // const message: any = {
-    //   destination: MAIN_CONTRACT.PROGRAM_ID, // programId
-    //   payload: { MintCard: [nftId] }, // Add your data
-    //   gasLimit: gasToSpend(gas),
-    //   value: 0,
-    // };
-
-    // const transferExtrinsic = await api.message.send(message, mainContractMetadata);
-
-    // const injector = await web3FromSource(account.meta.source);    
-
-    // transferExtrinsic
-    //   .signAndSend(
-    //     account?.decodedAddress,
-    //     { signer: injector.signer },
-    //     ({ status }) => {
-    //       if (status.isInBlock) {
-    //         console.log(
-    //           `Completed at block hash #${status.asInBlock.toString()}`
-    //         );
-    //         alert.success(`Block hash #${status.asInBlock.toString()}`);
-    //       } else {
-    //         console.log(`Current status: ${status.type}`);
-    //         if (status.type === "Finalized") {
-    //           alert.success(status.type);
-    //         }
-    //       }
-    //     }
-    //   )
-    //   .catch((error: any) => {
-    //     console.log(":( transaction failed", error);
-    //   });
-
   }
 
   const setDefaultsNfts = async () => {

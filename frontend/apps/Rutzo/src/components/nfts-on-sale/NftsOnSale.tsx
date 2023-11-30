@@ -10,7 +10,11 @@ import process from "process";
 import { AnyJson, AnyNumber } from "@polkadot/types/types";
 import { u128 } from "@polkadot/types";
 
-export function NftsOnSale() {
+interface DefaultNftsProos {
+  onSaled?: any;
+}
+
+export function NftsOnSale({onSaled}: DefaultNftsProos) {
   const { api, isApiReady } = useApi();
   const { account, accounts } = useAccount();
   const { balance } = useBalance(account?.address);
@@ -108,6 +112,10 @@ export function NftsOnSale() {
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
+              if (onSaled) {
+                console.log("Se mandara a llamar a la funcion!!!");
+                onSaled();
+              }
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {

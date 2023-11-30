@@ -3,6 +3,7 @@ import { useAccount, useApi } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { Card, Facedowncard, PlayButton } from "@/components";
 import { useState, useEffect } from "react";
+import { sleepReact } from "@/app/utils";
 // import "./Collection.scss";
 
 import "./slide-in.css";
@@ -23,6 +24,8 @@ function BoardGame() {
     const [matchInProgress, setMatchInProgress] = useState(false);
     const [actualUserInMatch, setActualUserInMatch] = useState("0x00");
     const [matchCreated, setMatchCreated] = useState(false);
+    const [enemyCard, setEnemyCard] = useState<any | null>(null);
+    const [userWonTheMatch, setUserWonTheMatch] = useState(false);
   
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
     const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
@@ -35,8 +38,11 @@ function BoardGame() {
       setUserInMatch(false);
       setMatchInProgress(false);
       setNftsLoaded(false);
-      setMatchInProgress(false);
+      setUserPressPlayButton(false);
+      setEnemyCard(null);
       setActualUserInMatch(account?.decodedAddress ?? "0x00");
+      setUserWonTheMatch(false);
+      setEnemyCard(null);
     }
 
     const ActualMatchOfUser = async (): Promise<number> => {
@@ -88,6 +94,111 @@ function BoardGame() {
       setMatchInProgress(true);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const userWaitingMatch = async (matchId: number) => {
+      if (!api) return;
+
+      let matchFinished = false;
+      let state;
+
+      /* eslint-disable no-await-in-loop */
+      while (!matchFinished) {
+        const stateResult = await api
+          .programState
+          .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [matchId] } }, mainContractMetadata);
+        
+        const stateFormated: any = stateResult.toJSON();
+        const status = Object.keys(stateFormated)[0];
+        if (status === 'matchDoesNotExists') {
+          console.log("La partida no existe!!");
+          break;
+        }
+
+        const matchState = Object.keys(stateFormated.matchState)[0];
+        console.log("Aun checando el estado de la partida:");
+        console.log(matchState);
+        
+        if (matchState !== 'inProgress') {
+          matchFinished = true;
+        }
+      }
+
+      console.log("LA PARTIDA A FINALIZADOOOOO ==================");
+      console.log("MATCH ID: ", matchId);
+      
+      const matchInformationStateResult = await api
+        .programState
+        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [matchId] } }, mainContractMetadata);
+
+      const matchInformationState: any = matchInformationStateResult.toJSON();
+
+      console.log("MOSTRANDO INFORMACION DE LA PARTIDA ACTUAL POR SI SE GANO O PERDIO");
+      console.log(matchInformationState);
+
+      const { winner } =  matchInformationState.gameInformation.matchState.finished;
+      console.log("WINNER = ", winner);
+      
+      
+      let cardToShow;
+      let userWin = false;
+      if (winner === account?.decodedAddress) {
+        console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        cardToShow = matchInformationState.gameInformation.user2.nftData;
+        userWin = true;
+      } else {
+        cardToShow = matchInformationState.gameInformation.user1.nftData;
+        console.log("se perdio u................u");
+      }
+
+      console.log(" SE PONDRA A DORMIR REAR 1 SEGUNDO");
+
+      setUserWonTheMatch(userWin);
+      setMatchInProgress(false);
+      setEnemyCard(cardToShow);
+      
+      await sleepReact(4000);
+
+      console.log("DESPERTOOOOOOOOOOOOOOO");
+      
+      resetBoard();
+    }
+
+
+
+
+
+
+
+
+
     const handlePlayButton = async () => {
       if (!api) return;
 
@@ -95,10 +206,16 @@ function BoardGame() {
       console.log("Button El usuario esta en la partida:");
       console.log(matchId);
 
+      setUserPressPlayButton(true);
+
       if (matchId !== -1) {
         setUserInMatch(true);
         setUserMatchId(matchId);
         setMatchCreated(true);
+        setMatchInProgress(true);
+        console.log("CREANDO FUNCION PARA ESPERA EN LA PARTIDA!!!!!!!!!!!!!!!!!!!");
+        
+        await userWaitingMatch(matchId);
         return;
       }
 
@@ -112,28 +229,80 @@ function BoardGame() {
       const matchInformationStateResponse = await api
         .programState
         .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [lastMatchId] } }, mainContractMetadata);
-      const matchInformationState: any = matchInformationStateResponse.toJSON();
+
+      let matchInformationState: any = matchInformationStateResponse.toJSON();
+
       console.log("MOSTRANDO INFORMACION DE LA PARTIDA YA EXISTENTE!!");
       console.log(matchInformationState);
 
       const { winner } =  matchInformationState.matchState.finished;
 
       console.log("WINNER = ", winner);
-      
 
+      const matchInformationStateResult = await api
+          .programState
+          .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [lastMatchId] } }, mainContractMetadata);
+      matchInformationState = matchInformationStateResult.toJSON();
+
+      console.log("MOSTRANDO INFORMACION DE LA PARTIDA ACTUAL POR SI SE GANO O PERDIO");
+      console.log(matchInformationState);
+
+      console.log("WINNER = ", winner);
+      
+      let cardToShow;
+      let userWin = false;
       if (winner === account?.decodedAddress) {
         console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        setTimeout(() => {
-          resetBoard();
-        }, 1000);
+        cardToShow = matchInformationState.gameInformation.user1.nftData
+        userWin = true;
       } else {
+        cardToShow = matchInformationState.gameInformation.user2.nftData;
         console.log("se perdio u................u");
-        setTimeout(() => {
-          resetBoard();
-        }, 1000);
       }
+
+      console.log("CARTA QUE SE ENSEÑARAAAAAAAAA: se gano? : ", userWin);
+      console.log(cardToShow);
+
+      console.log("SE PONDRA A MIMIR A REACT");
+
+      setUserWonTheMatch(userWin);
+      setMatchInProgress(false);
+      setEnemyCard(cardToShow);
+
+      await sleepReact(4000);
+      
+      console.log("DESPERTOOOOOOO");
+      
+
+      // setTimeout(() => {
+        //   resetBoard();
+        // }, 2000);
+      
+      resetBoard();
       
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
     const setStateWithoutSelectedCards = (cards: [any], cardsSelected: [any]) => {
       const cardsLeft = cards.filter((card) => {
@@ -226,99 +395,6 @@ function BoardGame() {
     };
   
     setData();
-
-    useEffect(() => {
-      if (!matchInProgress || userMatchId === -1 || !matchCreated || !cardToPlay) {
-        console.log("Partida sin iniciar, cancelando use effect //////////////////////////////////////");
-        console.log("CON CARTA:");
-        console.log(cardToPlay);
-        return;        
-      }
-
-      const resetBoardUseEffect = () => {
-        console.log("SE VA A FORMATEAR TODOOOOOOOOOOOOOOOOOOOOOOOOOO USE EFEEEEEEEEEEEEEECT");
-        setTokensForOwnerState([]);
-        setSelectedCards([]);
-        setCardToPlay(null);
-        setUserMatchId(-1);
-        setUserInMatch(false);
-        setMatchInProgress(false);
-        setNftsLoaded(false);
-        setMatchInProgress(false);
-        setActualUserInMatch(account?.decodedAddress ?? "0x00");
-      }
-
-      const checkMatchStatus = async () => {
-        if (!api) return;
-
-        let matchFinished = false;
-        let state;
-        /* eslint-disable no-await-in-loop */
-        while (!matchFinished) {
-          const stateResult = await api
-            .programState
-            .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [userMatchId] } }, mainContractMetadata);
-          
-          const stateFormated: any = stateResult.toJSON();
-          const status = Object.keys(stateFormated)[0];
-          if (status === 'matchDoesNotExists') {
-            console.log("La partida no existe!!");
-            break;
-          }
-
-          const matchState = Object.keys(stateFormated.matchState)[0];
-          
-          if (matchState !== 'inProgress') {
-            matchFinished = true;
-          }
-        }
-
-        console.log("OTRAS ACCIONUES SE REQUIEREN ================");
-        console.log("MATCH ID: ", userMatchId);
-        
-
-        const matchInformationStateResult = await api
-          .programState
-          .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [userMatchId] } }, mainContractMetadata);
-        const matchInformationState: any = matchInformationStateResult.toJSON();
-        // const { user1 } = matchInformationState.gameInformation;
-        // const { user2 } = matchInformationState.gameInformation;
-
-        console.log("MOSTRANDO INFORMACION DE LA PARTIDA ACTUAL POR SI SE GANO O PERDIO");
-        console.log(matchInformationState);
-
-        const { winner } =  matchInformationState.matchState.finished;
-
-        console.log("WINNER = ", winner);
-        
-
-        if (winner === account?.decodedAddress) {
-          console.log("SE GANO LA PARTIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-          setTimeout(() => {
-            resetBoardUseEffect();
-          }, 1000);
-        } else {
-          console.log("se perdio u................u");
-          setTimeout(() => {
-            resetBoardUseEffect();
-          }, 1000);
-        }
-          
-        
-      }
-
-      console.log("LA PARTIDA VA A COMENZAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      console.log("PARTIDA A LA QUE SE UNIRA EL VATO: ", userMatchId);
-      console.log("Se jugara con la carta: ");
-      console.log(cardToPlay);
-      
-      
-      
-      checkMatchStatus();
-
-
-    }, [matchInProgress, cardToPlay, userMatchId, api, account, mainContractMetadata, matchCreated])
-    
   
     const containerStyles = {
       display: "flex",
@@ -398,20 +474,49 @@ function BoardGame() {
                       />
                     )
                   }
-                  <Facedowncard />
+                  {
+                    enemyCard ? (
+                      <Card 
+                        image={enemyCard.media}
+                        title={enemyCard.name}
+                        type={enemyCard.description.toLowerCase()}
+                        value={enemyCard.reference}
+                      />
+                    ) : (
+                      <Facedowncard />
+                    )
+                  }
+                  
                 </div>
   
                 <div className="buttonArea ">
                   {cardToPlay && (
                     <div>
                       {
-                        !userInMatch ? (
+                        !userPressPlayButton ? (
                           <PlayButton 
                             onJoiningGame={() => handlePlayButton()} // {setUserPressPlayButton(true)}}
+                            //onPressed={() => {setUserPressPlayButton(true)}}
                             tokenId={Number(cardToPlay[0])}
                           />
                         ) : (
-                          <h2>Searching oponent...</h2>
+                          <div>
+                            {
+                              !matchInProgress ? (
+                                <div>
+                                  {
+                                    userWonTheMatch ? (
+                                      <h2>You WON!!</h2>
+                                    ) : (
+                                      <h2>You lose :c</h2>
+                                    )
+                                  }
+                                </div>
+                              ) : (
+                                <h2>Searching oponent...</h2>
+                              )
+                            }
+                          </div>
                         )
                       }
                       
@@ -443,3 +548,46 @@ function BoardGame() {
 
 export { BoardGame };
 
+
+
+
+
+
+/*
+    // useEffect(() => {
+    //   if (!matchInProgress || userMatchId === -1 || !matchCreated || !cardToPlay) {
+    //     console.log("Partida sin iniciar, cancelando use effect //////////////////////////////////////");
+    //     console.log("CON CARTA:");
+    //     console.log(cardToPlay);
+    //     return;        
+    //   }
+
+    //   const resetBoardUseEffect = () => {
+    //     console.log("SE VA A FORMATEAR TODOOOOOOOOOOOOOOOOOOOOOOOOOO USE EFEEEEEEEEEEEEEECT");
+    //     setTokensForOwnerState([]);
+    //     setSelectedCards([]);
+    //     setCardToPlay(null);
+    //     setUserMatchId(-1);
+    //     setUserInMatch(false);
+    //     setMatchInProgress(false);
+    //     setNftsLoaded(false);
+    //     setUserPressPlayButton(false);
+    //     setActualUserInMatch(account?.decodedAddress ?? "0x00");
+    //   }
+
+    //   const checkMatchStatus = async () => {
+        
+    //   }
+
+    //   console.log("LA PARTIDA VA A COMENZAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    //   console.log("PARTIDA A LA QUE SE UNIRA EL VATO: ", userMatchId);
+    //   console.log("Se jugara con la carta: ");
+    //   console.log(cardToPlay);
+      
+      
+      
+    //   checkMatchStatus();
+
+
+    // }, [matchInProgress, cardToPlay, userMatchId, api, account, mainContractMetadata, matchCreated])
+    */

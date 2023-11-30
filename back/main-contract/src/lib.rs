@@ -45,6 +45,8 @@ async fn main() {
         panic!("Nft contract does not exists!");
     }
     
+    let caller = msg::source();
+    
     match action {
         RutzoAction::MessageTest => {
             msg::reply(RutzoEvent::ApprovedUserDeleted(msg::source()), 0) 
@@ -63,9 +65,8 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::SetNFTAddress(address) => {
-            let user_id = msg::source();
-            if user_id != state.owner {
-                msg::reply(RutzoEvent::UserIsNotApproved(user_id), 0)
+            if caller != state.owner {
+                msg::reply(RutzoEvent::UserIsNotApproved(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
                 return;
             }
@@ -98,7 +99,6 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::ApproveMinter(user_id) => {
-            let caller = msg::source();
             if caller != state.owner {
                 msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
@@ -111,7 +111,6 @@ async fn main() {
                  .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::DelegateApprovedUser(user_id) => {
-            let caller = msg::source();
             if caller != state.owner {
                 msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
@@ -138,7 +137,6 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::SetContractToReceiveInformation(contract_id) => {
-            let caller = msg::source();
             if caller != state.owner {
                 msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
@@ -151,7 +149,6 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::SetContractToSendData(contract_address) => {
-              let caller = msg::source();
             if caller != state.owner {
                 msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
@@ -171,8 +168,24 @@ async fn main() {
             msg::reply(state.all_data(msg::source()).await, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
+        RutzoAction::GetProfits => {
+            if caller != state.owner {
+                msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
+                    .expect("Error in reply a message 'RutzoEvent'");
+                return;
+            }
+            
+            if state.contract_balance > 10* ONE_TVARA_VALUE {
+                let profit = state.contract_balance;
+                state.contract_balance = 0;
+                msg::reply(RutzoEvent::Profits(profit), profit)
+                    .expect("Error sending profits to owner!");
+            } else {
+                msg::reply(RutzoEvent::InsufficientFunds(state.contract_balance), 0)
+                    .expect("Error sending profits to owner!");
+            }
+        },
         RutzoAction::DeleteContract => {
-            let caller = msg::source();
             if caller != state.owner {
                 msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
                     .expect("Error in reply a message 'RutzoEvent'");
