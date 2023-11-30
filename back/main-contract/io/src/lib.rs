@@ -995,7 +995,7 @@ impl Contract {
         let (winner, loser, token_id, is_draw) = match NFTCardType::batle(user1_card_type, nft_type) {
             MatchResult::Draw => {
                 if user1_power == nft_power {
-                    (ActorId::default(), ActorId::default(), TokenId::default(), true)
+                    (user1_id, user_id, token_id, false)
                 } else if  user1_power > nft_power {
                     let winner = user1_id;
                     let loser = user_id;
@@ -1025,16 +1025,16 @@ impl Contract {
         self.player_finish_game(loser, game_id);
         
         if !is_draw {
+            self.pending_transfers.insert(loser, (winner, token_id));
             if Contract::transfer_match_nft(
                 self.nft_contract.unwrap(),
                 winner, 
                 token_id,
                 self.transaction_id
             ).await.is_err() {
-                self.pending_transfers.insert(loser, (winner, token_id));
                 return RutzoEvent::PendingTransfer(token_id);
             }
-            
+            self.pending_transfers.remove(&loser);
             self.transaction_id = self.transaction_id.saturating_add(1);
         }
         

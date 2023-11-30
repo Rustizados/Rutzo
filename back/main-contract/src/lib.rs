@@ -176,7 +176,7 @@ async fn main() {
             }
             
             if state.contract_balance > 10* ONE_TVARA_VALUE {
-                let profit = state.contract_balance;
+                let profit = (state.contract_balance) / ONE_TVARA_VALUE ;
                 state.contract_balance = 0;
                 msg::reply(RutzoEvent::Profits(profit), profit)
                     .expect("Error sending profits to owner!");

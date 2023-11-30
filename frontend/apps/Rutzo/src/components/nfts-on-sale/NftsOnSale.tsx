@@ -112,13 +112,13 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
-              if (onSaled) {
-                console.log("Se mandara a llamar a la funcion!!!");
-                onSaled();
-              }
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
+                if (onSaled) {
+                  console.log("Se mandara a llamar a la funcion!!!");
+                  onSaled();
+                }
                 alert.success(status.type);
               }
             }
@@ -182,6 +182,12 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
     const mainStateFormated: any = mainState.toJSON();
     
     const nftsOnSaleFormated: [any] = mainStateFormated.nfTsOnSale ?? [];
+
+    if (nftsOnSaleFormated.length !== tokensForOwner.length) {
+      console.log("No son iguales!, posible error checando estado de nuevo");
+      setData();
+      return;
+    }
 
     setNftsPrices(nftsOnSaleFormated);
     setTokensForOwnerState(tokensForOwner);
