@@ -1,11 +1,9 @@
 import './app.scss';
-// import '@gear-js/vara-ui/dist/style.css';
 import { useAccount, useApi } from '@gear-js/react-hooks';
- import { Routing } from './pages';
+import { Routing } from './pages';
 import { ApiLoader } from '@/components';
 import { Header, Footer } from '@/components/layout';
 import { withProviders } from '@/app/hocs';
-import { Home } from './pages/home';
 
 // import { useWalletSync } from '@/features/wallet/hooks';
 

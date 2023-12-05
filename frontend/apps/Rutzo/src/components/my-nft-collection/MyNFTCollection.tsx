@@ -4,17 +4,6 @@ import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "../collection-card";
 import { NFT_CONTRACT, MAIN_CONTRACT } from "@/app/consts";
 
-// non-essential extra component
-function InfoNFT({ name, description, media, reference }: any) {
-  return (
-    <CollectionCard
-      image={media}
-      title={name}
-      type={description.toLowerCase()}
-      value={reference}
-    />
-  );
-}
 
 function MyNFTCollection() {
   const { api } = useApi();

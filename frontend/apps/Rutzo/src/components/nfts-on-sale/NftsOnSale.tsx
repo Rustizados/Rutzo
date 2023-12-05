@@ -1,4 +1,4 @@
-import { decodeAddress, ProgramMetadata, VoucherIssued } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount, useAlert, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { Card } from "../card/Card";
@@ -6,8 +6,7 @@ import { NFT_CONTRACT, MAIN_CONTRACT, ONE_TVARA_VALUE } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "@gear-js/ui";
-import process from "process";
-import { AnyJson, AnyNumber } from "@polkadot/types/types";
+import { AnyNumber } from "@polkadot/types/types";
 import { u128 } from "@polkadot/types";
 
 interface DefaultNftsProos {

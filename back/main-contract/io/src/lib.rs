@@ -995,7 +995,7 @@ impl Contract {
         let (winner, loser, token_id, is_draw) = match NFTCardType::batle(user1_card_type, nft_type) {
             MatchResult::Draw => {
                 if user1_power == nft_power {
-                    (user1_id, user_id, token_id, false)
+                    (user1_id, user_id, token_id, true)
                 } else if  user1_power > nft_power {
                     let winner = user1_id;
                     let loser = user_id;

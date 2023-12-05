@@ -2,7 +2,7 @@ import { MAIN_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { useState } from "react";
 import { ReactComponent as Banner } from "@/assets/images/marketplace.svg";
-import { DefaultNfts, MyNFTCollection, RegisterButton, NftsOnSale } from "@/components";
+import { DefaultNfts, RegisterButton, NftsOnSale } from "@/components";
 import { ProgramMetadata } from "@gear-js/api";
 import "./Marketplace.scss";
 

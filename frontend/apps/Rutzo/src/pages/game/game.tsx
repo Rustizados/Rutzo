@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.svg";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
