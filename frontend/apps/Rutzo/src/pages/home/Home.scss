@@ -1,0 +1,46 @@
+.playcontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.play {
+  font-family: "press_start_tp";
+  background-color: #7834cf;
+  transition: all 0.3s ease-in-out;
+  font-size: 1.0rem;
+}
+
+.play:hover {
+  background-color: #3DDC84;
+}
+
+.playcontainer a {
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  padding:8px 24px;
+  border-radius: 32px;
+}
+
+.playcontainer:hover {
+  color: #fff;
+}
+
+.playcontainer svg {
+  font-weight: bold;
+  width: 1em;
+  height: 1em;
+  margin-right: 5px;
+  color: #FFF;
+}
+
+.title {
+  font-family: apex;
+  color: #FFF;
+  text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
+}
+

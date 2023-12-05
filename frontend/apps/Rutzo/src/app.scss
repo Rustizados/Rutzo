@@ -1,0 +1,79 @@
+// @use '@/assets/styles';
+// @import 'global.css';
+
+// body {
+//   background-image: url('./assets/images/bg.png');
+//   background-color: #2b2b2b;
+// }
+
+// #root {
+//   display: flex;
+//   flex-direction: column;
+//   min-height: 100vh;
+//   max-width: 467px;
+//   margin-left: auto;
+//   margin-right: auto;
+//   background-color: #ffffff;
+// }
+
+// main {
+//   position: relative; // for loaders
+//   display: flex;
+//   flex-direction: column;
+//   flex: 1;
+//   padding: 100px 16px;
+// }
+
+@use 'assets/styles';
+@use '@gear-js/ui/variables' as *;
+
+@font-face {
+  font-family: 'valorax';
+  src: url('./fonts/valorax.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'press_start_tp';
+  src: url('./fonts/press_start_tp.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'apex';
+  src: url('./fonts/apex.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'jetbrains_mono';
+  src: url('./fonts/jetbrains_mono.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'call_ops_duty';
+  src: url('./fonts/call_ops_duty.otf');
+  font-weight: normal;
+}
+
+#root {
+  max-width: 1200px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: content-box;
+}
+
+main {
+  flex: 1;
+  padding: 30px 0 60px;
+  position: relative; // for loaders
+}
+
+body {
+  background: url(assets/images/bg.svg);
+  color:white !important;
+}

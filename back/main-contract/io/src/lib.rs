@@ -5,7 +5,7 @@ use gear_lib_old::non_fungible_token::{
 };
 use nft_io::{ NFTAction, NFTEvent };
 use gmeta::{In, InOut, Metadata};
-use gstd::{prelude::*, ActorId, collections::BTreeMap, msg, errors::Error, exec};
+use gstd::{prelude::*, ActorId, collections::HashMap, msg, errors::Error, exec};
 
 pub struct ProgramMetadata;
 
@@ -19,6 +19,8 @@ pub type NFTPrice = u128;
 pub type DataFromContract = Vec<(ActorId, Vec<TokenMetadata>)>;
 pub type Power = u64;
 pub type UserNFTS = (ActorId, Vec<TokenMetadata>);
+
+pub const ONE_TVARA_VALUE: u128 = 1000000000000;
 
 impl Metadata for ProgramMetadata {
     type Init = In<InitContractData>;
@@ -253,6 +255,7 @@ pub struct NFTOnSale {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateQuery{
+    UserIsRegister(UserId),
     GameInformationById(u64),
     MatchStateById(u64),
     PlayerInformation(UserId),
@@ -269,6 +272,7 @@ pub enum RutzoStateQuery{
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateReply {
+    UserIsRegister(bool),
     GameInformation(MatchInformation),
     PlayerInformation(UserDataState),
     PlayerInMatch(Option<u64>),
@@ -305,7 +309,8 @@ pub enum RutzoAction {
     SetContractToSendData(ActorId),
     RestoreInformationFromOldMainContract,
     GetAllInformation,
-    DeleteContract
+    GetProfits,
+    DeleteContract,
 }
 
 #[derive(Encode, Decode, TypeInfo, Eq, PartialEq)]
@@ -354,10 +359,6 @@ pub enum RutzoEvent {
     NFTTypeIsIncorrect((TokenId, String)),
     ContractsData(DataFromContract),
     ContractToReceiveDataNotSet,
-    
-    TestTokenMetadata((Option<TokenMetadata>, bool)),
-    TokenDoesNotExist(TokenId),
-    TokenExist(TokenId)
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -456,7 +457,8 @@ pub struct UserGameData {
     pub user_id: ActorId,
     pub chosen_nft: TokenId,
     pub nft_type: NFTCardType,
-    pub nft_power: u8
+    pub nft_power: u8,
+    pub nft_data: TokenMetadata
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]
@@ -488,15 +490,15 @@ pub struct Contract {
     pub nft_contract: Option<NftContractId>,
     pub games: Vec<MatchInformation>,
     pub games_waiting: Vec<GameId>,
-    pub games_information_by_user: BTreeMap<UserId, UserData>,
+    pub games_information_by_user: HashMap<UserId, UserData>,
     pub game_id: GameId,
-    pub tokens_metadata_default: BTreeMap<u8, TokenMetadata>,
-    pub nfts_for_sale: BTreeMap<TokenId, NFTPrice>,
-    pub default_tokens_minted_by_id: BTreeMap<UserId, UserDefaultMints>,
+    pub tokens_metadata_default: HashMap<u8, TokenMetadata>,
+    pub nfts_for_sale: HashMap<TokenId, NFTPrice>,
+    pub default_tokens_minted_by_id: HashMap<UserId, UserDefaultMints>,
     pub approved_minters: Vec<UserId>,
     pub transaction_id: TransactionId,
-    pub pending_transfers: BTreeMap<UserId, (UserId, TokenId)>,
-    pub sales: BTreeMap<ActorId, TokenId>,
+    pub pending_transfers: HashMap<UserId, (UserId, TokenId)>,
+    pub sales: HashMap<ActorId, TokenId>,
     pub contract_balance: u128,
     pub accept_data_from: Option<ActorId>,
     pub send_data_to: Option<ActorId>
@@ -562,6 +564,29 @@ impl Contract {
         )
         .expect("Error in sending a message 'NFTAction::Mint' to nft contract")
         .await
+    }
+    
+    pub async fn transfer_match_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
+        match msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            nft_contract, 
+            NFTAction::TranserNFTToUser { 
+                transaction_id, 
+                to, 
+                token_id
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::Transfer' to nft contract")
+        .await {
+            Ok(nft_event) => {
+                let NFTEvent::Transfer(_) = nft_event else { 
+                    panic!("Unexpected answer from nft contract"); 
+                };
+                Ok(nft_event)
+            },
+            Err(_) => Err(())
+        }
     }
     
     pub async fn transfer_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
@@ -711,7 +736,7 @@ impl Contract {
         }
         
         let token_on_sale_value = match self.nfts_for_sale.get(&token_id) {
-            Some(value) =>* value,
+            Some(value) => (*value) * ONE_TVARA_VALUE,
             None => return (RutzoEvent::NftWithTokenIdDoesNotExists(token_id), value)
         };
         
@@ -735,13 +760,6 @@ impl Contract {
         self.transaction_id = self.transaction_id.saturating_add(1);
         
         self.nfts_for_sale.remove(&token_id);
-        
-        if self.contract_balance > 10 {
-            let profit = self.contract_balance;
-            self.contract_balance = 0;
-            msg::send(self.owner, RutzoEvent::Profits(profit), profit)
-                .expect("Error sending profits to owner!");
-        }
         
         (RutzoEvent::NFTContractSaved, value_to_return)
     }
@@ -848,7 +866,11 @@ impl Contract {
             return RutzoEvent::AccountAlreadyExist(user_id);
         }
       
-        self.games_information_by_user.insert(user_id, Default::default());       
+        self.games_information_by_user.insert(user_id, UserData {
+            current_game: None,
+            recent_past_game: None,
+            past_games: vec![]
+        });       
         self.default_tokens_minted_by_id.insert(user_id, UserDefaultMints {
             nfts_minted: Vec::new(),
             can_mint: true
@@ -867,7 +889,7 @@ impl Contract {
         }
             
         if let Some(&(to, token_id)) = self.pending_transfers.get(&user_id) {
-            if Contract::transfer_nft(
+            if Contract::transfer_match_nft(
                 self.nft_contract.unwrap(),
                 to, 
                 token_id,
@@ -886,16 +908,20 @@ impl Contract {
             self.nft_contract.unwrap(), 
             token_id
         ).await;
+                                                            
+        if answer.is_err() {
+            return RutzoEvent::CommunicationError(self.nft_contract.unwrap());
+        }
                                 
-        let answer = if answer.is_err() || answer.clone().unwrap() == NFTEvent::MainContractIsNotApproved {
-            return RutzoEvent::NFTIsNotApprovedByMainContract(token_id);
+        if let  NFTEvent::TokenIdNotExists(token_id) = answer.clone().unwrap() {
+            return RutzoEvent::NftWithTokenIdDoesNotExists(token_id);
+        }
+                                
+        let answer = if answer.clone().unwrap() == NFTEvent::ActionOnlyForMainContract {
+            return RutzoEvent::ContractIsNotTheMain;
         } else {
             answer.unwrap()  
         };
-                                
-        if answer == NFTEvent::ActionOnlyForMainContract {
-            return RutzoEvent::ContractIsNotTheMain;
-        }
                                      
         let nft_data = match answer {
             NFTEvent::NFTData(nft_token_metadata) => {
@@ -915,6 +941,7 @@ impl Contract {
         } else {
             return RutzoEvent::NFTTypeIsIncorrect((token_id, nft_data.description));
         };
+        
         let nft_power: u8 = nft_data.reference
             .parse()
             .expect("error parsing power");
@@ -936,7 +963,8 @@ impl Contract {
                         user_id,
                         chosen_nft: token_id,
                         nft_type,
-                        nft_power
+                        nft_power,
+                        nft_data
                     },
                     user_2: None,
                     match_state: MatchState::default()
@@ -956,7 +984,8 @@ impl Contract {
             user_id,
             chosen_nft: token_id,
             nft_type: nft_type.clone(),
-            nft_power
+            nft_power,
+            nft_data
         });
         
         let user1_power = game_data.user_1.nft_power;
@@ -966,7 +995,7 @@ impl Contract {
         let (winner, loser, token_id, is_draw) = match NFTCardType::batle(user1_card_type, nft_type) {
             MatchResult::Draw => {
                 if user1_power == nft_power {
-                    (ActorId::default(), ActorId::default(), TokenId::default(), true)
+                    (user1_id, user_id, token_id, true)
                 } else if  user1_power > nft_power {
                     let winner = user1_id;
                     let loser = user_id;
@@ -991,25 +1020,23 @@ impl Contract {
         } else {
             game_data.match_state = MatchState::Draw;
         }
-        
-        
+    
         self.player_finish_game(winner, game_id);
         self.player_finish_game(loser, game_id);
         
         if !is_draw {
-            if Contract::transfer_nft(
+            self.pending_transfers.insert(loser, (winner, token_id));
+            if Contract::transfer_match_nft(
                 self.nft_contract.unwrap(),
                 winner, 
                 token_id,
                 self.transaction_id
             ).await.is_err() {
-                self.pending_transfers.insert(loser, (winner, token_id));
                 return RutzoEvent::PendingTransfer(token_id);
             }
-            
+            self.pending_transfers.remove(&loser);
             self.transaction_id = self.transaction_id.saturating_add(1);
         }
-        
         
         RutzoEvent::MatchFinished
     }
@@ -1020,19 +1047,17 @@ impl Contract {
             .and_modify(|user_game_data| {
                 user_game_data.current_game = Some(game_id);
                 user_game_data.recent_past_game = None;
-            })
-            .or_default();
+            });
     }
     
     pub fn player_finish_game(&mut self, user_id: ActorId, game_id: usize) {
         self.games_information_by_user
             .entry(user_id)
             .and_modify(|user_game_data| {
-                user_game_data.past_games.push(game_id);
                 user_game_data.recent_past_game = Some(game_id);
                 user_game_data.current_game = None;
-            })
-            .or_default();
+                user_game_data.past_games.push(game_id);
+            });
     }
 }
 
@@ -1108,86 +1133,6 @@ impl From<Contract> for ContractState {
     }
 }
 
-/*
-#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTAction {
-    Mint {
-        transaction_id: u64,
-        token_metadata: TokenMetadata,
-    },
-    Burn {
-        transaction_id: u64,
-        token_id: TokenId,
-    },
-    Transfer {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-    },
-    TransferPayout {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-        amount: u128,
-    },
-    NFTPayout {
-        owner: ActorId,
-        amount: u128,
-    },
-    Approve {
-        transaction_id: u64,
-        to: ActorId,
-        token_id: TokenId,
-    },
-    DelegatedApprove {
-        transaction_id: u64,
-        message: DelegatedApproveMessage,
-        signature: [u8; 64],
-    },
-    Owner {
-        token_id: TokenId,
-    },
-    IsApproved {
-        to: ActorId,
-        token_id: TokenId,
-    },
-    Clear {
-        transaction_hash: H256,
-    },
-    AddMinter {
-        transaction_id: u64,
-        minter_id: ActorId,
-    },
-    NFTData(TokenId),
-    NFTDataFromUsers(Vec<ActorId>),
-}
 
-#[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum NFTEvent {
-    Transfer(NFTTransfer),
-    TransferPayout(NFTTransferPayout),
-    NFTPayout(Payout),
-    Approval(NFTApproval),
-    Owner {
-        owner: ActorId,
-        token_id: TokenId,
-    },
-    IsApproved {
-        to: ActorId,
-        token_id: TokenId,
-        approved: bool,
-    },
-    MinterAdded {
-        minter_id: ActorId,
-    },
-    NFTData(Option<TokenMetadata>),
-    AllNFTInformation(Vec<(ActorId, Vec<TokenMetadata>)>),
-    ActionOnlyForMainContract,
-    MainContractIsNotApproved
-}
 
-*/
+
