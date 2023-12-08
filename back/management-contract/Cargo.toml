@@ -1,0 +1,16 @@
+[package]
+name = "management-contract"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+gstd.workspace = true
+management-io.workspace = true
+
+[dev-dependencies]
+gtest.workspace = true
+
+[build-dependencies]
+management-io.workspace = true
+gear-wasm-builder.workspace = true

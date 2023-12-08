@@ -5,6 +5,7 @@ resolver = "2"
 members = [
     "main-contract",
     "main-contract/state",
+    "management-contract",
     "nft-contract",
     "nft-contract/state",
     #"ping",
@@ -26,6 +27,7 @@ publish = false
 # Keep in the lexicographic order!
 
 main-contract-io.path = "main-contract/io"
+management-io.path = "management-contract/io"
 nft-io.path = "nft-contract/io"
 #ping-io.path = "ping/io"
 

@@ -5,9 +5,6 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { Card } from "../card/Card";
-import { RegisterButton } from "../register-button/RegisterButton";
-import process from "process";
-import { AnyJson } from "@polkadot/types/types";
 import { Button } from "@gear-js/ui";
 
 interface DefaultNftsProos {

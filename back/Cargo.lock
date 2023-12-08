@@ -3236,6 +3236,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "management-contract"
+version = "1.0.0"
+dependencies = [
+ "gear-wasm-builder",
+ "gstd",
+ "gtest",
+ "management-io",
+]
+
+[[package]]
+name = "management-io"
+version = "1.0.0"
+dependencies = [
+ "gmeta",
+ "gstd",
+ "primitive-types",
+]
+
+[[package]]
 name = "matchers"
 version = "0.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
