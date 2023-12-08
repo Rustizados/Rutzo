@@ -36,9 +36,6 @@ function Marketplace() {
 
     const mintedNfts: [number] = stateFormated2.purchasedNfts;
 
-    console.log("Se actualizara la marketplace");
-    
-
     setTotalNftsToMint(3 - (mintedNfts?.length ?? 0))
 
   };

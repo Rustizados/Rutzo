@@ -32,9 +32,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       return;
     }
 
-    console.log("NFT QUE SE VA A COMPRAR: ", tokenId);
-    
-
     // convert value into a valid value in Vara
     const nftParcialPrice = Number(price.toString());
 
@@ -45,9 +42,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       finalPrice = nftParcialPrice * ONE_TVARA_VALUE;
     }
   
-    console.log("To mint: ", finalPrice.toString());
-    
-
     if (Number(formattedBalance?.value)  < Number(price.toString())) {
       alert.error(`insufficient funds: ${formattedBalance?.value} < ${price.toString()}`);
       return;
@@ -72,8 +66,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
         return;
       }
 
-      console.log("AVR SE HARA EL RESPECTIVO CALCULO DE GAS");
-    
       const gas = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
         MAIN_CONTRACT.PROGRAM_ID,
@@ -82,10 +74,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
         false,
         mainMetadata
       );
-
-      console.log("Gas spend: ", gasToSpend(gas));
-      
-      console.log("MANDANDO A COMPRAR EL NFT");
 
       const { signer } = await web3FromSource(account.meta.source);
 
@@ -115,7 +103,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 if (onSaled) {
-                  console.log("Se mandara a llamar a la funcion!!!");
                   onSaled();
                 }
                 alert.success(status.type);
@@ -127,39 +114,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
         console.log(":( transaction failed", error);
       }
 
-      console.log("TERMINADO EN LA COMPRA DEL NFT!");
-
-
-      // const transferExtrinsic = await api.message.send(message, mainMetadata);
-
-      // console.log("SE TERMINO DE CREAR EL EXTRINSIC PARA EL MENSAJE");
-      
-
-      // const injector = await web3FromSource(account.meta.source);
-
-      // console.log("MANDANDO MENSAJEEEEE");
-      
-      // transferExtrinsic
-      //   .signAndSend(
-      //     account?.decodedAddress,
-      //     { signer: injector.signer },
-      //     ({ status }) => {
-      //       if (status.isInBlock) {
-      //         console.log(
-      //           `Completed at block hash #${status.asInBlock.toString()}`
-      //         );
-      //         alert.success(`Block hash #${status.asInBlock.toString()}`);
-      //       } else {
-      //         console.log(`Current status: ${status.type}`);
-      //         if (status.type === "Finalized") {
-      //           alert.success(status.type);
-      //         }
-      //       }
-      //     }
-      //   )
-      //   .catch((error: any) => {
-      //     console.log(":( transaction failed", error);
-      //   });
     } else {
       alert.error("Account not available to sign");
     }
@@ -183,7 +137,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
     const nftsOnSaleFormated: [any] = mainStateFormated.nfTsOnSale ?? [];
 
     if (nftsOnSaleFormated.length !== tokensForOwner.length) {
-      console.log("No son iguales!, posible error checando estado de nuevo");
       setData();
       return;
     }

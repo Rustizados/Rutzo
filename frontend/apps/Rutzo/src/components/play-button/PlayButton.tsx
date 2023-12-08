@@ -35,9 +35,6 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
         return;
       }
 
-      console.log("SE JUGARA CON EL NFT: ", tokenId);
-      
-
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
         MAIN_CONTRACT.PROGRAM_ID,
@@ -77,7 +74,6 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
-                console.log("Se termino el proceso de main contract =========");
                 onJoiningGame();
                 alert.success(status.type);
               }

@@ -71,15 +71,12 @@ function BoardGame() {
         .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [matchId] } }, mainContractMetadata);
       
       const stateFormated: any = stateResult.toJSON();
-      // console.log("Datos de la partida donde esta el usuario:");
-      // console.log(stateFormated);
 
       const { user1 } = stateFormated.gameInformation;
       const tokenId = user1.chosenNft;
 
       if (tokensForOwnerState.length === 0) return;
 
-      // console.log(tokensForOwnerState);
       const selectedNft = tokensForOwnerState.find((nft: any) => nft[0] === tokenId);
 
       setCardToPlay(selectedNft);
@@ -119,9 +116,6 @@ function BoardGame() {
 
 
     const showMatchResults = (userAddress: `0x${string}`, matchData: any) => {
-      console.log("INFO RECIBIDA PARA MOSTRAR!!!!!!");
-      console.log(matchData);
-      
       const matchStateData = matchData.matchState;
       const user1Data = matchData.user1;
       const user2Data = matchData.user2;
@@ -153,7 +147,6 @@ function BoardGame() {
         const stateFormated: any = stateResult.toJSON();
         const status = Object.keys(stateFormated)[0];
         if (status === 'matchDoesNotExists') {
-          console.log("La partida no existe!!");
           break;
         }
 
@@ -178,8 +171,6 @@ function BoardGame() {
       
       await sleepReact(4000);
 
-      console.log("DESPERTOOOOOOOOOOOOOOO");
-
       const stateResult = await api
           .programState
           .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [matchId] } }, mainContractMetadata);
@@ -188,7 +179,6 @@ function BoardGame() {
 
       if (matchState === 'inProgress') {
         alert.error("Erron in contract, searching match");
-        console.log("ERRRRRRRRRRRRRIIIIIIIIIIIIIIOOOOOOOOOOOOOORRRRRRRRRR la partida no concluyo de forma correcta!!");
         
         await userWaitingMatch(matchId);
         return;
@@ -209,43 +199,31 @@ function BoardGame() {
       if (!api) return;
 
       const matchId = await ActualMatchOfUser();
-      console.log("Button El usuario esta en la partida:");
-      console.log(matchId);
 
       setUserPressPlayButton(true);
 
       if (matchId !== -1) {
         setUserInMatch(true);
         setMatchInProgress(true);
-        console.log("CREANDO FUNCION PARA ESPERA EN LA PARTIDA!!!!!!!!!!!!!!!!!!!");
         
         await userWaitingMatch(matchId);
         return;
       }
 
-      console.log("El usuario ingreso a una partida ya comenzada!!!: ");
-
-
       setUserInMatch(true);
 
       const lastMatchId = await lastMatchOfUser();
-      console.log("Ultima partida que jugo el jugador: ", lastMatchId);
 
       const matchInformationStateResponse = await api
         .programState
         .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [lastMatchId] } }, mainContractMetadata);
 
       const matchInformationState: any = matchInformationStateResponse.toJSON();
-      console.log("MOSTRANDO INFORMACION DE LA PARTIDA YA EXISTENTE!!");
-      console.log(matchInformationState);
-
       const matchState = Object.keys(matchInformationState.matchState)[0];
 
       if (matchState === 'inProgress') {
-        console.log("El usuario sigue en partida!!!");
         alert.error("Erron in contract!, joined to match");
         resetBoard();
-        alert.error("Error joining the game, try again!");
         return;
       }
 
@@ -338,18 +316,11 @@ function BoardGame() {
     const setData = async () => {
       if (!api) return;
 
-      // await checkMatchStatus(0);
-      // const lastMatch = await lastMatchOfUser();
-      // console.log("USER INFORMATION: ");
-      // console.log(lastMatch);
       if (actualUserInMatch !== account?.decodedAddress) {
-        console.log("Se va a formatear el tablero este!");
-        
         resetBoard();
       }
       
       if (!nftsLoaded) {
-        console.log("CARGANDO NFTS");
         
         const resultNfts = await api.programState
           .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftContractMetadata);
@@ -537,47 +508,3 @@ function BoardGame() {
 }
 
 export { BoardGame };
-
-
-
-
-
-
-/*
-    // useEffect(() => {
-    //   if (!matchInProgress || userMatchId === -1 || !matchCreated || !cardToPlay) {
-    //     console.log("Partida sin iniciar, cancelando use effect //////////////////////////////////////");
-    //     console.log("CON CARTA:");
-    //     console.log(cardToPlay);
-    //     return;        
-    //   }
-
-    //   const resetBoardUseEffect = () => {
-    //     console.log("SE VA A FORMATEAR TODOOOOOOOOOOOOOOOOOOOOOOOOOO USE EFEEEEEEEEEEEEEECT");
-    //     setTokensForOwnerState([]);
-    //     setSelectedCards([]);
-    //     setCardToPlay(null);
-    //     setUserMatchId(-1);
-    //     setUserInMatch(false);
-    //     setMatchInProgress(false);
-    //     setNftsLoaded(false);
-    //     setUserPressPlayButton(false);
-    //     setActualUserInMatch(account?.decodedAddress ?? "0x00");
-    //   }
-
-    //   const checkMatchStatus = async () => {
-        
-    //   }
-
-    //   console.log("LA PARTIDA VA A COMENZAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    //   console.log("PARTIDA A LA QUE SE UNIRA EL VATO: ", userMatchId);
-    //   console.log("Se jugara con la carta: ");
-    //   console.log(cardToPlay);
-      
-      
-      
-    //   checkMatchStatus();
-
-
-    // }, [matchInProgress, cardToPlay, userMatchId, api, account, mainContractMetadata, matchCreated])
-    */
