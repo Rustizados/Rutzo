@@ -5,7 +5,23 @@ use gstd::{
     msg ,
     exec
 };
-use main_contract_io::*;
+use main_contract_io::{
+    contract_utils::InitContractData,
+    main_actions_events::{
+        RutzoAction,
+        RutzoEvent
+    },
+    main_state_actions_events::{
+        RutzoStateQuery,
+        RutzoStateReply 
+    },
+    nft_utils::{
+        NFTOnSale,
+        NFTDefault
+    },
+    contract_types::ONE_TVARA_VALUE,
+    Contract
+};
 
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
@@ -49,12 +65,15 @@ async fn main() {
     
     match action {
         RutzoAction::MessageTest => {
-            msg::reply(RutzoEvent::ApprovedUserDeleted(msg::source()), 0) 
+            msg::reply(RutzoEvent::MessageTestResponse(exec::block_timestamp()), 0) 
                 .expect("Error in reply a message 'RutzoEvent'");
         },
-        RutzoAction::PlayGame(token_id) => {
+        RutzoAction::PlayGame {
+            token_id,
+            play_with_bot
+        } => {
             //let message = state.play_game(msg::source(), token_id, power.parse::<u8>().expect("Error parsing")).await;
-            let message = state.play_game(msg::source(), token_id).await;
+            let message = state.play_game(msg::source(), token_id, play_with_bot).await;
             msg::reply(message, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },

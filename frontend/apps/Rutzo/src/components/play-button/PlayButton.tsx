@@ -10,7 +10,6 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
-  const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
   const signer = async () => {
 

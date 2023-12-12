@@ -127,6 +127,7 @@ pub enum NFTAction {
         token_id: TokenId
     },
     NFTData(TokenId),
+    NFTDataFromTokensId(Vec<TokenId>),    
     NFTDataFromUsers(Vec<ActorId>),
     SetMainContract(ActorId),
     MintNFTsTo {
@@ -134,7 +135,7 @@ pub enum NFTAction {
         nfts: Vec<TokenMetadata>
     },
     BurnAllNFTS,
-    DeleteContract
+    DeleteContract,
 }
 
 #[derive(Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -158,6 +159,7 @@ pub enum NFTEvent {
         minter_id: ActorId,
     },
     NFTData(Option<TokenMetadata>),
+    NFTsData(Vec<(TokenId, Option<TokenMetadata>)>),
     TokenIdNotExists(TokenId),
     AllNFTInformation(Vec<(ActorId, Vec<TokenMetadata>)>),
     ActionOnlyForMainContract,

@@ -15,7 +15,10 @@ pub enum RutzoAction {
     Register,
     //Login,
     //Logout,
-    PlayGame(TokenId),
+    PlayGame {
+        token_id: TokenId,
+        play_with_bot: bool
+    },
     MintCard {
         token_id: u8
     },
@@ -39,7 +42,7 @@ pub enum RutzoAction {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoEvent {
-    MessageTestResponse,
+    MessageTestResponse(u64),
     Minted(TokenId),
     NFTContractSaved,
     ErrorCallingNFTContract,
@@ -59,15 +62,10 @@ pub enum RutzoEvent {
     QueryNotAllowed(String),
     RegisterSucces,
     LoginSucces,
-    UserInMatch(MatchId),
-    ErrorInJoiningMatch,
     PurchaseSucces,
     ReplySuccess,
     NewPlayer(UserId),
-    MatchFinished,
-    MatchCreated,
-    UserIsAlreadyInAGame(u64),
-    PendingTransfer(TokenId),
+    PendingTransfer,
     TransferSuccess(TokenId),
     NFTIsNotApprovedByMainContract(TokenId),
     CommunicationError(ActorId),
@@ -78,7 +76,28 @@ pub enum RutzoEvent {
     InformationRecovered,
     ErrorRetrievingInformation,
     WrongMessageFromNFTContract,
-    NFTTypeIsIncorrect((TokenId, String)),
     ContractsData(DataFromContract),
     ContractToReceiveDataNotSet,
+    
+    // Game and Rounds events
+    BotWinRound,
+    PlayerOneWin,
+    PlayerTwoWin,
+    RoundDraw,
+    UserInMatch(MatchId),
+    UserIsNotInAGame(UserId),
+    GameIdDoesNotExists(u64),
+    GameIsWaitingPlayer(u64),
+    UserAlreadyChoseACard,
+    UserHasNotYetSelectedACard(UserId),
+    ErrorInJoiningMatch,
+    NFTTypeIsIncorrect((TokenId, String)),  
+    TotalTokensIdIsIncorrect(Vec<TokenId>),
+    UserIsAlreadyInAGame(u64),  
+    RoundFinished(u8),
+    MatchFinished,
+    MatchCreated,
+    MatchJoined,
+    UserChoseCard,   
+    NFTSelectedIsNotInCardsSelected(TokenId),    
 }

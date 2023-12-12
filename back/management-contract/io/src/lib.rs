@@ -1,6 +1,6 @@
 #![no_std]
 use gmeta::{In, InOut, Metadata};
-use gstd::{prelude::*, ActorId}
+use gstd::{prelude::*, ActorId};
 
 pub type MainContractProgramId = ActorId;
 pub type MainContractMetadata = String;

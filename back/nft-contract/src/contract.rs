@@ -6,12 +6,12 @@ use gear_lib_old::non_fungible_token::{
 };
 use gear_lib_derive::{NFTCore, NFTMetaState, NFTStateKeeper};
 use gstd::{
-    errors::Result as GstdResult, 
+    // errors::Result as GstdResult, 
     exec, 
     msg, 
     prelude::*, 
     ActorId, 
-    MessageId,
+    // MessageId,
     Vec,
     collections::HashMap
 };
@@ -294,6 +294,24 @@ unsafe extern "C" fn handle() {
             msg::reply(NFTEvent::NFTData(token_metadata_helper(&token_id, nft)), 0)
                 .expect("Error during replying with 'NFTEvent::NFTData'");
         },
+        NFTAction::NFTDataFromTokensId(tokens_id) => {
+            if caller != nft.main_contract && caller != nft.owner {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            
+            let mut nfts_data = Vec::new();
+            
+            tokens_id
+                .into_iter()
+                .for_each(|token_id| {
+                    nfts_data.push((token_id, token_metadata_helper(&token_id, nft)));
+                });
+            
+            msg::reply(NFTEvent::NFTsData(nfts_data), 0)
+                .expect("Error during replying with 'NFTEvent::NFTData'");
+        },
         NFTAction::NFTDataFromUsers(users) => {
             if caller != nft.main_contract && caller != nft.owner  {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
@@ -524,7 +542,7 @@ extern "C" fn state() {
                     tokens_metadata.push((token_id.clone(), token_metadata_helper(token_id, nft).unwrap()));
                 }
             }
-            msg::reply(NFTStateResponse::TokensForOwner(tokens_metadata), 0)
+            msg::reply(NFTStateResponse::TokensForOwner(tokens_metadata), 0 )
                 .expect("msg");
         },
         NFTStateQuery::TokenById(token_id) => {
@@ -553,9 +571,11 @@ extern "C" fn state() {
     }
 }
 
+/*
 fn reply(payload: impl Encode) -> GstdResult<MessageId> {
     msg::reply(payload, 0)
 }
+*/
 
 pub fn get_hash(account: &ActorId, transaction_id: u64) -> H256 {
     let account: [u8; 32] = (*account).into();

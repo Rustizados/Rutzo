@@ -1,5 +1,15 @@
 use gstd::prelude::*;
-use gear_lib_old::non_fungible_token::token::TokenId;
+use gear_lib_old::non_fungible_token::token::{TokenId, TokenMetadata};
+
+#[derive(Default, Encode, Decode, TypeInfo, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct CardData {
+    pub nft_token_id: TokenId,
+    pub nft_type: NFTCardType,
+    pub nft_power: u8,
+    pub nft_data: TokenMetadata
+}
 
 #[derive(Default, Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
@@ -19,6 +29,10 @@ pub struct NFTOnSale {
     pub token_id: TokenId,
     pub value: u128
 }
+
+
+
+// hola como estas como estas buenos dias te doy la mano y una sonrrisa que bello es vivir un nuevo dia
 
 #[derive(Default, Eq, PartialEq, Clone, Copy)]
 pub enum MatchResult {
