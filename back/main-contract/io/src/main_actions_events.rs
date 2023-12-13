@@ -36,6 +36,16 @@ pub enum RutzoAction {
     GetAllInformation,
     GetProfits,
     DeleteContract,
+    
+    // For testing the matchs with three rounds
+    
+    JoinGame {
+        cards_id: Vec<TokenId>,
+        play_with_bot: bool
+    },
+    ThrowCard(TokenId),
+    SendNFTToWinner(TokenId),
+    DeleteAllData
 }
 
 #[derive(Encode, Decode, TypeInfo, Eq, PartialEq)]
@@ -66,6 +76,11 @@ pub enum RutzoEvent {
     ReplySuccess,
     NewPlayer(UserId),
     PendingTransfer,
+    UserDoesNotHasPendingTransfer,
+    NftIdIsNotInGamId {
+        nft_id: TokenId,
+        game_id: u64
+    },
     TransferSuccess(TokenId),
     NFTIsNotApprovedByMainContract(TokenId),
     CommunicationError(ActorId),
@@ -95,7 +110,7 @@ pub enum RutzoEvent {
     TotalTokensIdIsIncorrect(Vec<TokenId>),
     UserIsAlreadyInAGame(u64),  
     RoundFinished(u8),
-    MatchFinished,
+    MatchFinished(u64),
     MatchCreated,
     MatchJoined,
     UserChoseCard,   

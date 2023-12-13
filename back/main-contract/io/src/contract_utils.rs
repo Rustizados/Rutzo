@@ -3,7 +3,8 @@ use gstd::{prelude::*, ActorId};
 use crate::{
     NFTCardType,
     CardData,
-    UserId
+    UserId, 
+    contract_types::GameId
 };
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]
@@ -47,6 +48,7 @@ pub enum MatchState {
     },
     #[default]
     InProgress,
+    LookingForEnemy,
     NotExists,
     Draw
 }
@@ -62,9 +64,9 @@ pub struct MatchInformation {
 
 #[derive(Default, Clone)]
 pub struct UserData {
-    pub current_game: Option<usize>,
-    pub recent_past_game: Option<usize>,
-    pub past_games: Vec<usize>,
+    pub current_game: Option<GameId>,
+    pub recent_past_game: Option<GameId>,
+    pub past_games: Vec<GameId>,
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]

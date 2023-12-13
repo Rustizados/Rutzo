@@ -127,7 +127,10 @@ pub enum NFTAction {
         token_id: TokenId
     },
     NFTData(TokenId),
-    NFTDataFromTokensId(Vec<TokenId>),    
+    NFTDataFromTokensIdbyUser {
+        tokens_id: Vec<TokenId>,
+        user: ActorId
+    },    
     NFTDataFromUsers(Vec<ActorId>),
     SetMainContract(ActorId),
     MintNFTsTo {

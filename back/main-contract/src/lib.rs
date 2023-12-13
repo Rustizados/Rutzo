@@ -212,6 +212,38 @@ async fn main() {
             } 
             
             exec::exit(caller);
+        },
+        RutzoAction::JoinGame {
+            cards_id,
+            play_with_bot
+        } => {
+            let response = state.join_game(caller, cards_id, play_with_bot).await;
+            msg::reply(response, 0)
+                .expect("Error in reply a message 'RutzoEvent'");
+        },
+        RutzoAction::ThrowCard(card_id) => {
+            let response = state.throw_card(caller, card_id).await;
+            msg::reply(response, 0)
+                .expect("Error in reply a message 'RutzoEvent'");
+        },
+        RutzoAction::SendNFTToWinner(nft_id) => {
+            let response = state.send_nft_to_winner(caller, nft_id).await;
+            msg::reply(response, 0)
+                .expect("Error in reply a message 'RutzoEvent'");
+        },
+        RutzoAction::DeleteAllData => {
+            if caller != state.owner {
+                msg::reply(RutzoEvent::UserIsNotTheOwner(caller), 0)
+                    .expect("Error in reply a message 'RutzoEvent'");
+                return;
+            }
+            
+            state.games2 = Vec::new();
+            state.games_waiting = Vec::new();
+            state.games_information_by_user.clear();
+            state.game_id = 0;
+            state.default_tokens_minted_by_id.clear();
+            state.pending_transfers.clear();
         }
     }
 }
@@ -228,10 +260,23 @@ unsafe extern "C" fn state() {
                         .expect("Error in decode 'RutzoStateReply'");
         },
         RutzoStateQuery::GameInformationById(game_index) => {
-            let game_information = contract.games.get(game_index as usize);
+            let game_information = contract.games2.get(game_index as usize);
             match game_information {
                 Some(data) => {
                     msg::reply(RutzoStateReply::GameInformation(data.clone()), 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+                },
+                None => {
+                    msg::reply(RutzoStateReply::MatchDoesNotExists, 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+                }
+            }
+        },
+        RutzoStateQuery::RoundInformationFromGameId(game_index) => {
+            let game_information = contract.games2.get(game_index as usize);
+            match game_information {
+                Some(data) => {
+                    msg::reply(RutzoStateReply::RoundState(data.round_state.clone()), 0)
                         .expect("Error in decode 'RutzoStateReply'");
                 },
                 None => {
@@ -272,7 +317,7 @@ unsafe extern "C" fn state() {
             }
         },
         RutzoStateQuery::MatchStateById(game_id) => {
-            match contract.games.get(game_id as usize) {
+            match contract.games2.get(game_id as usize) {
                 Some(game_data) => {
                     msg::reply(RutzoStateReply::MatchState(game_data.match_state.clone()), 0)
                         .expect("Error in decode 'RutzoStateReply'");
@@ -370,174 +415,40 @@ pub fn state_ref() -> &'static Contract {
 
 
 /*
-                {
-                    "name": "Death City Earth",
-                    "description": "Rock",
-                    "media": "https://home.rutzo.studio/NFT/death_city_earth.jpg",
-                    "reference": "20"
-                },
-                {
-                    "name": "Chinampa",
-                    "description": "Water",
-                    "media": "https://home.rutzo.studio/NFT/chinampa_water.jpg",
-                    "reference": "25"
-                },
-                {
-                    "name": "Chile",
-                    "description": "Fire",
-                    "media": "https://home.rutzo.studio/NFT/chile_fire.jpg",
-                    "reference": "55"
-                },
-                {
-                    "name": "peaceful axolotl",
-                    "description": "Water",
-                    "media": "https://home.rutzo.studio/NFT/peaceful_axolotl_water.jpg",
-                    "reference": "33"
-                },
-                {
-                    "name": "ixchel",
-                    "description": "Rock",
-                    "media": "https://home.rutzo.studio/NFT/ixchel_wind.jpg",
-                    "reference": "33"
-                },
-                {
-                    "name": "tlaloc",
-                    "description": "Water",
-                    "media": "https://home.rutzo.studio/NFT/tlaloc_water.jpg",
-                    "reference": "75"
-                }
-
-
-
 {
-    "owner": "Address of owner",
-    "nftContract": "address of nft contract",
-    "games": [
-        {
-            "user1": {
-                "userId": "address of player1",
-                "chosenNft": "Number of chosen nft",
-                "power": "Number of power"
-            },
-            "user2": {
-                "userId": "address of player2",
-                "chosenNft": "Number of chosen nft",
-                "power": "Number of power"
-            },
-            "matchState": {
-                "Finished": {
-                    "winner": "address of winner",
-                    "loser": "address of loser"
-                }
-            }
-        },
-        {
-            "user1": {
-                "userId": "address of player1",
-                "chosenNft": "Number of chosen nft",
-                "power": "Number of power"
-            },
-            "user2": null,
-            "matchState": "InProgress"
-        }
-    ],
-    "gamesWaiting": [
-        "Number of index in the games vector"
-    ],
-    "gamesInformationByUser": [
-        [
-            "Address of user",
-            {
-                "currentGame": null,
-                "pastGames": [
-                    "Number of index in games vector with finished game",
-                    "Number of index in games vector with finished game"
-                ]
-            }
-        ],
-        [
-            "Address of user",
-            {
-                "currentGame": "Index Number in games vector where the user is playing",
-                "pastGames": [
-                    "Number of index in games vector with finished game"
-                ]
-            }
-        ],
-    ],
-    "gameId": "Actual index for new games",
-    "tokensMetadataDefault": [
-        [
-            "0",
-            {
-                "name": "Death City Earth",
-                "description": "Rock",
-                "media": "https://home.rutzo.studio/NFT/death_city_earth.jpg",
-                "reference": "20"
-            }
-        ],
-        [
-            "1",
-            {
-                "name": "Chinampa",
-                "description": "Water",
-                "media": "https://home.rutzo.studio/NFT/chinampa_water.jpg",
-                "reference": "25"
-            }
-        ],
-        [
-            "2",
-            {
-                "name": "Chile",
-                "description": "Fire",
-                "media": "https://home.rutzo.studio/NFT/chile_fire.jpg",
-                "reference": "55"
-            }
-        ],
-        [
-            "3",
-            {
-                "name": "peaceful axolotl",
-                "description": "Water",
-                "media": "https://home.rutzo.studio/NFT/peaceful_axolotl_water.jpg",
-                "reference": "33"
-            }
-        ],
-        [
-            "4",
-            {
-                "name": "ixchel",
-                "description": "Rock",
-                "media": "https://home.rutzo.studio/NFT/ixchel_wind.jpg",
-                "reference": "33"
-            }
-        ],
-        [
-            "5",
-            {
-                "name": "tlaloc",
-                "description": "Water",
-                "media": "https://home.rutzo.studio/NFT/tlaloc_water.jpg",
-                "reference": "75"
-            }
-        ]
-    ],
-    "defaultTokensMintedById": [
-        [
-            "Address of user",
-            "Number of already minted default nft"
-        ],
-        [
-            "Address of user",
-            "Number of already minted default nft"
-        ]
-    ],
-    "approvedMinters": [],
-    "transactionId": "Number of actual transaction id of the main contract",
-    "pendingTransfers": []
+    "name": "Death City Earth",
+    "description": "Rock",
+    "media": "https://home.rutzo.studio/NFT/rock/zacualpan_rock.jpg",
+    "reference": "20"
+},
+{
+    "name": "Chinampa",
+    "description": "Water",
+    "media": "https://home.rutzo.studio/NFT/water/chinampa_water.jpg",
+    "reference": "25"
+},
+{
+    "name": "Chile",
+    "description": "Fire",
+    "media": "https://home.rutzo.studio/NFT/fire/chile_fire.jpg",
+    "reference": "55"
+},
+{
+    "name": "peaceful axolotl",
+    "description": "Water",
+    "media": "https://home.rutzo.studio/NFT/water/ajolote_water.jpg",
+    "reference": "33"
+},
+{
+    "name": "ixchel",
+    "description": "Ice",
+    "media": "https://home.rutzo.studio/NFT/ice/ixchel_ice.jpg",
+    "reference": "33"
+},
+{
+    "name": "tlaloc",
+    "description": "Ice",
+    "media": "https://home.rutzo.studio/NFT/ice/tlaloc_ice.jpg",
+    "reference": "75"
 }
-
-
-
-
 */

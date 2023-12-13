@@ -294,7 +294,10 @@ unsafe extern "C" fn handle() {
             msg::reply(NFTEvent::NFTData(token_metadata_helper(&token_id, nft)), 0)
                 .expect("Error during replying with 'NFTEvent::NFTData'");
         },
-        NFTAction::NFTDataFromTokensId(tokens_id) => {
+        NFTAction::NFTDataFromTokensIdbyUser {
+            tokens_id,
+            user
+        } => {
             if caller != nft.main_contract && caller != nft.owner {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
                     .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
@@ -306,7 +309,8 @@ unsafe extern "C" fn handle() {
             tokens_id
                 .into_iter()
                 .for_each(|token_id| {
-                    nfts_data.push((token_id, token_metadata_helper(&token_id, nft)));
+                    // nfts_data.push((token_id, token_metadata_helper(&token_id, nft)));
+                    nfts_data.push((token_id, token_metadata_from_user(&token_id, nft, user)));
                 });
             
             msg::reply(NFTEvent::NFTsData(nfts_data), 0)
@@ -663,24 +667,15 @@ fn token_metadata_helper(token_id: &TokenId, state: &Contract) -> Option<TokenMe
         Some(data) => {
             data.clone()
         },
-        None =>None
+        None => None
     }
-    /*
-    let mut token_metadata = TokenMetadata::default();
-    if let Some((_token_id, Some(metadata))) = state
-        .token
-        .token_metadata_by_id
-        .iter()
-        .find(|(id, _metadata)| token_id.eq(id))
-    {
-        token_metadata.name = metadata.name.clone();
-        token_metadata.description = metadata.description.clone();
-        token_metadata.media = metadata.media.clone();
-        token_metadata.reference = metadata.reference.clone();
-    } else {
-        return None;
+}
+
+fn token_metadata_from_user(token_id: &TokenId, state: &Contract, user: ActorId) -> Option<TokenMetadata> {
+    if let Some(nft_data_option) = state.token.token_metadata_by_id.get(token_id) {
+        if user == *state.token.owner_by_id.get(token_id).unwrap() {
+            return nft_data_option.clone();
+        }
     }
-    
-    Some(token_metadata)
-    */
+    None
 }

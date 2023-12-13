@@ -6,7 +6,8 @@ use crate::{
     NFTDefault,
     ContractState,
     MatchInformation,
-    NFTOnSale
+    NFTOnSale, 
+    GameData
 };
 
 #[derive(Default, Encode, Decode, TypeInfo)]
@@ -15,6 +16,7 @@ use crate::{
 pub enum RutzoStateQuery{
     UserIsRegister(UserId),
     GameInformationById(u64),
+    RoundInformationFromGameId(u64),
     MatchStateById(u64),
     PlayerInformation(UserId),
     PlayerIsInMatch(ActorId),
@@ -31,7 +33,9 @@ pub enum RutzoStateQuery{
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateReply {
     UserIsRegister(bool),
-    GameInformation(MatchInformation),
+    // GameInformation(MatchInformation),
+    GameInformation(GameData),
+    RoundState(MatchState),
     PlayerInformation(UserDataState),
     PlayerInMatch(Option<u64>),
     MatchState(MatchState),
