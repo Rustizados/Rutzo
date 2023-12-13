@@ -67,6 +67,7 @@ pub struct UserData {
     pub current_game: Option<GameId>,
     pub recent_past_game: Option<GameId>,
     pub past_games: Vec<GameId>,
+    pub is_logged_id: bool
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]

@@ -17,7 +17,7 @@ use main_contract_io::{
     },
     nft_utils::{
         NFTOnSale,
-        NFTDefault
+        NFTDefault, CardData
     },
     contract_types::ONE_TVARA_VALUE,
     Contract
@@ -73,7 +73,7 @@ async fn main() {
             play_with_bot
         } => {
             //let message = state.play_game(msg::source(), token_id, power.parse::<u8>().expect("Error parsing")).await;
-            let message = state.play_game(msg::source(), token_id, play_with_bot).await;
+            let message = state.play_game(caller, token_id, play_with_bot).await;
             msg::reply(message, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
@@ -96,20 +96,28 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::Register => {
-            msg::reply(state.register_user(msg::source()), 0)
+            msg::reply(state.register_user(caller), 0)
+                .expect("Error in reply a message 'RutzoEvent'");
+        },
+        RutzoAction::Login => {
+            msg::reply(state.login_user(caller), 0)
+                .expect("Error in reply a message 'RutzoEvent'");
+        },
+        RutzoAction::Logout => {
+            msg::reply(state.logout_user(caller), 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::AddNftForSale { 
             token_metadata,
             value 
         } => {
-            msg::reply(state.mint_nft_to_sale(msg::source(), token_metadata, value).await, 0)
+            msg::reply(state.mint_nft_to_sale(caller, token_metadata, value).await, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::BuyNFT(token_id) => {
             let value = msg::value();
             let (message, value_to_return) = state.buy_nft(
-                msg::source(), 
+                caller, 
                 token_id, 
                 value
             ).await;
@@ -180,7 +188,7 @@ async fn main() {
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::RestoreInformationFromOldMainContract => {
-            msg::reply(state.restore_data(msg::source()).await, 0)
+            msg::reply(state.restore_data(caller).await, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::GetAllInformation => {
@@ -258,6 +266,37 @@ unsafe extern "C" fn state() {
             let is_register = contract.games_information_by_user.contains_key(&user_address);
             msg::reply(RutzoStateReply::UserIsRegister(is_register), 0)
                         .expect("Error in decode 'RutzoStateReply'");
+        },
+        RutzoStateQuery::UserHasPendingTransfer(user_id) => {
+            let game_id_pending_transfer = if let Some((_, game_id)) = contract.pending_transfers.get(&user_id) {
+                Some(*game_id as u64)
+            } else  {
+                None
+            };
+            
+            msg::reply(RutzoStateReply::PendingTransferFrom(game_id_pending_transfer), 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+        },
+        RutzoStateQuery::CardsFromUserInGame(user_id, game_id) => {
+            let game_id = game_id as usize;
+            match contract.games2.get(game_id) {
+                Some(data) => {
+                    let cards: Option<Vec<CardData>>;
+                    if data.user_1.user_id == user_id {
+                        cards = Some(data.user_1.nfts_chosen.clone());
+                    } else if data.user_2.as_ref().unwrap().user_id == user_id {
+                        cards = Some(data.user_2.as_ref().unwrap().nfts_chosen.clone());
+                    } else {
+                        cards = None;
+                    }
+                    msg::reply(RutzoStateReply::CardsInGameFromGivenUser(cards), 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+                },
+                None => {
+                    msg::reply(RutzoStateReply::MatchDoesNotExists, 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+                }
+            };
         },
         RutzoStateQuery::GameInformationById(game_index) => {
             let game_information = contract.games2.get(game_index as usize);

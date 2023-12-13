@@ -13,8 +13,8 @@ use crate::{
 pub enum RutzoAction {
     MessageTest,
     Register,
-    //Login,
-    //Logout,
+    Login,
+    Logout,
     PlayGame {
         token_id: TokenId,
         play_with_bot: bool
@@ -68,10 +68,13 @@ pub enum RutzoEvent {
     NFTTypeDoesNotExist(String),
     AccountAlreadyExist(UserId),
     AccountNotExists(UserId),
+    AccountAlreadyLoggedIn(UserId),
+    UserIsNotLoggedIn(UserId),
     AccountAlreadyInMatch(UserId),
     QueryNotAllowed(String),
     RegisterSucces,
     LoginSucces,
+    LogoutSuccess,
     PurchaseSucces,
     ReplySuccess,
     NewPlayer(UserId),

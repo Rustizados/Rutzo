@@ -502,7 +502,8 @@ impl Contract {
         self.games_information_by_user.insert(user_id, UserData {
             current_game: None,
             recent_past_game: None,
-            past_games: vec![]
+            past_games: vec![],
+            is_logged_id: true
         });       
         self.default_tokens_minted_by_id.insert(user_id, UserDefaultMints {
             nfts_minted: Vec::new(),
@@ -511,6 +512,43 @@ impl Contract {
         RutzoEvent::RegisterSucces
     }
     
+    pub fn login_user(&mut self, user_id: UserId) -> RutzoEvent {
+        // Check if the user is register
+        if !self.is_register(&user_id) {    
+            return RutzoEvent::AccountNotExists(user_id);
+        }
+        
+        let user_data = self.games_information_by_user
+            .get_mut(&user_id)
+            .unwrap();
+        
+        if user_data.is_logged_id {
+            return RutzoEvent::AccountAlreadyLoggedIn(user_id);
+        }
+        
+        user_data.is_logged_id = true;
+        
+        RutzoEvent::LoginSucces
+    }  
+    
+    pub fn logout_user(&mut self, user_id: UserId) -> RutzoEvent {
+        // Check if the user is register
+        if !self.is_register(&user_id) {    
+            return RutzoEvent::AccountNotExists(user_id);
+        }
+        
+        let user_data = self.games_information_by_user
+            .get_mut(&user_id)
+            .unwrap();
+        
+        if !user_data.is_logged_id {
+            return RutzoEvent::UserIsNotLoggedIn(user_id);
+        }
+        
+        user_data.is_logged_id = false;
+        
+        RutzoEvent::LogoutSuccess
+    }  
     
     pub fn is_register(&self, user_id: &UserId) ->  bool {
         self.games_information_by_user.contains_key(user_id)
@@ -865,7 +903,7 @@ impl Contract {
         game_data.round_data.user2_card = None;
         game_data.round_state = round_state;
         
-        if game_data.round > 3 && game_data.user1_wins != game_data.user2_wins {
+        if game_data.round >= 3 && game_data.user1_wins != game_data.user2_wins {
             game_data.match_state = if game_data.user1_wins > game_data.user2_wins {
                 self.pending_transfers.insert(user_2, (user_1, game_id));
                 MatchState::Finished { 
