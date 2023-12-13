@@ -262,6 +262,10 @@ unsafe extern "C" fn state() {
     let message = msg::load()
         .expect("Error in decode 'RutzoStateAction'");
     match message {
+        RutzoStateQuery::TotalUsersOnline => {
+            msg::reply(RutzoStateReply::UsersOnline(contract.users_online), 0)
+                        .expect("Error in decode 'RutzoStateReply'");
+        },
         RutzoStateQuery::UserIsRegister(user_address)=> {
             let is_register = contract.games_information_by_user.contains_key(&user_address);
             msg::reply(RutzoStateReply::UserIsRegister(is_register), 0)

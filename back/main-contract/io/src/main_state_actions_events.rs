@@ -15,6 +15,7 @@ use crate::{
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateQuery{
+    TotalUsersOnline,
     UserIsRegister(UserId),
     UserHasPendingTransfer(UserId),
     CardsFromUserInGame(UserId, u64),
@@ -35,6 +36,7 @@ pub enum RutzoStateQuery{
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoStateReply {
+    UsersOnline(u64),
     UserIsRegister(bool),
     PendingTransferFrom(Option<u64>),
     CardsInGameFromGivenUser(Option<Vec<CardData>>),

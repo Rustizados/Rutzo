@@ -65,6 +65,7 @@ pub struct Contract {
     pub games_waiting: Vec<GameId>,
     pub games_information_by_user: HashMap<UserId, UserData>,
     pub game_id: GameId,
+    pub users_online: u64,
     pub tokens_metadata_default: HashMap<u8, TokenMetadata>,
     pub nfts_for_sale: HashMap<TokenId, NFTPrice>,
     pub default_tokens_minted_by_id: HashMap<UserId, UserDefaultMints>,
@@ -505,6 +506,9 @@ impl Contract {
             past_games: vec![],
             is_logged_id: true
         });       
+        
+        self.users_online += 1;
+        
         self.default_tokens_minted_by_id.insert(user_id, UserDefaultMints {
             nfts_minted: Vec::new(),
             can_mint: true
@@ -527,6 +531,7 @@ impl Contract {
         }
         
         user_data.is_logged_id = true;
+        self.users_online += 1;
         
         RutzoEvent::LoginSucces
     }  
@@ -545,6 +550,7 @@ impl Contract {
             return RutzoEvent::UserIsNotLoggedIn(user_id);
         }
         
+        self.users_online -= 1;
         user_data.is_logged_id = false;
         
         RutzoEvent::LogoutSuccess
