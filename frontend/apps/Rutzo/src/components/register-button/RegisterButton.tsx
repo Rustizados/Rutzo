@@ -7,13 +7,11 @@ import {
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
-import { useState } from "react";
 
 function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
-  const [voucherCreated, setVoucherCreated] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   // Datos de cuenta del administrador donde se efectuaran los pagos en los contratos

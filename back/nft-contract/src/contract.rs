@@ -31,7 +31,8 @@ pub struct Contract {
     pub collection: Collection,
     pub constraints: Constraints,
     pub main_contract: ActorId,
-    pub users_transactions_id: HashMap<ActorId, u64>
+    pub users_transactions_id: HashMap<ActorId, u64>,
+    pub tokens_metadata_default: HashMap<u8, TokenMetadata>,
 }
 
 static mut CONTRACT: Option<Contract> = None;
@@ -52,6 +53,11 @@ unsafe extern "C" fn init() {
         constraints: config.constraints,
         owner: msg::source(),
         main_contract: config.main_contract,
+        tokens_metadata_default: config.tokens_metadata_default
+                .into_iter()
+                .enumerate()
+                .map(|(index, data)| (index as u8, data))
+                .collect(),
         ..Default::default()
     };
     CONTRACT = Some(nft);
@@ -384,6 +390,33 @@ unsafe extern "C" fn handle() {
             )
             .expect("Error during replying with `NFTEvent::Transfer`");
         },
+        NFTAction::MintDefaultNFT {
+            transaction_id,
+            to,
+            nft_id
+        } => {
+            if caller != nft.owner && caller != nft.main_contract {
+                msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            }
+            
+            let Some(token_metadata) = nft.tokens_metadata_default.get(&nft_id) else {
+                msg::reply(NFTEvent::TokenDefaultIdNotExists(nft_id), 0)
+                    .expect("Error during replying with 'NFTEvent::ActionOnlyForMainContract'");
+                return;
+            };
+            
+            let token_metadata = token_metadata.clone();
+            
+            msg::reply(
+                nft.process_transaction(transaction_id, |nft| {
+                    NFTEvent::Transfer(MyNFTCore::mint_to(nft, &to, token_metadata.clone()))
+                }),
+                0,
+            )
+            .expect("Error during replying with `NFTEvent::Transfer`");
+        },
         NFTAction::BurnAllNFTS => {
             if caller != nft.owner && caller != nft.main_contract {
                 msg::reply(NFTEvent::ActionOnlyForMainContract, 0)
@@ -415,11 +448,18 @@ unsafe extern "C" fn handle() {
 pub trait MyNFTCore: NFTCore {
     fn mint(&mut self, token_metadata: TokenMetadata) -> NFTTransfer;
     fn transfer_nft(&mut self, to: &ActorId, token_id: TokenId) -> NFTTransfer;
+    fn mint_to(&mut self, to: &ActorId, token_metadata: TokenMetadata) -> NFTTransfer;
 }
 
 impl MyNFTCore for Contract {
     fn mint(&mut self, token_metadata: TokenMetadata) -> NFTTransfer {
         let transfer = NFTCore::mint(self, &msg::source(), self.token_id, Some(token_metadata));
+        self.token_id = self.token_id.saturating_add(U256::one());
+        transfer
+    }
+    
+    fn mint_to(&mut self, to: &ActorId, token_metadata: TokenMetadata) -> NFTTransfer {
+        let transfer = NFTCore::mint(self, to, self.token_id, Some(token_metadata));
         self.token_id = self.token_id.saturating_add(U256::one());
         transfer
     }
@@ -619,8 +659,7 @@ impl From<&Contract> for State {
             transactions,
             collection,
             constraints,
-            main_contract:  _,
-            users_transactions_id: _
+            ..
         } = value;
 
         let owners = token

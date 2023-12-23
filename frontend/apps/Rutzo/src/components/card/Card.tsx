@@ -3,7 +3,8 @@ import styles from './Card.module.scss';
 import { Icon } from '../icon';
 import { PowerBar } from '../power';
 import { CardDialog } from './CardDialog';
-import { Modal } from './Modal';
+//import { Modal } from './Modal';
+import { Modal } from '../modal/Modal';
 
 interface CardProps {
   image: string;

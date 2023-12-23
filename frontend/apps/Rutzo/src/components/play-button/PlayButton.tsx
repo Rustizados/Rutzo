@@ -2,7 +2,7 @@ import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
+import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 
 function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {

@@ -186,9 +186,24 @@ impl Contract {
         .await
     }
     
+    pub async fn mint_default_nft_to_user(nft_contract: ActorId, nft_id: u8, to: UserId, transaction_id: u64) -> Result<NFTEvent, Error> {
+        msg::send_for_reply_as::<NFTAction, NFTEvent>(
+            nft_contract, 
+            NFTAction::MintDefaultNFT { 
+                transaction_id, 
+                to,
+                nft_id
+            }, 
+            0, 
+            0
+        )
+        .expect("Error in sending a message 'NFTAction::Mint' to nft contract")
+        .await
+    }
+    
     pub async fn transfer_match_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
         match msg::send_for_reply_as::<NFTAction, NFTEvent>(
-            nft_contract, 
+            nft_contract,   
             NFTAction::TranserNFTToUser { 
                 transaction_id, 
                 to, 
@@ -425,6 +440,47 @@ impl Contract {
         RutzoEvent::Minted(token_id)
     }
     
+    pub async fn mint_default_card(&mut self, token_id: u8) -> RutzoEvent {
+        let user_id = msg::source();
+        
+        if !self.is_register(&user_id) {
+            return RutzoEvent::AccountNotExists(user_id);
+        } 
+        
+        let nfts_minted_data = self.default_tokens_minted_by_id.get_mut(&user_id).unwrap();
+        
+        if !nfts_minted_data.can_mint {
+            return RutzoEvent::MaxMintsReached(user_id);    
+        }
+        
+        let answer = Contract::mint_default_nft_to_user(
+            self.nft_contract.unwrap(), 
+            token_id,
+            user_id,
+            self.transaction_id
+        )
+        .await
+        .expect("Unable to decode NFTEvent");
+        
+        let NFTEvent::Transfer(_) = answer else {
+            return RutzoEvent::ErrorCallingNFTContract; 
+        };
+        
+        self.transaction_id = self.transaction_id.saturating_add(1);
+        
+        self.default_tokens_minted_by_id
+            .entry(user_id)
+            .and_modify(|minted_data| {
+                minted_data.nfts_minted.push(token_id);
+                if minted_data.nfts_minted.len() == 5 {
+                    minted_data.can_mint = false;
+                }
+            })
+            .or_default();
+        
+        RutzoEvent::Minted(TokenId::default())
+    }
+    
     pub async fn mint_card(&mut self, token_id: u8) -> RutzoEvent {
         let user_id = msg::source();
         
@@ -473,7 +529,7 @@ impl Contract {
             .entry(user_id)
             .and_modify(|minted_data| {
                 minted_data.nfts_minted.push(token_id);
-                if minted_data.nfts_minted.len() == 5 {
+                if minted_data.nfts_minted.len() == 4 {
                     minted_data.can_mint = false;
                 }
             })
@@ -554,7 +610,15 @@ impl Contract {
         user_data.is_logged_id = false;
         
         RutzoEvent::LogoutSuccess
-    }  
+    }
+    
+    pub fn is_logged(&self, user_id: UserId) -> bool {
+        let user_data = self.games_information_by_user
+            .get(&user_id)
+            .unwrap();
+        
+        user_data.is_logged_id
+    }
     
     pub fn is_register(&self, user_id: &UserId) ->  bool {
         self.games_information_by_user.contains_key(user_id)

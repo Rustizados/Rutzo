@@ -21,13 +21,13 @@ export const ROUTES = {
 
 // Addres are in the mainnet
 export const MAIN_CONTRACT: Contract = {
-  PROGRAM_ID: import.meta.env.MAIN_CONTRACT_ADDRESS,
-  METADATA: import.meta.env.MAIN_CONTRACT_METADATA
+  PROGRAM_ID: import.meta.env.VITE_MAIN_CONTRACT_ADDRESS,
+  METADATA: import.meta.env.VITE_MAIN_CONTRACT_METADATA
 };
 
 export const NFT_CONTRACT: Contract = {
-  PROGRAM_ID: import.meta.env.NFT_CONTRACT_ADDRESS,
-  METADATA: import.meta.env.NFT_CONTRACT_METADATA
+  PROGRAM_ID: import.meta.env.VITE_NFT_CONTRACT_ADDRESS,
+  METADATA: import.meta.env.VITE_NFT_CONTRACT_METADATA
 };
 
 export const ONE_TVARA_VALUE = 1000000000000;

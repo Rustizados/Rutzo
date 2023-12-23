@@ -59,7 +59,8 @@ pub struct InitNFT {
     pub collection: Collection,
     pub royalties: Option<Royalties>,
     pub constraints: Constraints,
-    pub main_contract: ActorId
+    pub main_contract: ActorId,
+    pub tokens_metadata_default: Vec<TokenMetadata>
 }
 
 #[derive(Default, Debug, Encode, Decode, PartialEq, Eq, PartialOrd, Ord, Clone, TypeInfo, Hash)]
@@ -137,6 +138,11 @@ pub enum NFTAction {
         to: ActorId,
         nfts: Vec<TokenMetadata>
     },
+    MintDefaultNFT {
+        transaction_id: u64,
+        to: ActorId,
+        nft_id: u8
+    },
     BurnAllNFTS,
     DeleteContract,
 }
@@ -164,6 +170,7 @@ pub enum NFTEvent {
     NFTData(Option<TokenMetadata>),
     NFTsData(Vec<(TokenId, Option<TokenMetadata>)>),
     TokenIdNotExists(TokenId),
+    TokenDefaultIdNotExists(u8),
     AllNFTInformation(Vec<(ActorId, Vec<TokenMetadata>)>),
     ActionOnlyForMainContract,
     MainContractIsNotApproved,

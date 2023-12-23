@@ -80,7 +80,7 @@ async fn main() {
         RutzoAction::MintCard {
             token_id
         } => {
-            msg::reply(state.mint_card(token_id).await, 0)
+            msg::reply(state.mint_default_card(token_id).await, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::SetNFTAddress(address) => {
