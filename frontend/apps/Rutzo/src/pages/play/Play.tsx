@@ -5,6 +5,8 @@ import { ProgramMetadata } from "@gear-js/api";
 import { useAccount, useApi } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useState } from "react";
+import { ButtonToJoinInAGame } from "@/components/ComponentsForContracts/Actions/JoiningGame/ButtonToJoin";
+import { ButtonToThrowCard } from "@/components/ComponentsForContracts/Actions/ThrowCard/ButtonToThrowCard";
 import "./Collection.scss";
 
 function Play() {
@@ -66,6 +68,13 @@ function Play() {
                 <MyNFTCollection />
                 <br />
                 <div className="playcontainer">
+
+
+                  <ButtonToJoinInAGame cardsId={[Number(0), Number(1), Number(2)]} playWithBot={false} />
+                  <ButtonToThrowCard cardId={Number(0)} />
+
+
+
                   <a href="/game">
                     <GameController />
                     PLAY

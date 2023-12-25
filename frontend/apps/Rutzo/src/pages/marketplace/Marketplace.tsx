@@ -6,7 +6,6 @@ import { DefaultNfts, RegisterButton, NftsOnSale } from "@/components";
 import { ProgramMetadata } from "@gear-js/api";
 import "./Marketplace.scss";
 
-
 function Marketplace() {
   const { api } = useApi();
   const { account } = useAccount();

@@ -64,6 +64,6 @@ export const App = withProviders(Component);
     "description": "Ice",
     "media": "https://home.rutzo.studio/NFT/ice/tlaloc_ice.jpg",
     "reference": "75"
-}
+} 
 
 */
