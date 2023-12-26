@@ -4,8 +4,16 @@ import { Home } from './home';
 import { Play } from './play';
 import { Profile } from './profile';
 import { Game } from './game';
+import { Select } from './select';
 
-const routes = [{ path: '/', Page: Home }, { path: '/marketplace', Page: Marketplace }, { path: '/play', Page: Play }, { path: '/profile', Page: Profile }, { path: '/game', Page: Game }];
+const routes = [
+    { path: '/', Page: Home },
+    { path: '/marketplace', Page: Marketplace },
+    { path: '/play', Page: Play },
+    { path: '/select', Page: Select },
+    { path: '/profile', Page: Profile },
+    { path: '/game', Page: Game }
+];
 
 function Routing() {
   const getRoutes = () => routes.map(({ path, Page }) => <Route key={path} path={path} element={<Page />} />);
