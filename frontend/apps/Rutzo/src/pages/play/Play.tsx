@@ -1,104 +1,50 @@
+import React, { useEffect } from "react";
 import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.svg";
 import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import { RegisterButton, MyNFTCollection, UserEmptyAccount } from "@/components";
-import { ProgramMetadata } from "@gear-js/api";
-import { useAccount, useApi } from "@gear-js/react-hooks";
-import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
-import { useState } from "react";
 import { ButtonToJoinInAGame } from "@/components/ComponentsForContracts/Actions/JoiningGame/ButtonToJoin";
 import { ButtonToThrowCard } from "@/components/ComponentsForContracts/Actions/ThrowCard/ButtonToThrowCard";
 import "./Collection.scss";
+import useContractData from "@/hooks/useContractData";
 
 function Play() {
-  const { api } = useApi();
-  const { account } = useAccount();
-  const [hasEnoughCards, setHasEnoughCards] = useState(false);
-  const [numberOfNfts, setNumberOfNfts] = useState(0);
-  const [isRegister, setIsRegister] = useState(false);
-  const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const { hasEnoughCards, fetchData, numberOfNfts, isRegister } = useContractData();
 
-  const setData = async () => {   
-    if (!account || !api) return; 
-    
-    const stateResult = await api
-      .programState
-      .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
-    
-    const stateFormated: any = stateResult.toJSON();
-
-    setIsRegister(stateFormated.userIsRegister);
-
-    if (!isRegister) return;
-
-    try {
-      const nftStateResult = await api
-        .programState
-        .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, ProgramMetadata.from(NFT_CONTRACT.METADATA));
-      
-      const nftStateFormated: any = nftStateResult.toJSON();
-      
-      const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
-
-      const totalNfts = tokensForOwner.length;
-
-      setNumberOfNfts(totalNfts);
-
-      if (totalNfts > 2) {
-        setHasEnoughCards(true);
-      } else {
-        setHasEnoughCards(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setHasEnoughCards(false);
-    }
-
-  };
-
-  setData();
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);  // Cambio aquí
 
   return (
-    <div className="play-title">
-      { 
-        isRegister ? (
-          <div>
-            {hasEnoughCards ? (
-              <div className="alert">
-                <h1>Your NFT collection</h1>
-                <MyNFTCollection />
-                <br />
-                <div className="playcontainer">
-
-
-                  <ButtonToJoinInAGame cardsId={[Number(0), Number(1), Number(2)]} playWithBot={false} />
-                  <ButtonToThrowCard cardId={Number(0)} />
-
-
-
-                  <a href="/game">
-                    <GameController />
-                    PLAY
-                  </a>
+      <div className="play-title">
+        {isRegister ? (
+            hasEnoughCards ? (
+                <div className="alert">
+                  <h1>Your NFT collection</h1>
+                  <MyNFTCollection />
+                  <br />
+                  <div className="playcontainer">
+                    <ButtonToJoinInAGame cardsId={[0, 1, 2]} playWithBot={false} />
+                    <ButtonToThrowCard cardId={0} />
+                    <a href="/game">
+                      <GameController />
+                      PLAY
+                    </a>
+                  </div>
                 </div>
-              </div>
             ) : (
-              <div>
-                {
-                  numberOfNfts > 0 ? (
+                numberOfNfts > 0 ? (
                     <div className="alert">
-                      <h1>You don&apos;t have enough NFTs</h1>
+                      <h1>You don't have enough NFTs</h1>
                       <MyNFTCollection />
                       <br />
                       <div className="playcontainer">
-                        <div className="playcontainer">
-                          <a href="/marketplace">
-                            <ShoppingCart />
-                            MARKETPLACE
-                          </a>
-                        </div>
+                        <a href="/marketplace">
+                          <ShoppingCart />
+                          MARKETPLACE
+                        </a>
                       </div>
                     </div>
-                  ) : (
+                ) : (
                     <UserEmptyAccount>
                       <p className="alert">Go to the marketplace and get some cool NFTs!</p>
                       <div className="playcontainer">
@@ -107,27 +53,16 @@ function Play() {
                         </a>
                       </div>
                     </UserEmptyAccount>
-                  )
-                }
-              </div> 
-            )}
-          </div>
+                )
+            )
         ) : (
-          <UserEmptyAccount>
-            <p className="alert">Register to get free cards</p>
-            <RegisterButton onRegister={setData} />
-          </UserEmptyAccount>
-        )
-      }
-    </div>
+            <UserEmptyAccount>
+              <p className="alert">Register to get free cards</p>
+              <RegisterButton onRegister={fetchData} />  {/* Asumiendo que fetchData actualiza el estado */}
+            </UserEmptyAccount>
+        )}
+      </div>
   );
 }
 
 export { Play };
-
-
-// return (
-//   <div className="play-title">
-//     <MyNFTCollection />
-//   </div>
-// );

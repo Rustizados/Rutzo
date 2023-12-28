@@ -3,7 +3,7 @@ import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.sv
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import { UserEmptyAccount, RegisterButton, BoardGame, MyNFTCollection } from "@/components";
+import {UserEmptyAccount, RegisterButton, BoardGame, MyNFTCollection} from "@/components";
 
 function Select() {
   const { api } = useApi();
@@ -12,6 +12,8 @@ function Select() {
   const [userNftsNumber, setUserNftsNumber] = useState(0);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
   const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
+
+
 
   const setData = async () => {
     if (!api) return;
@@ -53,7 +55,9 @@ function Select() {
               <div>
                 {
                   userNftsNumber > 2 ? (
+                      <div>
                       <BoardGame />
+                      </div>
                   ) : (
                       <div>
                         {

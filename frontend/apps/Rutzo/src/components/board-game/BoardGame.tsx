@@ -1,9 +1,10 @@
 import { ProgramMetadata } from "@gear-js/api";
 import { useAccount, useAlert, useApi } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
-import { Card, Facedowncard, PlayButton } from "@/components";
+import {Card, Carousel, Facedowncard, PlayButton} from "@/components";
 import { useState } from "react";
 import { sleepReact } from "@/app/utils";
+import Slider from "react-slick";
 // import "./Collection.scss";
 
 import "./slide-in.css";
@@ -90,31 +91,6 @@ function BoardGame() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const showMatchResults = (userAddress: `0x${string}`, matchData: any) => {
       const matchStateData = matchData.matchState;
       const user1Data = matchData.user1;
@@ -187,14 +163,6 @@ function BoardGame() {
       resetBoard();
     }
 
-
-
-
-
-
-
-
-
     const handlePlayButton = async () => {
       if (!api) return;
 
@@ -243,27 +211,6 @@ function BoardGame() {
 
       resetBoard();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   
     const setStateWithoutSelectedCards = (cards: [any], cardsSelected: [any]) => {
@@ -360,25 +307,31 @@ function BoardGame() {
         <div className="mainContainer">
           <div style={{ ...containerStyles, flexDirection: "column" }}>
             <h3 className="sectionTitle">My NFT Collection</h3>
+
             <div className="area areaBorder myCardsArea">
+
               {tokensForOwnerState.length > 0 ? (
-                tokensForOwnerState.map((element: any) => {
-                  const [nftId, elemento] = element;
-                  return (
-                    <Card 
-                      image={elemento.media}
-                      title={elemento.name}
-                      type={elemento.description.toLowerCase()}
-                      value={elemento.reference}
-                      key={nftId}
-                      onCardClick={() => {cardSelected(nftId, false)}}
-                    />
-                  );
-                })
-              ) : (
+                      <Carousel>
+                        {
+                          tokensForOwnerState.map((card: any) => {
+                            const [nftId, elemento] = card;
+                            return (
+                              <Card
+                                image={elemento.media}
+                                title={elemento.name}
+                                type={elemento.description.toLowerCase()}
+                                value={elemento.reference}
+                                key={nftId}
+                                onCardClick={() => {cardSelected(nftId, false)}}
+                              />
+                            )
+                          })
+                        }
+                      </Carousel>
+                  ): (
                 <h3 style={{ fontSize: "1.5rem" }}>No NFTs</h3>
               )}
-  
+
             </div>
             <h3 className="sectionTitle">My NFT Selection</h3>
             <div className="area selectedCardsArea">

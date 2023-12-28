@@ -1,4 +1,5 @@
 import { Feature } from "./Feature";
+import {Carousel} from "@/components";
 
 const featureData = [
   {
@@ -30,6 +31,15 @@ function Features() {
   return (
     <div style={{ marginBlock: "5%" }} className="text-light" id="Features">
       <div className="features-container">
+        <Carousel>
+          <div>1</div>
+            <div>2</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+
+        </Carousel>
+
         {featureData.map((feature) => (
           <Feature
             key={feature.id}

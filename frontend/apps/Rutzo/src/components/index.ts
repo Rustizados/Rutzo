@@ -9,6 +9,9 @@ import { Card } from './card/Card';
 import { Facedowncard } from './facedowncard/facedowncard';
 import { PlayButton } from './play-button/PlayButton';
 import { BoardGame } from './board-game/BoardGame';
+import {Carousel}  from "@/components/carousel";
+
+
 
 export { 
     Header, 
@@ -23,5 +26,6 @@ export {
     UserEmptyAccount,
     Facedowncard,
     PlayButton,
-    BoardGame
+    BoardGame,
+    Carousel
 };

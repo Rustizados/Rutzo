@@ -1,4 +1,7 @@
 import './app.scss';
+import './global.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useAccount, useApi } from '@gear-js/react-hooks';
 import { Routing } from './pages';
 import { ApiLoader } from '@/components';
