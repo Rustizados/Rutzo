@@ -12,41 +12,40 @@ function Play() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);  // Cambio aquí
+  }, [fetchData]);
 
   return (
       <div className="play-title">
         {isRegister ? (
             hasEnoughCards ? (
                 <div className="alert">
-                  <h1>Your NFT collection</h1>
+                  <h1>Your Collection</h1>
                   <MyNFTCollection />
                   <br />
                   <div className="playcontainer">
                     <ButtonToJoinInAGame cardsId={[0, 1, 2]} playWithBot={false} />
                     <ButtonToThrowCard cardId={0} />
+                    {/*TODO: Cambiar por un boton*/}
                     <a href="/game">
-                      <GameController />
-                      PLAY
+                      <GameController /> PLAY
                     </a>
                   </div>
                 </div>
             ) : (
                 numberOfNfts > 0 ? (
                     <div className="alert">
-                      <h1>You don't have enough NFTs</h1>
+                      <h1>You don't have enough Cards</h1>
                       <MyNFTCollection />
                       <br />
                       <div className="playcontainer">
                         <a href="/marketplace">
-                          <ShoppingCart />
-                          MARKETPLACE
+                          <ShoppingCart /> MARKETPLACE
                         </a>
                       </div>
                     </div>
                 ) : (
                     <UserEmptyAccount>
-                      <p className="alert">Go to the marketplace and get some cool NFTs!</p>
+                      <p className="alert">Go to the marketplace and get some cool Cards!</p>
                       <div className="playcontainer">
                         <a href="/marketplace" className="alert">
                           MARKETPLACE
@@ -57,8 +56,8 @@ function Play() {
             )
         ) : (
             <UserEmptyAccount>
-              <p className="alert">Register to get free cards</p>
-              <RegisterButton onRegister={fetchData} />  {/* Asumiendo que fetchData actualiza el estado */}
+              <p className="alert">Register to get free Cards</p>
+              <RegisterButton onRegister={fetchData} />
             </UserEmptyAccount>
         )}
       </div>

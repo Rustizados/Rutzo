@@ -124,6 +124,7 @@ function RegisterButton({ onRegister }: any) {
 
 
   const signer = async () => {
+    console.log("signer");
     if (!account || !accounts || !api) return;
     await setMainContractVoucher();
   };

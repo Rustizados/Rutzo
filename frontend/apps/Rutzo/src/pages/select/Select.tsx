@@ -63,7 +63,7 @@ function Select() {
                         {
                           userNftsNumber > 0 ? (
                               <div className="alert">
-                                <h1>You don&apos;t have enough NFTs</h1>
+                                <h1>You don&apos;t have enough Cards</h1>
                                 <MyNFTCollection />
                                 <br />
                                 <div className="playcontainer">
