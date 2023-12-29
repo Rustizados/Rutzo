@@ -5,7 +5,7 @@ import { Play } from './play';
 import { Profile } from './profile';
 import { Game } from './game';
 import { Select } from './select';
-// import { Fight } from './fight';
+import { Fight } from './fight';
 
 const routes = [
     { path: '/', Page: Home },
@@ -13,8 +13,8 @@ const routes = [
     { path: '/play', Page: Play },
     { path: '/select', Page: Select },
     { path: '/profile', Page: Profile },
-    { path: '/game', Page: Game }
-    // { path: '/fight', Page: Fight }
+    { path: '/game', Page: Game },
+    { path: '/fight', Page: Fight }
 ];
 
 function Routing() {

@@ -6,9 +6,15 @@
 
 .sectionTitle{
     color: #fff;
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-align: center;
-    margin: 20px;
+    margin-top: 16px;
+}
+
+.titleGame{
+    font-family: "press_start_tp";
+    padding-top: 48px;
+    padding-left: 56px;
 }
 
 .area {
@@ -19,6 +25,10 @@
     border-radius: 16px;
 }
 
+.hidden {
+    display: none;
+    background: red;
+}
 
 .selectedCardsArea{
     display: flex;
@@ -26,6 +36,11 @@
     background: rgba(55, 255, 10, 0.2);
     border-radius: 16px;
     border: #257215;
+    min-height: 362px;
+}
+
+.selection-area{
+    padding-bottom: 24px;
 }
 
 .myCardsArea {
@@ -48,12 +63,20 @@
 }
 
 .playArea{
-    display: flex;
-    flex-direction: column;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+
     justify-content: space-evenly;
     align-items: center;
     background: rgba(120, 52, 207, 0.10);
     width: 100%;
+}
+
+.flex-display{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    /*align-items: center;*/
 }
 
 .versusArea{
@@ -95,12 +118,22 @@
 }
 
 .buttonPrimary{
-    border-radius: 16px;
-    height: 36px;
+    font-family: "press_start_tp";
+
+
+
+
+    border-radius: 8px;
     padding: 8px 16px;
-    background: #18ff4e;
-    max-width: 200px;
+
     align-self: center;
+    color: #ffffff;
+
+
+    background-color: #7834cf;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.0rem;
+
 }
 
 .grid-row{
