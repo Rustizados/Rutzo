@@ -15,6 +15,7 @@
 
 # dependencies
 node_modules
+packages
 .pnp.*
 
 # production
