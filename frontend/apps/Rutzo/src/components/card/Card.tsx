@@ -46,6 +46,8 @@ class Card extends React.Component<CardProps, CardState> {
     }
 
   handleClose() {
+    console.log("SE CERRARA EL MODAAAAAAAAAAAL");
+    
     this.setState({ dialogOpen: false });
   }
 

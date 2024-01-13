@@ -5,10 +5,8 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { Card } from "../card/Card";
-import { RegisterButton } from "../register-button/RegisterButton";
-import process from "process";
-import { AnyJson } from "@polkadot/types/types";
 import { Button } from "@gear-js/ui";
+import Spinner from 'react-bootstrap/Spinner';
 
 interface DefaultNftsProos {
   onMinted?: any;
@@ -17,10 +15,11 @@ interface DefaultNftsProos {
 function DefaultNfts({onMinted}: DefaultNftsProos) {
   const { api } = useApi();
   const { account } = useAccount();
-  const alert = useAlert();
   const [defaultsNFTs, setDefaultsNFTs] = useState<any>([]);
   const [canMint, setCanMint] = useState(true);
+  const [minting, setMinting] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const alert = useAlert();
 
   const mintDefaultNft = async (nftId: number) => {
     if (!api) return;
@@ -58,6 +57,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
     }, mainContractMetadata);
 
     const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+    let alertLoaderId: any = null;
 
     try {
       await voucherTx
@@ -65,30 +65,42 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
         account?.decodedAddress,
         { signer },
         ({ status, events }) => {
+          if (!alertLoaderId) {
+            alertLoaderId = alert.loading("processing mint");
+          }
           if (status.isInBlock) {
             console.log(
               `Completed at block hash #${status.asInBlock.toString()}`
             );
             alert.success(`Block hash #${status.asInBlock.toString()}`);
+
           } else {
             console.log(`Current status: ${status.type}`);
-            if (status.type === "Finalized") {
+            if (status.isFinalized) {
               if (onMinted) {
                 console.log("Se mandara a llamar a la funcion!!!");
                 onMinted();
               }
+              alert.remove(alertLoaderId);
               alert.success(status.type);
+              setMinting(false);
             }
           }
         }
       )
     } catch(error: any) {
       console.log(":( transaction failed", error);
+      setMinting(false);
     }
   }
 
   const setDefaultsNfts = async () => {
     if (!api) return;
+
+    if (minting) {
+      return;
+    }
+    
 
     const stateResult1 = await api
       .programState
@@ -143,10 +155,17 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
             price={6}
             key={nft.saleId}
           >
-            <Button text="Mint" onClick={() => {
-              const saleId = Number(nft.saleId.toString());
-              mintDefaultNft(saleId);
-            }} />
+            {
+              !minting ?  (
+                <Button text="Mint" onClick={() => {
+                  const saleId = Number(nft.saleId.toString());
+                  setMinting(true);
+                  mintDefaultNft(saleId);
+                }} />
+              ) : (
+                <Spinner animation="border" variant="success" />
+              )
+            }
           </Card>
         )
       }

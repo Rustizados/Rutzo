@@ -2,15 +2,14 @@ import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
+import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 
-function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
+function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
-  const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
   const signer = async () => {
 
@@ -28,12 +27,15 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
         return;
       }
 
+
       const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
 
       if (!voucherExists) {
         alert.error("voucher does not exist!");
         return;
       }
+
+      onPressed(true);
 
       console.log("SE JUGARA CON EL NFT: ", tokenId);
       
@@ -59,6 +61,7 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
       }, mainContractMetadata);
 
       const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+      let alertLoaderId: any = null;
 
       try {
         await voucherTx
@@ -66,26 +69,30 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
           account?.decodedAddress,
           { signer },
           ({ status }) => {
+            if (!alertLoaderId) {
+              alertLoaderId = alert.loading("preparing game");
+            }
             if (status.isInBlock) {
+              onPressed(true);
               console.log(
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
-              if (onPressed) {
-                onPressed();
-              }
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 console.log("Se termino el proceso de main contract =========");
-                onJoiningGame();
+                alert.remove(alertLoaderId);
                 alert.success(status.type);
+                onPressed(false);
+                onJoiningGame();
               }
             }
           }
         )
       } catch(error: any) {
         console.log(":( transaction failed", error);
+        onPressed(false);
       }
     } else {
       alert.error("Account not available to sign");

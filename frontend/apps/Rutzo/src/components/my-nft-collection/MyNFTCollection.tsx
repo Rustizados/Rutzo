@@ -1,8 +1,8 @@
-import { decodeAddress, ProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { CollectionCard } from "../collection-card";
-import { NFT_CONTRACT, MAIN_CONTRACT } from "@/app/consts";
+import { NFT_CONTRACT } from "@/app/consts";
 
 
 function MyNFTCollection() {

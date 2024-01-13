@@ -189,7 +189,7 @@ impl NFTCardType {
             "Ice" => {
                 Ok(Self::Ice)
             },
-            "Fight" => {
+            "Fighting" => {
                 Ok(Self::Fight)
             },
             "Poison" => {

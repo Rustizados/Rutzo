@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./UserEmptyAccount.scss";
 
 function UserEmptyAccount({ children }: any) {

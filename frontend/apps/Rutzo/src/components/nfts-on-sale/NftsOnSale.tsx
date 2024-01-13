@@ -8,6 +8,7 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "@gear-js/ui";
 import { AnyNumber } from "@polkadot/types/types";
 import { u128 } from "@polkadot/types";
+import Spinner from 'react-bootstrap/Spinner';
 
 interface DefaultNftsProos {
   onSaled?: any;
@@ -18,10 +19,11 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
   const { account, accounts } = useAccount();
   const { balance } = useBalance(account?.address);
   const { getFormattedBalance } = useBalanceFormat();
-  const alert = useAlert();
   const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
-  const [nftsPrices, setNftsPrices] = useState<any>([])
+  const [nftsPrices, setNftsPrices] = useState<any>([]);
+  const [buyingNFT, setBuyingNFT] = useState(false);
   const formattedBalance = isApiReady && balance ? getFormattedBalance(balance) : undefined;
+  const alert = useAlert();
 
   const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
   const mainMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
@@ -100,12 +102,17 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
 
       const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
 
+      let alertLoaderId: any = null;
+
       try {
         await voucherTx
         .signAndSend(
           account?.decodedAddress,
           { signer },
           ({ status, events }) => {
+            if (!alertLoaderId) {
+              alertLoaderId = alert.loading("processing purchase");
+            }
             if (status.isInBlock) {
               console.log(
                 `Completed at block hash #${status.asInBlock.toString()}`
@@ -118,48 +125,21 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
                   console.log("Se mandara a llamar a la funcion!!!");
                   onSaled();
                 }
+                alert.remove(alertLoaderId);
                 alert.success(status.type);
+                setData();
+                setBuyingNFT(false);
               }
             }
           }
         )
       } catch(error: any) {
         console.log(":( transaction failed", error);
+        if (alertLoaderId) alert.remove(alertLoaderId);
+        setBuyingNFT(false);
       }
 
       console.log("TERMINADO EN LA COMPRA DEL NFT!");
-
-
-      // const transferExtrinsic = await api.message.send(message, mainMetadata);
-
-      // console.log("SE TERMINO DE CREAR EL EXTRINSIC PARA EL MENSAJE");
-      
-
-      // const injector = await web3FromSource(account.meta.source);
-
-      // console.log("MANDANDO MENSAJEEEEE");
-      
-      // transferExtrinsic
-      //   .signAndSend(
-      //     account?.decodedAddress,
-      //     { signer: injector.signer },
-      //     ({ status }) => {
-      //       if (status.isInBlock) {
-      //         console.log(
-      //           `Completed at block hash #${status.asInBlock.toString()}`
-      //         );
-      //         alert.success(`Block hash #${status.asInBlock.toString()}`);
-      //       } else {
-      //         console.log(`Current status: ${status.type}`);
-      //         if (status.type === "Finalized") {
-      //           alert.success(status.type);
-      //         }
-      //       }
-      //     }
-      //   )
-      //   .catch((error: any) => {
-      //     console.log(":( transaction failed", error);
-      //   });
     } else {
       alert.error("Account not available to sign");
     }
@@ -167,6 +147,8 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
 
   const setData = async () => {
     if (!api) return;
+
+    if (buyingNFT) return;
 
     const stateNft = await api
       .programState
@@ -208,9 +190,20 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
             price={nftPriceData.value}
             key={nftId}
           >
-            <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
+            {/* <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
+
               butNft(nftId, nftPriceData.value as u128);
-            }} />
+            }} /> */}
+            {
+              !buyingNFT ?  (
+                <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
+                  setBuyingNFT(true);
+                  butNft(nftId, nftPriceData.value as u128);
+                }} />
+              ) : (
+                <Spinner animation="border" variant="success" />
+              )
+            }
           </Card>;
         })
       ) : (

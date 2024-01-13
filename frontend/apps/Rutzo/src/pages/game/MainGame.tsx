@@ -100,52 +100,7 @@ function MainGame() {
   //   console.log("cardToPlay", cardToPlay);
   // };
 
-  useEffect(() => {
-    /*
-    async function getMyNFT() {
-      if (!api) return;
 
-      const programIDNFT = NFT_CONTRACT.PROGRAM_ID;
-      try {
-        const result = await api.programState.read(
-          { programId: programIDNFT, payload: "" },
-          metadata
-        );
-        const fullState: any = result.toJSON();
-        // Usando encadenamiento opcional y asignando valores predeterminados como arrays vacíos
-        const tokensForOwner = fullState.token?.tokensForOwner ?? [];
-        console.log("tokensForOwner", tokensForOwner);
-        const tokenMetadataById = fullState.token?.tokenMetadataById ?? [];
-        console.log("tokenMetadataById", tokenMetadataById);
-
-        const allDataNFTs = tokenMetadataById.map((item: any) => item[1]);
-        console.log("allDataNFTs", allDataNFTs);
-        setAllNFTs(allDataNFTs);
-
-        // Tomar el primer elemento del resultado de filter, que es un array de arrays con los tokens del owner
-        const myNFTsArray = tokensForOwner.filter(
-          (obj: any) => obj[0] === decodeAddress(currentAccount ?? "")
-        );
-        console.log("myNFTsArray", myNFTsArray);
-
-        // Verificar si myNFTsArray tiene elementos antes de intentar acceder a ellos
-        const myNFTs = myNFTsArray[0][1].length > 0 ? myNFTsArray[0][1] : [];
-        console.log("myNFTs", myNFTs);
-
-        const myNFTCollectionH = tokenMetadataById
-          .filter((item: any) => myNFTs.includes(item[0]))
-          .map((item: any) => item[1]);
-
-        setMyNFTCollection(myNFTCollectionH);
-      } catch (error: any) {
-        console.error("Error fetching NFTs:", error);
-      }
-    }
-
-    getMyNFT();
-    */
-  // }, [api?.programState, currentAccount, metadata]);
-  }, []);
 
 
   const cardStyles = { border: "none", background: "transparent" };
@@ -235,3 +190,5 @@ function MainGame() {
 }
 
 export { MainGame };
+
+
