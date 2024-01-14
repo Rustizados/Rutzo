@@ -110,7 +110,8 @@ function RegisterButton({ onRegister }: any) {
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
-      13000000000000
+      // 13000000000000
+      18000000000000
     );
 
     const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
