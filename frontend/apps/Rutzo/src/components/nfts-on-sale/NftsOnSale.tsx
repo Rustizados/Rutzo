@@ -34,9 +34,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       return;
     }
 
-    console.log("NFT QUE SE VA A COMPRAR: ", tokenId);
-    
-
     // convert value into a valid value in Vara
     const nftParcialPrice = Number(price.toString());
 
@@ -74,8 +71,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
         return;
       }
 
-      console.log("AVR SE HARA EL RESPECTIVO CALCULO DE GAS");
-    
       const gas = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
         MAIN_CONTRACT.PROGRAM_ID,
@@ -86,8 +81,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       );
 
       console.log("Gas spend: ", gasToSpend(gas));
-      
-      console.log("MANDANDO A COMPRAR EL NFT");
 
       const { signer } = await web3FromSource(account.meta.source);
 
@@ -122,7 +115,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 if (onSaled) {
-                  console.log("Se mandara a llamar a la funcion!!!");
                   onSaled();
                 }
                 alert.remove(alertLoaderId);
@@ -138,8 +130,6 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
         if (alertLoaderId) alert.remove(alertLoaderId);
         setBuyingNFT(false);
       }
-
-      console.log("TERMINADO EN LA COMPRA DEL NFT!");
     } else {
       alert.error("Account not available to sign");
     }

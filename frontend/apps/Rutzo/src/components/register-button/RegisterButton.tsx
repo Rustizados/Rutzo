@@ -7,11 +7,14 @@ import {
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
+import { useState } from "react";
+import Spinner from 'react-bootstrap/Spinner';
 
 function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
+  const [userIsSigning, setUserIsSigning] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   // Datos de cuenta del administrador donde se efectuaran los pagos en los contratos
@@ -73,24 +76,37 @@ function RegisterButton({ onRegister }: any) {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 alert.success(status.type);
+                setUserIsSigning(false);
               }
             }
           }
         )
       } catch(error: any) {
         console.log(":( transaction failed", error);
+        setUserIsSigning(false);
       }
     } else {
       alert.error("Account not available to sign");
+      setUserIsSigning(false);
     }
   }
 
 
   // Function to create voucher to main contract
   const setMainContractVoucher = async () => {
-    if (!api) return;
+    if (!api || !account) return;
     // Se genera el "issue" para crear el voucher para el usuario
     // En este caso, para el main contract
+
+    setUserIsSigning(true);
+
+    const voucherAlreadyExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+
+    if (voucherAlreadyExists) {
+      console.log("Voucher already exists");
+      await registerUser();
+      return;
+    }
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
@@ -128,7 +144,9 @@ function RegisterButton({ onRegister }: any) {
     await setMainContractVoucher();
   };
 
-  return <Button text="Register" onClick={signer} /> // <Button text="Register" onClick={signer} className="alert" />;
+  return !userIsSigning 
+    ? <Button text="Register" onClick={signer} />
+    : <Spinner animation="border" variant="success" />;
 }
 
 

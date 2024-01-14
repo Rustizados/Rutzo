@@ -78,7 +78,6 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
             console.log(`Current status: ${status.type}`);
             if (status.isFinalized) {
               if (onMinted) {
-                console.log("Se mandara a llamar a la funcion!!!");
                 onMinted();
               }
               alert.remove(alertLoaderId);

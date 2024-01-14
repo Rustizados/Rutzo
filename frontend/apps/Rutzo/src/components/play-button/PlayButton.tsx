@@ -4,15 +4,18 @@ import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
+import { useState } from "react";
+import Spinner from 'react-bootstrap/Spinner';
 
 function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
-  const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const [loadingSignature, setLoadingSignature] = useState(false);
+  const alert = useAlert();
+
 
   const signer = async () => {
-
     if (!account || !accounts || !api) return;
 
     const localaccount = account?.address;
@@ -35,10 +38,8 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
         return;
       }
 
+      setLoadingSignature(true);
       onPressed(true);
-
-      console.log("SE JUGARA CON EL NFT: ", tokenId);
-      
 
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
@@ -81,9 +82,9 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
-                console.log("Se termino el proceso de main contract =========");
                 alert.remove(alertLoaderId);
                 alert.success(status.type);
+                setLoadingSignature(false);
                 onPressed(false);
                 onJoiningGame();
               }
@@ -93,12 +94,17 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
       } catch(error: any) {
         console.log(":( transaction failed", error);
         onPressed(false);
+        setLoadingSignature(false);
       }
     } else {
       alert.error("Account not available to sign");
     }
   };
 
-  return <Button text="Play" onClick={signer} />;
+  // return <Button text="Play"  onClick={signer} />;
+  
+  return !loadingSignature 
+    ? <Button text="Play" onClick={signer} />
+    : <Spinner animation="border" variant="success" />;
 }
 export { PlayButton };
