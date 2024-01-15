@@ -48,6 +48,7 @@ meta.txt
 
 */.idea
 /.idea
+.idea/
 
 frontend/apps/Rutzo/.idea/workspace.xml
 
