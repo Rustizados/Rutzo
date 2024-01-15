@@ -47,4 +47,6 @@ meta.txt
 *.meta.txt
 
 */.idea
+/.idea
+
 
