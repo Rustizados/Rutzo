@@ -1,6 +1,12 @@
 @use 'assets/styles';
 @use '@gear-js/ui/variables' as *;
 
+:root {
+  --primary-color: #7834CF;
+  --secondary-color: #3DDC84;
+  --gradient: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+}
+
 @font-face {
   font-family: 'valorax';
   src: url('./fonts/valorax.otf');

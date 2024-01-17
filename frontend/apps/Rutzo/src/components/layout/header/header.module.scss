@@ -21,21 +21,19 @@
 }
 
 .list li a {
-  color: white !important;
+  color: white;
 }
 
 .list li:hover {
-  color: #FFF;
-  text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
+  //text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
+  background: var(--gradient);
+  border-radius: 30px;
 }
 
 
 .highlight{
-  color: #FFF !important;
-  display: flex;
   margin-inline: 20px;
-  align-items: center !important;
-  background-color: #7834cf;
+  background: var(--gradient);
   border-radius: 24px;
   padding: 10px;
   transition: all 0.3s ease-in-out;
@@ -43,10 +41,8 @@
 }
 
 .highlight:hover{
-  color: #fff;
-  background-color: #3DDC84;
-  //filter:  drop-shadow(5px 5px 0 rgba(194, 48, 11, 0.953)) hue-rotate(45deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
-  //transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  filter:  drop-shadow(5px 5px 0 var(--secondary-color)) hue-rotate(5deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
 }
 
 .highlight a {
@@ -54,13 +50,15 @@
   display: flex !important;
   align-items: center !important;
   padding: 0 8px;
+  font-size: 14px;
 }
 
 .highlight svg {
   font-weight: bold;
   width: 1em;
   height: 1em;
-  margin-right: 5px;
+  margin-right: 10px;
+  font-size: 20px;
   color: #FFF;
 }
 
