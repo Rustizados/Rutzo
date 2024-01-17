@@ -1,16 +1,14 @@
-import { ProgramMetadata } from "@gear-js/api";
-import { useAccount, useAlert, useApi } from "@gear-js/react-hooks";
-import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { Card, Facedowncard, PlayButton } from "@/components";
-import { useState } from "react";
-import { sleepReact } from "@/app/utils";
-// import "./Collection.scss";
+
 
 import "./slide-in.css";
 import "./fire.css";
 import "./selectedCards.css";
 import "./MainGame.css";
 import useGameState from "@/hooks/useGameState";
+
+import DeckContainer from "@/components/deck-container/DeckContainer";
+
 
 function BoardGame() {
     const {
@@ -40,6 +38,7 @@ function BoardGame() {
     return (
       <div>
         <div className="mainContainer">
+            {/*<DeckContainer />*/}
           <div style={{ ...containerStyles, flexDirection: "column" }}>
             <h3 className="sectionTitle">My NFT Collection</h3>
             <div className="area areaBorder myCardsArea">

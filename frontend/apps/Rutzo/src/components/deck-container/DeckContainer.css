@@ -1,0 +1,39 @@
+
+.p-4 {
+  padding: 1rem;
+}
+
+.border{
+  border-style: solid;
+}
+
+.border-2 {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.border-4 {
+  border-style: solid;
+  border-width: 4px;
+}
+
+.border-indigo-500 {
+
+  border-color: rgba(99, 102, 241, 1) !important;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.rounded-3xl {
+  border-radius: 1.5rem;
+}
+
+.bg-indigo-300 {
+  background-color: #a3bffa;
+}
+
+.z-10 {
+  z-index: 10;
+}
