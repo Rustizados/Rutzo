@@ -1,29 +1,3 @@
-// @use '@/assets/styles';
-// @import 'global.css';
-
-// body {
-//   background-image: url('./assets/images/bg.png');
-//   background-color: #2b2b2b;
-// }
-
-// #root {
-//   display: flex;
-//   flex-direction: column;
-//   min-height: 100vh;
-//   max-width: 467px;
-//   margin-left: auto;
-//   margin-right: auto;
-//   background-color: #ffffff;
-// }
-
-// main {
-//   position: relative; // for loaders
-//   display: flex;
-//   flex-direction: column;
-//   flex: 1;
-//   padding: 100px 16px;
-// }
-
 @use 'assets/styles';
 @use '@gear-js/ui/variables' as *;
 
@@ -57,14 +31,34 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: 'inter';
+  src: url('./fonts/inter.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'space_grotesk';
+  src: url('./fonts/space_grotesk.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'ia_writer';
+  src: url('./fonts/ia_writer_duo.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'clash_display';
+  src: url('./fonts/clash_display.ttf');
+  font-weight: normal;
+}
+
 #root {
-  max-width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: content-box;
+  padding: 0 32px;
 }
 
 main {
