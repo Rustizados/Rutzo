@@ -42,9 +42,9 @@
 
   @media screen and (max-width: 1016px) {
     .feature{
-      display: inline-block;
+      width: auto;
       text-align: center;
-      margin-block: 20px;
+      margin-block: 40px;
     }
   
     .feature img {
