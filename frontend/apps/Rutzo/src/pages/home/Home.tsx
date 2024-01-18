@@ -17,21 +17,19 @@ function Home() {
         </div>
         <div className="Banner">
           <img src="https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg" alt="NFTs" style={{transform: 'rotate(20deg)'}}/>
-          <img src="https://home.rutzo.studio/NFT/lightning/nova_lightning.jpg" alt="NFTs" style={{transform: 'rotate(10deg)'}}/>
-          <img src="https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg" alt="NFTs"/>
+          <img src="https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg" alt="NFTs" style={{transform: 'rotate(10deg)'}}/>
+          <img src="https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg" alt="NFTs"/>
         </div>
       </div>
 
       <h1
-        style={{ textAlign: "center", margin: "5%" }}
         id="features"
-        className="Title"
+        className="title"
       >
         Features
       </h1>
       <Features />
       <h1
-        style={{ textAlign: "center", margin: "5%" }}
         id="how-to-start"
         className="title"
       >
@@ -39,7 +37,6 @@ function Home() {
       </h1>
       <HowToStart />
       <h1
-        style={{ textAlign: "center", margin: "5%" }}
         id="faq"
         className="title"
       >
