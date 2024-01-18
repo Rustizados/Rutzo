@@ -1,8 +1,8 @@
 import React from 'react';
 import { Logo } from './logo';
 import { AccountInfo } from './account-info';
+import { Play } from '@/components/play/Play';
 import styles from './header.module.scss';
-import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 
 type Props = {
   isAccountVisible: boolean;
@@ -30,12 +30,7 @@ export function Header({ isAccountVisible }: Props) {
           </li>
         </ul>
       </div>
-      <div className={styles.highlight}>
-        <a href="/play">
-          <GameController/>
-          PLAY
-        </a>
-      </div>
+      < Play style={{marginInline: "20px"}}/>
       {isAccountVisible && <AccountInfo />}
     </header>
   );
