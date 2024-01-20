@@ -7,6 +7,7 @@
   --light-blue: #89C6FF;
   --dark-blue: #3633D0;
   --background: #080614;
+  --background-gradient: linear-gradient(to right, var(--background), #17113A);
   --gradient: linear-gradient(to right, var(--primary-color), var(--secondary-color));
   --blue-gradient: linear-gradient(to right, var(--light-blue), var(--dark-blue));
   --acrylic: #ffffff26;
@@ -79,6 +80,6 @@ main {
 }
 
 body {
-  background: url(assets/images/bg.svg);
+  background: var(--background-gradient);
   color:white !important;
 }
