@@ -4,7 +4,11 @@
 :root {
   --primary-color: #7834CF;
   --secondary-color: #3DDC84;
+  --light-blue: #89C6FF;
+  --dark-blue: #3633D0;
+  --background: #080614;
   --gradient: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  --blue-gradient: linear-gradient(to right, var(--light-blue), var(--dark-blue));
   --acrylic: #ffffff26;
 }
 

@@ -1,6 +1,5 @@
 import { IconType } from 'react-icons/lib';
 import './Features.css';
-import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 
 interface FeatureProps {
   image: IconType;
