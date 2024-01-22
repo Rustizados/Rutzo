@@ -1,14 +1,11 @@
-.MainTitle {
-  margin-bottom: 20px;
-}
-
 .Main {
   display: flex;
   margin-top: 50px;
 }
 
 .MainTitle {
-  padding: 0 100px;
+  margin-bottom: 20px;
+  padding: 0 5%; /* Ajusta el padding en porcentaje para hacerlo responsive */
   max-width: 700px;
 }
 
@@ -28,19 +25,22 @@
 }
 
 .Banner {
-  padding: 0 100px;
-  width: 20%;
+  width: 100%;
+  padding: 0 5%; /* Ajusta el espacio interior del banner para hacerlo responsive */
   position: relative;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Asegura que las imágenes se envuelvan en dispositivos pequeños */
+  gap: 1%; /* Espacio entre las imágenes */
 
-.Banner img {
-  border-radius: 20px;
-  max-width: 120%;
-  max-height: 120%;
-}
-
-.Banner img {
-  position: absolute;
+  img {
+    border-radius: 20px;
+    max-width: calc(50% - 1%); /* Ajusta el ancho de las imágenes para dispositivos pequeños */
+    max-height: 100%;
+    transition: all 0.5s ease;
+    position: absolute;
+  }
 }
 
 .Main h1 {
@@ -52,32 +52,32 @@
 .title {
   font-family: inter;
   font-weight: bold;
-  margin: 50px 0;
+  margin: 5% 0;
 }
 
 .centered {
   width: 100%;
-  margin-block: 100px;
-}
+  margin-block: 10%; /* Ajusta el margen en porcentaje */
 
-.centered h1 {
-  text-align: center;
-  font-family: inter;
-  font-weight: bold;
-  font-size: 50px;
-}
+  h1 {
+    font-size: 5vw; /* Ajusta el tamaño del texto en unidades vw (viewport width) */
+    text-align: center;
+    font-family: inter;
+    font-weight: bold;
+  }
 
-.centered p {
-  max-width: 500px;
-  text-align: center;
-  font-family: inter;
-  font-size: 16px;
-  margin: 0 auto;
-  margin-bottom: 100px;
+  p {
+    max-width: 70vw; /* Ajusta el ancho máximo en unidades vw */
+    margin: 2% auto;
+    margin-bottom: 10%;
+    text-align: center;
+    font-family: inter;
+    font-size: 1.5vw;
+  }
 }
 
 .section {
-  margin: 100px;
+  margin: 10%;
 }
 
 .marketplace_button {
@@ -85,35 +85,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
-  height: 50px;
-  background: var(--blue-gradient);
+  width: 40%;
+  height: 5vw;
+  background: transparent;
   font-family: inter;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.5s ease;
-  border-radius: 25px;
+  border-radius: 5vw;
+  border: 2px solid var(--primary-color);
 }
 
-.marketplace_button::after {
-  content: "";
-  width: 193px;
-  height: 43px;
-  position: absolute;
-  background: var(--background);
-  border-radius: 25px;
-}
-
-.marketplace_button a {
-  z-index: 1;
-  position: relative;
-  color: white;
-  text-decoration: none;
-}
-
-.marketplace_button:hover::after {
+.marketplace_button:hover {
   background: var(--blue-gradient);
+  border: none;
 }
 
 @media screen and (max-width: 1016px) {
@@ -123,7 +108,7 @@
   }
 
   .MainTitle {
-    padding: 0 50px;
+    padding: 0 5%;
     text-align: center;
   }
 
@@ -136,10 +121,10 @@
   }
   
   .Banner {
-    padding: 0 50px;
+    padding: 0 5%;
     width: 100%;
     height: 300px;
-    margin-block: 50px;
+    margin-block: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,14 +137,18 @@
   }
 
   .Main h1 {
-    font-size: 50px;
+    font-size: 7vw;
   }
 
   .MainTitle p {
-    font-size: 14px;
+    font-size: 2.5vw;
   }
 
   .section {
     margin-inline: 0;
+  }
+
+  .centered p {
+    font-size: 2vw;
   }
 }
