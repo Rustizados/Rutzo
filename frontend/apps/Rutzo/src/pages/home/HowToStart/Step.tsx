@@ -17,9 +17,10 @@ function Step({ icon: Icon, title, url_text, url, content, image }: StepProps) {
             <Icon style={{ fontSize: "400%" }} className={styles.step_icon}/>
             <h2>
                 {title}
-                <span><a href={url} className="link-light">{url_text}</a></span>
+                <span><a href={url} className="link-light">{url_text}
                 {" "}
                 {url != "" ? < TbExternalLink /> : ""}
+                </a></span>
             </h2>
             <p>
                 {content}

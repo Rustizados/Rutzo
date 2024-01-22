@@ -34,3 +34,18 @@
     }
 
 }
+
+@media screen and (max-width: 600px) {
+    .carousel_container {
+        flex-direction: column;
+        align-items: center;
+        margin-block: 0;
+    }
+
+    .carousel_item {
+        width: 60%;
+        flex: 0 0 calc(50% - 40px); /* Reducí el espacio total entre las columnas a 40px */
+        margin-block: 10px;
+        box-sizing: border-box; /* Añadí box-sizing para incluir el margen en el cálculo del tamaño */
+    }
+}

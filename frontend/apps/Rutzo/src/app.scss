@@ -71,6 +71,14 @@ a {
   color: white !important
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: clash_display;
+}
+
+p {
+  font-family: space_grotesk;
+}
+
 #root {
   min-height: 100vh;
   margin: 0 auto;

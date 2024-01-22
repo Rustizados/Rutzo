@@ -7,3 +7,7 @@
     background-color: #7834CF;
     color: white;
 }
+
+.accordion > * {
+    font-family: inter;
+}

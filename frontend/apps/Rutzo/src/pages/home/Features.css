@@ -44,7 +44,7 @@
     .feature{
       width: auto;
       text-align: center;
-      margin-block: 40px;
+      margin: 40px 100px;
     }
   
     .feature img {
@@ -59,3 +59,11 @@
       margin-left: 0%;
     }
   }
+
+@media screen and (max-width: 600px) {
+  .feature{
+    width: auto;
+    text-align: center;
+    margin: 40px 0;
+  }  
+}

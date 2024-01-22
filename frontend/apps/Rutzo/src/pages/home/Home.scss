@@ -1,12 +1,16 @@
 .Main {
   display: flex;
-  margin-top: 50px;
+  margin-top: 5%;
 }
 
 .MainTitle {
   margin-bottom: 20px;
-  padding: 0 5%; /* Ajusta el padding en porcentaje para hacerlo responsive */
+  padding: 0 5%;
   max-width: 700px;
+}
+
+.MainTitle h1 {
+  font-family: inter;
 }
 
 .MainTitle h1 span{
@@ -20,23 +24,20 @@
 
 .MainTitle p {
   font-size: 16px;
-  font-family: space_grotesk;
   padding-top: 30px;
 }
 
 .Banner {
   width: 100%;
-  padding: 0 5%; /* Ajusta el espacio interior del banner para hacerlo responsive */
+  padding: 0 5%;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap; /* Asegura que las imágenes se envuelvan en dispositivos pequeños */
-  gap: 1%; /* Espacio entre las imágenes */
 
   img {
     border-radius: 20px;
-    max-width: calc(50% - 1%); /* Ajusta el ancho de las imágenes para dispositivos pequeños */
+    max-width: calc(50% - 1%);
     max-height: 100%;
     transition: all 0.5s ease;
     position: absolute;
@@ -44,30 +45,27 @@
 }
 
 .Main h1 {
-  font-family: inter;
   font-weight: bold;
   font-size: 67px;
 }
 
 .title {
-  font-family: inter;
   font-weight: bold;
   margin: 5% 0;
 }
 
 .centered {
   width: 100%;
-  margin-block: 10%; /* Ajusta el margen en porcentaje */
+  margin-block: 10%;
 
   h1 {
-    font-size: 5vw; /* Ajusta el tamaño del texto en unidades vw (viewport width) */
+    font-size: 5vw;
     text-align: center;
-    font-family: inter;
     font-weight: bold;
   }
 
   p {
-    max-width: 70vw; /* Ajusta el ancho máximo en unidades vw */
+    max-width: 70vw;
     margin: 2% auto;
     margin-bottom: 10%;
     text-align: center;
@@ -85,14 +83,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40%;
-  height: 5vw;
+  width: 200px;
+  height: 50px;
   background: transparent;
   font-family: inter;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
   border-radius: 5vw;
+  margin-top: 30px;
   border: 2px solid var(--primary-color);
 }
 
@@ -108,7 +107,7 @@
   }
 
   .MainTitle {
-    padding: 0 5%;
+    padding: 10% 5%;
     text-align: center;
   }
 
@@ -122,12 +121,8 @@
   
   .Banner {
     padding: 0 5%;
-    width: 100%;
-    height: 300px;
-    margin-block: 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 50%;
+    height: 200px;
   }
 
   .Banner img {
@@ -145,10 +140,27 @@
   }
 
   .section {
-    margin-inline: 0;
+    margin: 15% 0;
   }
 
   .centered p {
     font-size: 2vw;
   }
+}
+
+@media screen and (max-width: 600px) {
+  .MainTitle h1 {
+    font-size: 10vw;
+  }
+  .centered h1 {
+    font-size: 8vw;
+  }
+
+  .MainTitle p {
+    font-size: 4vw;
+  }
+
+  .centered p {
+    font-size: 4vw;
+  } 
 }
