@@ -1,4 +1,4 @@
-import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
+import { useAccount, useApi, useAlert, useVoucher, useBalanceFormat } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import Spinner from 'react-bootstrap/Spinner';
 
 function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
+  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
+  const { getFormattedBalanceValue } = useBalanceFormat();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
@@ -29,6 +31,7 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
       if (!account) {
         return;
       }
+
 
 
       const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);

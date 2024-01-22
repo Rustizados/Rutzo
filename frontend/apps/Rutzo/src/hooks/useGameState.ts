@@ -1,5 +1,5 @@
 import { ProgramMetadata } from "@gear-js/api";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
 import {MAIN_CONTRACT, NFT_CONTRACT} from "@/app/consts";
 import {sleepReact} from "@/app/utils";

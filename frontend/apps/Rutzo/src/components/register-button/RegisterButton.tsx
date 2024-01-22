@@ -8,13 +8,16 @@ import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 import { useState } from "react";
+import { AccountsModal } from "../layout/header/account-info/accounts-modal";
 import Spinner from 'react-bootstrap/Spinner';
+import { ReactComponent as userSVG } from  '@/assets/images/icons/login.svg';
 
 function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const [userIsSigning, setUserIsSigning] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   // Datos de cuenta del administrador donde se efectuaran los pagos en los contratos
@@ -107,6 +110,7 @@ function RegisterButton({ onRegister }: any) {
       await registerUser();
       return;
     }
+    
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
@@ -138,16 +142,30 @@ function RegisterButton({ onRegister }: any) {
     await registerUser();
   }
 
-
-
   const signer = async () => {
     if (!account || !accounts || !api) return;
     await setMainContractVoucher();
   };
 
-  return !userIsSigning 
-    ? <Button text="Register" onClick={signer} />
-    : <Spinner animation="border" variant="success" />;
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return account ? (
+    !userIsSigning 
+      ? <Button text="Register" onClick={signer} />
+      : <Spinner animation="border" variant="success" />
+  ) : (
+    <>
+      <Button icon={userSVG} text="Sign in" onClick={openModal} />
+      {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
+    </>
+  );
+  
 }
 
 
