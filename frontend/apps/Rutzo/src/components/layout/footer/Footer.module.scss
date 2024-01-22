@@ -52,3 +52,41 @@
   text-decoration: none;
   margin-bottom: 10px;
 }
+
+@media screen and (max-width: 1016px) {
+
+  .footer {
+    margin-inline: 50px;
+  }
+
+  .footer_main {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .brand {
+    margin-right: 0;
+    margin-bottom: 50px;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer_sections {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    margin-inline: 20px ;
+  }
+
+  .footer_sections a {
+    display: inline-block;
+  }
+  
+  .footer_sections > div {
+    width: 48%;  // Establecer el ancho para que haya dos elementos en una fila
+    margin-bottom: 30px;
+  }
+
+}

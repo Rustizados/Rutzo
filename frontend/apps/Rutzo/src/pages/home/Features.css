@@ -8,6 +8,7 @@
   -webkit-backdrop-filter: blur(10px) saturate(180%);
   backdrop-filter: blur(10px) saturate(180%);
   box-shadow: 0 1rem 2rem rgba(0,0,0,.3);
+  margin-inline: 20px;
 }
 
 .feature:hover {
@@ -34,7 +35,6 @@
 }
 
 .features-container {
-  margin-inline: 100px;
   display: flex;
   justify-content: space-between;
 }

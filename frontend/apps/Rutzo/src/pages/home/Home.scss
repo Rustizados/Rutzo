@@ -52,7 +52,7 @@
 .title {
   font-family: inter;
   font-weight: bold;
-  margin: 50px 100px;
+  margin: 50px 0;
 }
 
 .centered {
@@ -129,6 +129,10 @@
 
   #action_button {
     margin: 0 auto;
+  }
+
+  .title {
+    text-align: center;
   }
   
   .Banner {
