@@ -40,8 +40,10 @@ return (
     </div>
   </div>
 
-  <h1 id="features" className="title">Features</h1>
-  <Features />
+  <div className="section">
+    <h1 id="features" className="title">Features</h1>
+    <Features />
+  </div>  
 
   <div className="centered">
 
@@ -55,8 +57,8 @@ return (
           cards.
         </p>
       </div>
-      <Carousel images={images} style={{ marginInline: "100px" }} />
-      <Carousel images={images2} style={{ marginInline: "150px" }} />
+      <Carousel images={images} style={{}} />
+      <Carousel images={images2} style={{ marginInline: "50px" }} />
 
       <div className="marketplace_button">
         <a href="/marketplace">Go to Marketplace</a>

@@ -1,4 +1,5 @@
 .carousel_container {
+    margin-inline: 100px;
     display: flex;
     margin-block: 50px;
 }
@@ -13,11 +14,23 @@
 
 .carousel_item img {
     width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
 }
 
 .carousel_item:hover {
     transform: scale(1.1);
+}
+
+@media screen and (max-width: 1016px) {
+
+    .carousel_container {
+        margin-inline: 0;
+    }
+
+    .carousel_item {
+        margin-inline: 10px;
+    }
+
 }
