@@ -45,7 +45,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
         const mainContractVoucher = api.voucher.issue(
           account?.decodedAddress ?? "0x00",
           MAIN_CONTRACT.PROGRAM_ID,
-          1_000_000_000_000
+          2_000_000_000_000
         );
         const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
         let addedVarasToVoucher = false;
