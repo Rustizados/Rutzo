@@ -18,3 +18,9 @@
 .currency {
   color: $textColorSecondary;
 }
+
+@media screen and (max-width: 600px) {
+  .wallet {
+    display: none;
+  }
+}
