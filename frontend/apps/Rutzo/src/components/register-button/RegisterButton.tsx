@@ -5,7 +5,7 @@ import {
   ProgramMetadata,
 } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT } from "@/app/consts";
+import { MAIN_CONTRACT, seed } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 import { useState } from "react";
 import { AccountsModal } from "../layout/header/account-info/accounts-modal";
@@ -19,12 +19,6 @@ function RegisterButton({ onRegister }: any) {
   const [userIsSigning, setUserIsSigning] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
-
-  // Datos de cuenta del administrador donde se efectuaran los pagos en los contratos
-  // de los nfts y del main contract
-  const mnemonic =
-    "strong orchard plastic arena pyramid lobster lonely rich stomach label clog rubber";
-  const { seed } = GearKeyring.generateSeed(mnemonic);
 
   // Function to register user
   const registerUser = async () => {
@@ -114,8 +108,9 @@ function RegisterButton({ onRegister }: any) {
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
-      // 13000000000000
-      18000000000000
+      // 13_000_000_000_000
+      // 18_000_000_000_000
+      10_000_000_000_000
     );
 
     const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");

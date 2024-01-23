@@ -1,9 +1,9 @@
-import { ProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata, GearKeyring } from "@gear-js/api";
 import { useState } from "react";
-import { useApi, useAccount, useAlert, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
+import { useApi, useAccount, useAlert, useBalance, useBalanceFormat, useVoucher } from "@gear-js/react-hooks";
 import { Card } from "../card/Card";
-import { NFT_CONTRACT, MAIN_CONTRACT, ONE_TVARA_VALUE } from "@/app/consts";
-import { gasToSpend } from "@/app/utils";
+import { NFT_CONTRACT, MAIN_CONTRACT, ONE_TVARA_VALUE, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
+import { gasToSpend, sleepReact } from "@/app/utils";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "@gear-js/ui";
 import { AnyNumber } from "@polkadot/types/types";
@@ -15,6 +15,8 @@ interface DefaultNftsProos {
 }
 
 export function NftsOnSale({onSaled}: DefaultNftsProos) {
+  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
+  const { getFormattedBalanceValue } = useBalanceFormat();
   const { api, isApiReady } = useApi();
   const { account, accounts } = useAccount();
   const { balance } = useBalance(account?.address);
@@ -69,6 +71,39 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       if (!voucherExists) {
         alert.error("voucher does not exist!");
         return;
+      }
+
+      if (isVoucherExists && voucherBalance) {
+        const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+        if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
+          const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
+          const mainContractVoucher = api.voucher.issue(
+            account?.decodedAddress ?? "0x00",
+            MAIN_CONTRACT.PROGRAM_ID,
+            1_000_000_000_000
+          );
+          const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
+          let addedVarasToVoucher = false;
+          try {
+            await mainContractVoucher.extrinsic.signAndSend(
+              keyring,
+              async (event) => {
+                const eventData = event.toHuman();
+                const { status }: any = eventData;
+                if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
+              }
+            );
+          } catch (error: any) {
+            console.error(`${error.name}: ${error.message}`);
+            return
+          }
+          /* eslint-disable no-await-in-loop */
+          while (!addedVarasToVoucher) {
+            await sleepReact(500);
+          }
+          alert.remove(addingTVarasAlertId);
+          alert.success("Added TVaras");
+        }
       }
 
       const gas = await api.program.calculateGas.handle(

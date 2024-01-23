@@ -1,11 +1,20 @@
 import { HexString } from '@gear-js/api';
+import { GearKeyring } from "@gear-js/api";
 
 interface Contract {
   PROGRAM_ID: `0x${string}`,
   METADATA: string
 }
 
+export const VOUCHER_MIN_LIMIT: number = 11.0;
+
 export const ACCOUNT_ID_LOCAL_STORAGE_KEY = 'account';
+
+
+// Datos de cuenta del administrador donde se efectuaran los pagos en los contratos
+// de los nfts y del main contract
+export const mnemonic = "strong orchard plastic arena pyramid lobster lonely rich stomach label clog rubber";
+export const { seed } = GearKeyring.generateSeed(mnemonic);
 
 export const ADDRESS = {
   NODE: import.meta.env.VITE_NODE_ADDRESS,

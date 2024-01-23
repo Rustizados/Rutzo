@@ -1,9 +1,9 @@
 import { useAccount, useApi, useAlert, useVoucher, useBalanceFormat } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { ProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata, GearKeyring } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT } from "@/app/consts";
-import { gasToSpend } from "@/app/utils";
+import { MAIN_CONTRACT, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
+import { gasToSpend, sleepReact } from "@/app/utils";
 import { useState } from "react";
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -32,8 +32,6 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
         return;
       }
 
-
-
       const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
 
       if (!voucherExists) {
@@ -43,6 +41,40 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
 
       setLoadingSignature(true);
       onPressed(true);
+
+      if (isVoucherExists && voucherBalance) {
+        const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+        if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
+          const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
+          const mainContractVoucher = api.voucher.issue(
+            account?.decodedAddress ?? "0x00",
+            MAIN_CONTRACT.PROGRAM_ID,
+            1_000_000_000_000
+          );
+          const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
+          let addedVarasToVoucher = false;
+          try {
+            await mainContractVoucher.extrinsic.signAndSend(
+              keyring,
+              async (event) => {
+                const eventData = event.toHuman();
+                const { status }: any = eventData;
+                if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
+              }
+            );
+          } catch (error: any) {
+            console.error(`${error.name}: ${error.message}`);
+            return
+          }
+          /* eslint-disable no-await-in-loop */
+          while (!addedVarasToVoucher) {
+            await sleepReact(500);
+          }
+          alert.remove(addingTVarasAlertId);
+          alert.success("Added TVaras");
+        }
+      }
+
 
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
