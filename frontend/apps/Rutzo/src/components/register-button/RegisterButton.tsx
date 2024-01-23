@@ -108,7 +108,7 @@ function RegisterButton({ onRegister }: any) {
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
-      15_000_000_000_000
+      13_000_000_000_000
       // 18_000_000_000_000
       // 10_000_000_000_000
     );
