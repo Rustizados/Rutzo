@@ -4,79 +4,34 @@
 }
 
 .card {
-  cursor: pointer;
   width: 200px;
   height: 300px;
-  padding: 16px;
-  background-color: black;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+  padding: 10px;
   margin-inline: 20px;
   margin-block: 20px;
   display: inline-block;
-  vertical-align: top;
-  position: relative;
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #17113a;
-  //clip-path: polygon(0% 0%, 80% 0%, 100% 20%, 100% 100%, 0% 100%);
-  filter: drop-shadow(0px 0px 10px #6248f8);
-}
-
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  transform: translateX(-50%);
-  background: #6248f8;
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: fireEffect 3s infinite;
-  z-index: -1;
-}
-
-@keyframes fireEffect {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.2;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-}
-
-.content {
-  padding: 20px;
+  background-color: var(--background);
+  box-shadow: 0 0.5rem 2rem rgba(0,0,0,.3);
 }
 
 .price {
+  width: 50%;
   font-size: 1.0em;
   font-weight: bold;
-  color: #3dd882;
-  margin: 16px 0;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.price p {
+  width: 100%;
 }
 
 .graphics{
   display: flex;
   justify-content: center;
-}
-
-.typec{
-  margin: 16px 0;
 }
 
 .type{
@@ -88,27 +43,51 @@
 }
 
 .title{
+  font-family: inter;
   font-weight: bold;
-  height: 50px;
-  font-size: 1.2em;
-  color: #FFF;
-  text-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf;
+  margin: 1rem;
+}
+
+.details {
+  width: 50%;
+}
+
+.details p {
+  font-family: ia_writer;
+  font-size: 0.7em;
+  text-align: justify;
+  margin: 0 1em;
+  text-transform: uppercase;
 }
 
 .hexagon {
   display: block;
-  width:120px;
-  height: 120px;
+  width: 100%;
   background-size: cover;
-  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
- -webkit-mask-image: url("@/assets/mask.svg");
-  mask-image: url("@/assets/mask.svg");
-  border-radius: 24px;
+  border-radius: 10px;
   align-self: center;
 }
 
 .content {
-  padding: 16px;
-  color: #fff;
+  width: 100%;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+}
+
+.content p{
+  margin: 0;
+}
+
+.button_container {
+  display: none;
+}
+
+.card:hover .content {
+  display: none;
+}
+
+.card:hover .button_container {
+  display: block;
 }
 
