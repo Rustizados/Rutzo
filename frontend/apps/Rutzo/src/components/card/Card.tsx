@@ -57,7 +57,7 @@ class Card extends React.Component<CardProps, CardState> {
     return (
       <div className={styles.cards_container}>
         <div
-          className={styles.card}
+          className={styles.card + ' w-52 h-80 rounded-lg inline-block'}
           onClick={this.handleClick}
           onKeyDown={(e) => this.handleKeyDown(e)}
           role="button"

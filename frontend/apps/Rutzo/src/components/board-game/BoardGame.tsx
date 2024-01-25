@@ -1,4 +1,4 @@
-import { Card, Facedowncard, PlayButton } from "@/components";
+import { Card, Facedowncard, PlayButton, EmptySlot } from "@/components";
 
 
 import "./slide-in.css";
@@ -7,8 +7,11 @@ import "./selectedCards.css";
 import "./MainGame.css";
 import useGameState from "@/hooks/useGameState";
 
-import DeckContainer from "@/components/deck-container/DeckContainer";
 
+
+import "./BoardGame.css";
+
+import CardsContainer from "@/components/deck-container/CardsContainer";
 
 function BoardGame() {
     const {
@@ -30,71 +33,109 @@ function BoardGame() {
     } = useGameState();
   
     const containerStyles = {
-      display: "flex",
+
       justifyContent: "center",
       alignItems: "center",
     };
+
+    const cardsNumber: number = 3;
+
+    const isButtonDisabled = selectedCards.length !== cardsNumber;
   
     return (
       <div>
-        <div className="mainContainer">
-            {/*<DeckContainer />*/}
-          <div style={{ ...containerStyles, flexDirection: "column" }}>
-            <h3 className="sectionTitle">My NFT Collection</h3>
-            <div className="area areaBorder myCardsArea">
-              {tokensForOwnerState.length > 0 ? (
-                tokensForOwnerState.map((element: any) => {
-                  const [nftId, elemento] = element;
-                  return (
-                    <Card 
-                      image={elemento.media}
-                      title={elemento.name}
-                      type={elemento.description.toLowerCase()}
-                      value={elemento.reference}
-                      key={nftId}
-                      onCardClick={() => {cardSelected(nftId, false)}}
-                    />
-                  );
-                })
-              ) : (
-                <h3 style={{ fontSize: "1.5rem" }}>No NFTs</h3>
-              )}
+        <div className="mainContainer flex flex-col items-center  ">
+
+            <CardsContainer
+                className="border-gray-800 from-slate-500 to-gray-900"
+                title="My Collection"
+            >
+                    <div className={"flex flex-row justify-around w-full "}> {/* Añadir un div contenedor o usar Fragment */}
+                        {tokensForOwnerState.map((element: any) => {
+                            const [nftId, elemento] = element;
+                            return (
+                                <Card
+                                    image={elemento.media}
+                                    title={elemento.name}
+                                    type={elemento.description.toLowerCase()}
+                                    value={elemento.reference}
+                                    key={nftId}
+                                    onCardClick={() => {cardSelected(nftId, false)}}
+                                />
+                            );
+                        })}
+
+                        {tokensForOwnerState.length < 3 &&
+                            Array.from(Array(3 - tokensForOwnerState.length).keys()).map((index) => (
+                                <EmptySlot key={`empty-${index}`} /> // Modificado para tener una clave más única
+                            ))
+                        }
+                    </div>
+
+            </CardsContainer>
+            <CardsContainer
+                className="border-violet-800 from-emerald-600 to-violet-800"
+                title="Selected Cards"
+            >
+                <div className={"flex flex-row justify-around w-full"}>
+                        {
+                            selectedCards.map((card: any) => {
+                                const [nftId, elemento] = card;
+                                return (
+                                    <Card
+                                        image={elemento.media}
+                                        title={elemento.name}
+                                        type={elemento.description.toLowerCase()}
+                                        value={elemento.reference}
+                                        key={nftId}
+                                        onCardClick={() => {cardSelected(nftId, true)}}
+                                    />
+                                )
+                            })
+                        }
+                    {selectedCards.length < 3 &&
+                        Array.from(Array(3 - selectedCards.length).keys()).map((index) => (
+                            <EmptySlot key={`empty-${index}`} /> // Modificado para tener una clave más única
+                        ))
+                    }
+                        </div>
+
+
+                        <div>
+                        <br/>
+                            <a
+                                className={`btn-primary ${isButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
+                                href={!isButtonDisabled ? "#gamearea" : undefined}
+                                onClick={e => isButtonDisabled && e.preventDefault()}
+                            >
+                                Let's Go!
+                            </a>
+                        </div>
+
+
+            </CardsContainer>
+
+
+          <div style={{ ...containerStyles, flexDirection: "column" }} className={"w-full flex flex-col items-center "}>
   
-            </div>
-            <h3 className="sectionTitle">My NFT Selection</h3>
-            <div className="area selectedCardsArea">
-              <div className="selectedCards">
-                {
-                  selectedCards.map((card: any) => {
-                    const [nftId, elemento] = card;
-                    return ( 
-                      <Card 
-                        image={elemento.media}
-                        title={elemento.name}
-                        type={elemento.description.toLowerCase()}
-                        value={elemento.reference}
-                        key={nftId}
-                        onCardClick={() => {cardSelected(nftId, true)}}
-                      />
-                    )
-                  })
-                }
-              </div>
-  
-              {selectedCards.length === 3 && (
-                <a className="buttonPrimary" href="#gamearea">
-                  Go!
-                </a>
-              )}
-            </div>
-  
-            <div id="gamearea" className="playArea">
-              <div className="grid-row opponentArea areaBorder area">
-                <Facedowncard />
-                <Facedowncard />
-                <Facedowncard />
-              </div>
-              <div className="versusArea areaBorder area">
+            <div id="gamearea" className="playArea flex flex-col items-center">
+                <h2 className="text-2xl my-4 font-semibold ">Play</h2>
+
+                {/*Red tones*/}
+                <CardsContainer
+                  className = "border-rose-900 from-pink-600 to-rose-900"
+                  title="Enemy Cards"
+                >
+                  <div className={"flex flex-row justify-around w-full"}>
+                    <Facedowncard />
+                    <Facedowncard />
+                    <Facedowncard />
+                  </div>
+              </CardsContainer>
+              <CardsContainer
+                className = "border-violet-800 from-blue-800 to-rose-800"
+                title="Match"
+              >
                 <div className="grid-row">
                   {/* <CardComponent selectedCard={cardToPlay} /> */}
                   {
@@ -167,8 +208,13 @@ function BoardGame() {
                     </div>
                   )}
                 </div>
-              </div>
-              <div className="grid-row youArea areaBorder area">
+              </CardsContainer>
+
+              <CardsContainer
+                className = "border-violet-800 from-sky-500 to-blue-800"
+                title="Your Cards"
+              >
+                <div className="grid-row">
                 {selectedCards.map((card: any) => {
                   const [nftId, elemento] = card;
                   return (
@@ -183,6 +229,7 @@ function BoardGame() {
                   );
                 })}
               </div>
+              </CardsContainer>
             </div>
           </div>
         </div>

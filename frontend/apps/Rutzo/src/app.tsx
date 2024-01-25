@@ -5,6 +5,8 @@ import { ApiLoader } from '@/components';
 import { Header, Footer } from '@/components/layout';
 import { withProviders } from '@/app/hocs';
 
+// import "./global.css";
+
 // import { useWalletSync } from '@/features/wallet/hooks';
 
 function Component() {

@@ -1,5 +1,5 @@
 import Accordion from "react-bootstrap/Accordion";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import "./home_styles.css";
 
 function FAQ() {

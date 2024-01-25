@@ -8,7 +8,7 @@
     color: #fff;
     font-size: 2rem;
     text-align: center;
-    margin: 20px;
+    margin: 10px;
 }
 
 .area {
@@ -43,13 +43,12 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    width: 100%;
+
     padding: 10px;
 }
 
 .playArea{
-    display: flex;
-    flex-direction: column;
+
     justify-content: space-evenly;
     align-items: center;
     background: rgba(120, 52, 207, 0.10);
