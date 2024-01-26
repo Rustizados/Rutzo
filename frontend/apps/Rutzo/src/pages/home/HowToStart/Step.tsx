@@ -19,7 +19,7 @@ function Step({ icon: Icon, title, url_text, url, content, image }: StepProps) {
                 {title}
                 <span><a href={url} className="link-light">{url_text}
                 {" "}
-                {url != "" ? < TbExternalLink /> : ""}
+                {url !== "" ? < TbExternalLink /> : ""}
                 </a></span>
             </h2>
             <p>

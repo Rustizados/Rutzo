@@ -4,6 +4,8 @@ import { FAQ } from "./FAQ";
 import "./Home.scss";
 import { Play } from '@/components/play/Play';
 import { Carousel } from '@/components/layout/carousel/Carousel';
+import { Member } from "./Members/Member";
+import { Members } from "./Members/Members";
 
 function Home() {
 
@@ -75,6 +77,18 @@ return (
         </p>
       </div>
       <HowToStart />
+    </div>
+
+    <div className="section" id="team">
+      <div className="section-title">
+        <h1>Our team</h1>
+      </div>
+      <div className="section-text">
+        <p>
+        We’re a dynamic group of individuals who are passionate about what we do and dedicated to delivering the best results for our clients.
+        </p>
+      </div>
+      < Members />
     </div>
 
     <div className="section" id="faq">
