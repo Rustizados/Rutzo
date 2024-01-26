@@ -14,27 +14,26 @@ function CollectionCard(props: CardProps) {
 
   return (
     <div className={styles.cards_container}>
-      <div
-        className={styles.card}
-        role="button"
-        tabIndex={0}
-      >
-        <div className={styles.graphics}>
-          <img className={styles.hexagon} src={image} alt="NFTimage" />
-        </div>
+    <div
+      className={styles.card}
+      role="button"
+      tabIndex={0}
+    >
+       <div className={styles.graphics}>
+        <img className={styles.hexagon} src={image} alt="NFTimage" />
+      </div>
+      <p className={styles.title}>{title}</p>
 
-        <div className={styles.content}>
-          <p className={styles.title}>{title}</p>
-          <div className={styles.typec}>
-            <Icon name={type} />
-            <p className={styles.type}>{type}</p>
-          </div>
-          <div>
-            <PowerBar progress={value} />
-          </div>
+      <div className={styles.content}>
+
+        <div className={styles.details}>
+         <p>Type: {type}</p>
+         <p>Power: {value}%</p>
         </div>
       </div>
+      </div>
     </div>
+    
   );
 }
 

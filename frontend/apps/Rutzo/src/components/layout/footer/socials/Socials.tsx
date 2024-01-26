@@ -1,6 +1,3 @@
-import { ReactComponent as Github } from '@/assets/images/socials/github.svg' //'assets/images/socials/github.svg';
-import { ReactComponent as X } from '@/assets/images/socials/x.svg';
-import { ReactComponent as Instagram } from '@/assets/images/socials/instagram.svg';
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
