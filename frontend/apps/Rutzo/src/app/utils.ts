@@ -90,10 +90,13 @@ export function toNumber(value: string) {
   return +withoutCommas(value);
 }
 
+// Added 10% in the gas spended
 export const gasToSpend = (gasInfo: GasInfo): bigint => {
   const gasHuman = gasInfo.toHuman();
   const minLimit = gasHuman.min_limit?.toString() ?? "0";
-  const gasLimit: bigint = BigInt(minLimit.replaceAll(',', ''));
+  const parsedGas = Number(minLimit.replaceAll(',', ''));
+  const gasPlusTenPorcent = Math.round(parsedGas + parsedGas * 0.10);
+  const gasLimit: bigint = BigInt((gasPlusTenPorcent));
   return gasLimit;
 }
 

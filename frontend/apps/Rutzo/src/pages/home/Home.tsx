@@ -4,7 +4,6 @@ import { FAQ } from "./FAQ";
 import "./Home.scss";
 import { Play } from '@/components/play/Play';
 import { Carousel } from '@/components/layout/carousel/Carousel';
-import { Member } from "./Members/Member";
 import { Members } from "./Members/Members";
 
 function Home() {

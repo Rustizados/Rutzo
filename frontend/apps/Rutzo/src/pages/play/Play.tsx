@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.svg";
 import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import { RegisterButton, MyNFTCollection, UserEmptyAccount } from "@/components";

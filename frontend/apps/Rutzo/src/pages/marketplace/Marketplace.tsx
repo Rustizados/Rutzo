@@ -13,13 +13,13 @@ function Marketplace() {
 
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
-  const setData = async () => {    
+  const setData = async () => {
     if (!api) return;
 
     const stateResult = await api
       .programState
       .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
-    
+
     const stateFormated: any = stateResult.toJSON();
 
     setIsRegister(stateFormated.userIsRegister);
@@ -29,7 +29,7 @@ function Marketplace() {
     const stateResult2 = await api
       .programState
       .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { NFTsPurchasedByUser: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
-    
+
     const stateFormated2: any = stateResult2.toJSON();
 
     const mintedNfts: [number] = stateFormated2.purchasedNfts;
@@ -50,18 +50,18 @@ function Marketplace() {
         isRegister ? (
           <>
             {
-              totalNftsToMint > 0 && 
+              totalNftsToMint > 0 &&
               <h2 style={{ marginBottom: 30 }}>
                 Free NFTs, pick {totalNftsToMint}!
               </h2>
             }
             <div>
               <div className="cards-container">
-                <DefaultNfts onMinted={setData}/>
+                <DefaultNfts onMinted={setData} />
                 <br />
-                { totalNftsToMint !== 0 && <h2 style={{ marginBottom: 30, marginTop: 10 }}>
-                    NFTs for sale
-                  </h2>}
+                {totalNftsToMint !== 0 && <h2 style={{ marginBottom: 30, marginTop: 10 }}>
+                  NFTs for sale
+                </h2>}
                 <NftsOnSale />
               </div>
             </div>
