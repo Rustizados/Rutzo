@@ -4264,15 +4264,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-slick@npm:0.23.13":
-  version: 0.23.13
-  resolution: "@types/react-slick@npm:0.23.13"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 35dd72dfbac234b8db019fb8af250ac3891e564d13001642353aa0b7c37f6ed1ff1f5e8fa8b034706993c4d27ac1977c031942636cfd05414ee4667d45c8aea6
-  languageName: node
-  linkType: hard
-
 "@types/react-transition-group@npm:^4.4.6":
   version: 4.4.9
   resolution: "@types/react-transition-group@npm:4.4.9"
@@ -4702,65 +4693,6 @@ __metadata:
   checksum: 4e35a331309f883616cd21087d180ea10c95ed742cf67c33bedf9b0f060b791976071b076b31e075eb34571861cbe5d191fb8e265ee85573d2908d00f022171e
   languageName: node
   linkType: hard
-
-"Rutzo@workspace:apps/Rutzo":
-  version: 0.0.0-use.local
-  resolution: "Rutzo@workspace:apps/Rutzo"
-  dependencies:
-    "@dapps-frontend/error-tracking": "workspace:*"
-    "@dapps-frontend/ui": "workspace:*"
-    "@gear-js/api": "npm:0.35.2"
-    "@gear-js/react-hooks": "npm:0.9.2"
-    "@gear-js/ui": "npm:0.5.19"
-    "@gear-js/vara-ui": "npm:0.0.2"
-    "@mantine/form": "npm:6.0.15"
-    "@polkadot/api": "npm:10.10.1"
-    "@polkadot/extension-dapp": "npm:0.46.5"
-    "@polkadot/extension-inject": "npm:0.46.5"
-    "@polkadot/react-identicon": "npm:3.5.1"
-    "@polkadot/types": "npm:10.10.1"
-    "@polkadot/util": "npm:12.3.2"
-    "@polkadot/util-crypto": "npm:12.3.2"
-    "@radix-ui/react-dropdown-menu": "npm:2.0.5"
-    "@radix-ui/react-scroll-area": "npm:1.0.4"
-    "@radix-ui/react-select": "npm:1.2.2"
-    "@tanstack/react-table": "npm:8.9.3"
-    "@types/node": "npm:18.16.19"
-    "@types/react": "npm:18.2.33"
-    "@types/react-dom": "npm:18.2.14"
-    "@vitejs/plugin-react-swc": "npm:3.3.2"
-    autoprefixer: "npm:10.4.17"
-    bootstrap: "npm:^5.3.0"
-    buffer: "npm:6.0.3"
-    class-variance-authority: "npm:0.6.1"
-    clsx: "npm:1.2.1"
-    eslint: "npm:8.43.0"
-    eslint-config-react-app: "npm:7.0.1"
-    framer-motion: "npm:10.12.17"
-    jotai: "npm:2.2.1"
-    lucide-react: "npm:0.259.0"
-    node-stdlib-browser: "npm:1.2.0"
-    postcss: "npm:8.4.33"
-    prettier: "npm:2.8.8"
-    react: "npm:18.2.0"
-    react-bootstrap: "npm:^2.7.4"
-    react-countdown: "npm:2.3.5"
-    react-dom: "npm:18.2.0"
-    react-icons: "npm:^4.9.0"
-    react-router-dom: "npm:6.10.0"
-    react-transition-group: "npm:4.4.5"
-    sass: "npm:1.62.0"
-    tailwind: "npm:4.0.0"
-    tailwindcss: "npm:3.4.1"
-    typescript: "npm:4.9.5"
-    vite: "npm:4.3.9"
-    vite-plugin-eslint: "npm:1.8.1"
-    vite-plugin-node-stdlib-browser: "npm:0.2.1"
-    vite-plugin-svgr: "npm:3.2.0"
-    vite-plugin-top-level-await: "npm:1.3.1"
-    vite-plugin-wasm: "npm:3.2.2"
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^2.0.0":
   version: 2.0.0
@@ -5726,13 +5658,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.5":
-  version: 2.4.0
-  resolution: "classnames@npm:2.4.0"
-  checksum: 059c2c7e58ef69d6e9fc0f9861d22e94af9a7e73256c42fc539698472cb37e4dcef861acb9820bd2852a13767e62705d80a0aa399201cc1917556a2d9dfcdc5a
-  languageName: node
-  linkType: hard
-
 "classnames@npm:^2.3.2":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
@@ -6423,13 +6348,6 @@ __metadata:
   dependencies:
     iconv-lite: "npm:^0.6.2"
   checksum: 36d938712ff00fe1f4bac88b43bcffb5930c1efa57bbcdca9d67e1d9d6c57cfb1200fb01efe0f3109b2ce99b231f90779532814a81370a1bd3274a0f58585039
-  languageName: node
-  linkType: hard
-
-"enquire.js@npm:^2.1.6":
-  version: 2.1.6
-  resolution: "enquire.js@npm:2.1.6"
-  checksum: 3ab739ed0885b5dda973de3fe610d2e3ce261a3ee77321ee4c0c876294c1c37f87f6cccead3ee1de8ead24b31f730586847f89118f083e776677f7c3cd71abaa
   languageName: node
   linkType: hard
 
@@ -8441,15 +8359,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json2mq@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "json2mq@npm:0.2.0"
-  dependencies:
-    string-convert: "npm:^0.2.0"
-  checksum: fc9e2f2306572522d3e61d246afdf70b56ca9ea32f4ad5924c30949867851ab59c926bd0ffc821ebb54d32f3e82e95225f3906eacdb3e54c1ad49acdadf7e0c7
-  languageName: node
-  linkType: hard
-
 "json5@npm:^1.0.2":
   version: 1.0.2
   resolution: "json5@npm:1.0.2"
@@ -10055,22 +9964,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-slick@npm:0.29.0":
-  version: 0.29.0
-  resolution: "react-slick@npm:0.29.0"
-  dependencies:
-    classnames: "npm:^2.2.5"
-    enquire.js: "npm:^2.1.6"
-    json2mq: "npm:^0.2.0"
-    lodash.debounce: "npm:^4.0.8"
-    resize-observer-polyfill: "npm:^1.5.0"
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^0.14.0 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 965e2957b7d72435397adfa062911e62310e181c14b8667b528f9fe88bda490b86fd94d685c186a4b7704b77e10ef3d6c7be24541652a9787baa80b98000190f
-  languageName: node
-  linkType: hard
-
 "react-style-singleton@npm:^2.2.1":
   version: 2.2.1
   resolution: "react-style-singleton@npm:2.2.1"
@@ -10246,13 +10139,6 @@ __metadata:
   bin:
     regjsparser: bin/parser
   checksum: fe44fcf19a99fe4f92809b0b6179530e5ef313ff7f87df143b08ce9a2eb3c4b6189b43735d645be6e8f4033bfb015ed1ca54f0583bc7561bed53fd379feb8225
-  languageName: node
-  linkType: hard
-
-"resize-observer-polyfill@npm:^1.5.0":
-  version: 1.5.1
-  resolution: "resize-observer-polyfill@npm:1.5.1"
-  checksum: 5e882475067f0b97dc07e0f37c3e335ac5bc3520d463f777cec7e894bb273eddbfecb857ae668e6fb6881fd6f6bb7148246967172139302da50fa12ea3a15d95
   languageName: node
   linkType: hard
 
@@ -10432,9 +10318,8 @@ __metadata:
     "@types/node": "npm:18.16.19"
     "@types/react": "npm:18.2.33"
     "@types/react-dom": "npm:18.2.14"
-    "@types/react-slick": "npm:0.23.13"
     "@vitejs/plugin-react-swc": "npm:3.3.2"
-    autoprefixer: "npm:10.4.14"
+    autoprefixer: "npm:10.4.17"
     bootstrap: "npm:^5.3.0"
     buffer: "npm:6.0.3"
     class-variance-authority: "npm:0.6.1"
@@ -10445,7 +10330,7 @@ __metadata:
     jotai: "npm:2.2.1"
     lucide-react: "npm:0.259.0"
     node-stdlib-browser: "npm:1.2.0"
-    postcss: "npm:8.4.24"
+    postcss: "npm:8.4.33"
     prettier: "npm:2.8.8"
     react: "npm:18.2.0"
     react-bootstrap: "npm:^2.7.4"
@@ -10453,10 +10338,10 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-icons: "npm:^4.9.0"
     react-router-dom: "npm:6.10.0"
-    react-slick: "npm:0.29.0"
     react-transition-group: "npm:4.4.5"
     sass: "npm:1.62.0"
-    slick-carousel: "npm:1.8.1"
+    tailwind: "npm:4.0.0"
+    tailwindcss: "npm:3.4.1"
     typescript: "npm:4.9.5"
     vite: "npm:4.3.9"
     vite-plugin-eslint: "npm:1.8.1"
@@ -10720,15 +10605,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slick-carousel@npm:1.8.1":
-  version: 1.8.1
-  resolution: "slick-carousel@npm:1.8.1"
-  peerDependencies:
-    jquery: ">=1.8.0"
-  checksum: e8c9c9a454c107cfee88689477b453449ed66d5343cf495d3135ec25ea736a0df862f625a9cdc8abd6262629ecef3343c5de686694831f99b13dfe837a1aa587
-  languageName: node
-  linkType: hard
-
 "smart-buffer@npm:^4.2.0":
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
@@ -10868,13 +10744,6 @@ __metadata:
   version: 0.3.2
   resolution: "string-argv@npm:0.3.2"
   checksum: 75c02a83759ad1722e040b86823909d9a2fc75d15dd71ec4b537c3560746e33b5f5a07f7332d1e3f88319909f82190843aa2f0a0d8c8d591ec08e93d5b8dec82
-  languageName: node
-  linkType: hard
-
-"string-convert@npm:^0.2.0":
-  version: 0.2.1
-  resolution: "string-convert@npm:0.2.1"
-  checksum: 00673ed8a3106137395436537ace7d3672c91a3290da73466055daa0134331dc84bc58c54ba2d2ea40711adc5744426d3c8239dbfc30290438fa3e9ff65db528
   languageName: node
   linkType: hard
 
