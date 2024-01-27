@@ -1,18 +1,23 @@
-import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
+import { useAccount, useApi, useAlert, useVoucher, useBalanceFormat } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { ProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata, GearKeyring } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT } from "@/app/consts";
-import { gasToSpend } from "@/app/utils";
+import { MAIN_CONTRACT, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
+import { gasToSpend, sleepReact } from "@/app/utils";
+import { useState } from "react";
+import Spinner from 'react-bootstrap/Spinner';
 
-function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
-  const alert = useAlert();
+function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
+  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
+  const { getFormattedBalanceValue } = useBalanceFormat();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const [loadingSignature, setLoadingSignature] = useState(false);
+  const alert = useAlert();
+
 
   const signer = async () => {
-
     if (!account || !accounts || !api) return;
 
     const localaccount = account?.address;
@@ -33,6 +38,43 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
         alert.error("voucher does not exist!");
         return;
       }
+
+      setLoadingSignature(true);
+      onPressed(true);
+
+      if (isVoucherExists && voucherBalance) {
+        const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+        if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
+          const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
+          const mainContractVoucher = api.voucher.issue(
+            account?.decodedAddress ?? "0x00",
+            MAIN_CONTRACT.PROGRAM_ID,
+            2_000_000_000_000
+          );
+          const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
+          let addedVarasToVoucher = false;
+          try {
+            await mainContractVoucher.extrinsic.signAndSend(
+              keyring,
+              async (event) => {
+                const eventData = event.toHuman();
+                const { status }: any = eventData;
+                if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
+              }
+            );
+          } catch (error: any) {
+            console.error(`${error.name}: ${error.message}`);
+            return
+          }
+          /* eslint-disable no-await-in-loop */
+          while (!addedVarasToVoucher) {
+            await sleepReact(500);
+          }
+          alert.remove(addingTVarasAlertId);
+          alert.success("Added TVaras");
+        }
+      }
+
 
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
@@ -55,6 +97,7 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
       }, mainContractMetadata);
 
       const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+      let alertLoaderId: any = null;
 
       try {
         await voucherTx
@@ -62,31 +105,41 @@ function PlayButton({ onJoiningGame, onPressed=()=>{}, tokenId }: any) {
           account?.decodedAddress,
           { signer },
           ({ status }) => {
+            if (!alertLoaderId) {
+              alertLoaderId = alert.loading("preparing game");
+            }
             if (status.isInBlock) {
+              onPressed(true);
               console.log(
                 `Completed at block hash #${status.asInBlock.toString()}`
               );
               alert.success(`Block hash #${status.asInBlock.toString()}`);
-              if (onPressed) {
-                onPressed();
-              }
             } else {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
-                onJoiningGame();
+                alert.remove(alertLoaderId);
                 alert.success(status.type);
+                setLoadingSignature(false);
+                onPressed(false);
+                onJoiningGame();
               }
             }
           }
         )
       } catch(error: any) {
         console.log(":( transaction failed", error);
+        onPressed(false);
+        setLoadingSignature(false);
       }
     } else {
       alert.error("Account not available to sign");
     }
   };
 
-  return <Button text="Play" onClick={signer} />;
+  // return <Button text="Play"  onClick={signer} />;
+
+  return !loadingSignature
+    ? <Button text="Play" onClick={signer} />
+    : <Spinner animation="border" variant="success" />;
 }
 export { PlayButton };

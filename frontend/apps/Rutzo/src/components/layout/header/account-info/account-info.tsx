@@ -40,29 +40,3 @@ export function AccountInfo() {
     </>
   );
 }
-
-
-// return (
-  //   <>
-  //     <div className={clsx(styles.wrapper, className)}>
-  //       {!!account && (
-  //         <>
-  //           {formattedBalance && (
-  //             <VaraBalance value={formattedBalance.value} unit={formattedBalance.unit} className={styles.balance} />
-  //           )}
-
-  //           <Button variant="text" className={styles.openWallet} onClick={openWallet}>
-  //             {isOpen ? (
-  //               <CrossIcon />
-  //             ) : (
-  //               <>
-  //                 <AvaVaraBlack width={24} height={24} />
-  //                 <ChevronDown />
-  //               </>
-  //             )}
-  //           </Button>
-  //         </>
-  //       )}
-  //     </div>
-  //   </>
-  // );

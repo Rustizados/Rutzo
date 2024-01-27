@@ -1,5 +1,5 @@
 // @use '@/assets/styles';
-// @import 'global.css';
+
 
 // body {
 //   background-image: url('./assets/images/bg.png');
@@ -26,6 +26,11 @@
 
 @use 'assets/styles';
 @use '@gear-js/ui/variables' as *;
+@import 'global.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
   font-family: 'valorax';

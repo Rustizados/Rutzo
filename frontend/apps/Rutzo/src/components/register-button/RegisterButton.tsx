@@ -5,20 +5,20 @@ import {
   ProgramMetadata,
 } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
-import { MAIN_CONTRACT } from "@/app/consts";
+import { MAIN_CONTRACT, seed } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
+import { useState } from "react";
+import { AccountsModal } from "../layout/header/account-info/accounts-modal";
+import Spinner from 'react-bootstrap/Spinner';
+import { ReactComponent as userSVG } from  '@/assets/images/icons/login.svg';
 
 function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
   const { accounts, account } = useAccount();
   const { api } = useApi();
+  const [userIsSigning, setUserIsSigning] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
-
-  // Datos de cuenta del administrador donde se efectuaran los pagos en los contratos
-  // de los nfts y del main contract
-  const mnemonic =
-    "strong orchard plastic arena pyramid lobster lonely rich stomach label clog rubber";
-  const { seed } = GearKeyring.generateSeed(mnemonic);
 
   // Function to register user
   const registerUser = async () => {
@@ -73,28 +73,44 @@ function RegisterButton({ onRegister }: any) {
               console.log(`Current status: ${status.type}`);
               if (status.type === "Finalized") {
                 alert.success(status.type);
+                setUserIsSigning(false);
               }
             }
           }
         )
       } catch(error: any) {
         console.log(":( transaction failed", error);
+        setUserIsSigning(false);
       }
     } else {
       alert.error("Account not available to sign");
+      setUserIsSigning(false);
     }
   }
 
 
   // Function to create voucher to main contract
   const setMainContractVoucher = async () => {
-    if (!api) return;
+    if (!api || !account) return;
     // Se genera el "issue" para crear el voucher para el usuario
     // En este caso, para el main contract
+
+    setUserIsSigning(true);
+
+    const voucherAlreadyExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+
+    if (voucherAlreadyExists) {
+      console.log("Voucher already exists");
+      await registerUser();
+      return;
+    }
+
     const mainContractVoucher = api.voucher.issue(
       account?.decodedAddress ?? "0x00",
       MAIN_CONTRACT.PROGRAM_ID,
-      13000000000000
+      13_000_000_000_000
+      // 18_000_000_000_000
+      // 10_000_000_000_000
     );
 
     const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
@@ -121,15 +137,31 @@ function RegisterButton({ onRegister }: any) {
     await registerUser();
   }
 
-
-
   const signer = async () => {
     console.log("signer");
     if (!account || !accounts || !api) return;
     await setMainContractVoucher();
   };
 
-  return <Button text="Register" onClick={signer} /> // <Button text="Register" onClick={signer} className="alert" />;
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return account ? (
+    !userIsSigning
+      ? <Button text="Register" onClick={signer} />
+      : <Spinner animation="border" variant="success" />
+  ) : (
+    <>
+      <Button icon={userSVG} text="Sign in" onClick={openModal} />
+      {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
+    </>
+  );
+
 }
 
 

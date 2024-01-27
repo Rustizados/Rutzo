@@ -33,6 +33,386 @@ impl Metadata for ProgramMetadata {
     type State = InOut<RutzoStateQuery, RutzoStateReply>;
 }
 
+#[derive(Default, Eq, PartialEq, Clone, Copy)]
+pub enum MatchResult {
+    PlayerOneWins,
+    PlayerTwoWins,
+    #[default]
+    Draw
+}
+
+#[derive(Default, Encode, Decode, TypeInfo, Eq, PartialEq, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum NFTCardType {
+    #[default]
+    Normal, 
+    Fire, 
+    Water,
+    Grass, 
+    Electric, 
+    Ice, 
+    Fight, 
+    Poison,
+    Ground,
+    Flying,
+    Psychic, 
+    Bug,  
+    Rock, 
+    Ghost, 
+    Dragon, 
+    Dark, 
+    Steel,
+    Fairy
+}
+
+impl NFTCardType {
+    pub fn batle(user1: Self, user2: Self) -> MatchResult {
+        let result1 = user1.is_waek_to(user2.clone());
+        let result2 = user2.is_waek_to(user1);
+        if (result1 && result2) || !(result1 || result2) {
+            MatchResult::Draw
+        } else if result1 {
+            MatchResult::PlayerTwoWins
+        } else {
+            MatchResult::PlayerOneWins
+        }
+    }
+    
+    pub fn is_waek_to(&self, card2: Self) -> bool {
+        match *self {
+            Self::Normal => {
+                card2 == Self::Fight
+            },
+            Self::Fire => {
+                card2 == Self::Water ||
+                card2 == Self::Ground ||
+                card2 == Self::Rock
+            },
+            Self::Water => {
+                card2 == Self::Grass ||
+                card2 == Self::Electric
+            },
+            Self::Grass => {
+                card2 == Self::Fire ||
+                card2 == Self::Ice ||
+                card2 == Self::Poison ||
+                card2 == Self::Flying ||
+                card2 == Self::Bug
+            },
+            Self::Electric => {
+                card2 == Self::Ground
+            },
+            Self::Ice => {
+                card2 == Self::Fire ||
+                card2 == Self::Fight ||
+                card2 == Self::Rock ||
+                card2 == Self::Steel
+            },
+            Self::Fight => {
+                card2 == Self::Flying ||
+                card2 == Self::Psychic ||
+                card2 == Self::Fairy
+            },
+            Self::Poison => {
+                card2 == Self::Ground ||
+                card2 == Self::Psychic
+            },
+            Self::Ground => {
+                card2 == Self::Water ||
+                card2 == Self::Grass || 
+                card2 == Self::Ice
+            },
+            Self::Flying => {
+                card2 == Self::Electric ||
+                card2 == Self::Ice ||
+                card2 == Self::Rock
+            },
+            Self::Psychic => {
+                card2 == Self::Bug ||
+                card2 == Self::Ghost ||
+                card2 == Self::Dark
+            },
+            Self::Bug => {
+                card2 == Self::Flying ||
+                card2 == Self::Rock ||
+                card2 == Self::Fire
+            },
+            Self::Rock => {
+                card2 == Self::Water ||
+                card2 == Self::Grass ||
+                card2 == Self::Fight ||
+                card2 == Self::Ground ||
+                card2 == Self::Steel
+            },
+            Self::Ghost => {
+                card2 == Self::Ghost ||
+                card2 == Self::Dark
+            },
+            Self::Dragon => {
+                card2 == Self::Ice ||
+                card2 == Self::Dragon ||
+                card2 == Self::Fairy
+            },
+            Self::Dark => {
+                card2 == Self::Fight ||
+                card2 == Self::Bug ||
+                card2 == Self::Fairy
+            },
+            Self::Steel => {
+                card2 == Self::Fire ||
+                card2 == Self::Fight ||
+                card2 == Self::Ground
+            },
+            Self::Fairy => {
+                card2 == Self::Poison ||
+                card2 == Self::Steel
+            }
+        }
+    }
+    
+    pub fn string_to_type(card_type: &str) -> Result<Self, ()> {
+        match card_type {
+            "Normal" => {
+                Ok(Self::Normal)
+            },
+            "Fire" => {
+                Ok(Self::Fire)
+            },
+            "Water" => {
+                Ok(Self::Water)
+            },
+            "Grass" => {
+                Ok(Self::Grass)
+            },
+            "Electric" => {
+                Ok(Self::Electric)
+            },
+            "Ice" => {
+                Ok(Self::Ice)
+            },
+            "Fighting" => {
+                Ok(Self::Fight)
+            },
+            "Poison" => {
+                Ok(Self::Poison)
+            },
+            "Ground" => {
+                Ok(Self::Ground)
+            },
+            "Flying" => {
+                Ok(Self::Flying)
+            },
+            "Psychic" => {
+                Ok(Self::Psychic)
+            },
+            "Bug" => {
+               Ok( Self::Bug)
+            },
+           "Rock" => {
+               Ok(Self::Rock)
+           },
+           "Ghost" => {
+               Ok(Self::Ghost)
+           },
+           "Dragon" => {
+              Ok(Self::Dragon)
+           },
+           "Dark" => {
+               Ok(Self::Dark)
+           },
+           "Steel" => {
+               Ok(Self::Steel)
+           },
+           "Fairy" => {
+               Ok(Self::Fairy)
+           },
+           _ => {
+               Err(())
+           }
+        }
+    }
+}
+
+#[derive(Default, Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct NFTDefault {
+    pub name: String,
+    pub description: String,
+    pub media: String,
+    pub reference: String,
+    pub sale_id: u64
+}
+
+#[derive(Default, Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct NFTOnSale {
+    pub token_id: TokenId,
+    pub value: u128
+}
+
+#[derive(Default, Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum RutzoStateQuery{
+    UserIsRegister(UserId),
+    GameInformationById(u64),
+    MatchStateById(u64),
+    PlayerInformation(UserId),
+    PlayerIsInMatch(ActorId),
+    NFTsPurchasedByUser(UserId),
+    UserCanMintDefaultsNFTs(UserId),
+    NFTsOnSale,
+    DefaultsNFTS,
+    #[default]
+    All
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum RutzoStateReply {
+    UserIsRegister(bool),
+    GameInformation(MatchInformation),
+    PlayerInformation(UserDataState),
+    PlayerInMatch(Option<u64>),
+    MatchState(MatchState),
+    PurchasedNfts(Vec<u64>),
+    UserCanMintDefaultsNfts(bool),
+    NFTsOnSale(Vec<NFTOnSale>),
+    DefaultsNFTs(Vec<NFTDefault>),
+    MatchDoesNotExists,
+    UserDoesNotExists,
+    All(ContractState)
+}
+
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum RutzoAction {
+    MessageTest,
+    PlayGame(TokenId),
+    MintCard {
+        token_id: u8
+    },
+    SetNFTAddress(ActorId),
+    Register,
+    AddNftForSale {
+        token_metadata: TokenMetadata,
+        value: u128
+    },
+    BuyNFT(TokenId),
+    ApproveMinter(ActorId),
+    DelegateApprovedUser(ActorId),
+    SetContractToReceiveInformation(ActorId),
+    SetContractToSendData(ActorId),
+    RestoreInformationFromOldMainContract,
+    GetAllInformation,
+    GetProfits,
+    DeleteContract,
+}
+
+#[derive(Encode, Decode, TypeInfo, Eq, PartialEq)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum RutzoEvent {
+    MessageTestResponse,
+    Minted(TokenId),
+    NFTContractSaved,
+    ErrorCallingNFTContract,
+    UserIsNotApproved(UserId),
+    UserIsNotTheOwner(UserId),
+    Approved(UserId),
+    UserApprovedNotExists(UserId),
+    ApprovedUserDeleted(UserId),
+    ErrorBuying(String),
+    InsufficientFunds(NFTPrice),
+    NftWithTokenIdDoesNotExists(TokenId),
+    NFTWithIdNotExists(u8),
+    NFTTypeDoesNotExist(String),
+    AccountAlreadyExist(UserId),
+    AccountNotExists(UserId),
+    AccountAlreadyInMatch(UserId),
+    QueryNotAllowed(String),
+    RegisterSucces,
+    LoginSucces,
+    UserInMatch(MatchId),
+    ErrorInJoiningMatch,
+    PurchaseSucces,
+    ReplySuccess,
+    NewPlayer(UserId),
+    MatchFinished,
+    MatchCreated,
+    UserIsAlreadyInAGame(u64),
+    PendingTransfer(TokenId),
+    TransferSuccess(TokenId),
+    NFTIsNotApprovedByMainContract(TokenId),
+    CommunicationError(ActorId),
+    MaxMintsReached(UserId),
+    Profits(u128),
+    ContractSet(ActorId),
+    ContractIsNotTheMain,
+    InformationRecovered,
+    ErrorRetrievingInformation,
+    WrongMessageFromNFTContract,
+    NFTTypeIsIncorrect((TokenId, String)),
+    ContractsData(DataFromContract),
+    ContractToReceiveDataNotSet,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum GameState {
+    WaitigForPlayer,
+    GameInProgress
+}
+
+#[derive(Encode, Decode, TypeInfo, Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct UserDataState {
+    pub current_game: Option<u64>,  
+    pub recent_past_game: Option<u64>,
+    pub past_games: Vec<u64>,
+}
+
+impl From<UserData> for UserDataState {
+    fn from(value: UserData) -> Self {
+        let current_game = if let Some(game_id) = value.current_game {
+            Some(game_id as u64)
+        } else {
+            None  
+        };
+        let past_games = value.past_games
+            .iter()
+            .map(|game_id| *game_id as u64)
+            .collect();
+        let recent_past_game = if  value.recent_past_game.is_some() {
+            let recent_past_game = value.recent_past_game.unwrap();
+            Some(recent_past_game as u64)
+        } else {
+            None
+        };
+        Self {
+            current_game,
+            past_games,
+            recent_past_game
+        }
+    }
+}
+
+#[derive(Encode, Decode, TypeInfo, Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct UserDefaultMints {
+    pub nfts_minted: Vec<u8>,
+    pub can_mint: bool
+}
+
 #[derive(Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
@@ -85,14 +465,14 @@ impl Contract {
             .find(|card_data| card_data.nft_token_id == nft_id)
             .is_some()
     }
-    
+
     pub fn start_round(card1_type: NFTCardType, card1_power: Power, card2_type: NFTCardType, card2_power: Power) -> MatchResult {
         let round_data = NFTCardType::batle(card1_type, card2_type);
-        
+
         if round_data != MatchResult::Draw {
             return round_data;
         }
-        
+
         if card1_power == card2_power {
             MatchResult::Draw
         } else if  card1_power > card2_power {
@@ -101,10 +481,10 @@ impl Contract {
             MatchResult::PlayerTwoWins
         }
     }
-    
+
     pub fn game_with_bot(_game_data: &mut GameData, _card_id: TokenId) -> RutzoEvent {
         /*
-        
+
         let Some(card_data) = game_data
             .user_1
             .nfts_chosen
@@ -112,19 +492,19 @@ impl Contract {
             .find(|card_data| card_data.nft_token_id == card_id) else {
             return RutzoEvent::NFTSelectedIsNotInCardsSelected(card_id);
         };
-        
+
         let CardData {
-            nft_type,   
+            nft_type,
             nft_power,
             ..
         } = card_data;
         */
-        
-        
+
+
         RutzoEvent::ContractToReceiveDataNotSet
-        
+
     }
-    
+
     pub async fn burn_all_nfts(nft_contract: ActorId) -> Result<NFTEvent, Error> {
         msg::send_for_reply_as::<NFTAction, NFTEvent>(
             nft_contract, 
@@ -188,22 +568,22 @@ impl Contract {
     
     pub async fn mint_default_nft_to_user(nft_contract: ActorId, nft_id: u8, to: UserId, transaction_id: u64) -> Result<NFTEvent, Error> {
         msg::send_for_reply_as::<NFTAction, NFTEvent>(
-            nft_contract, 
-            NFTAction::MintDefaultNFT { 
-                transaction_id, 
+            nft_contract,
+            NFTAction::MintDefaultNFT {
+                transaction_id,
                 to,
                 nft_id
-            }, 
-            0, 
+            },
+            0,
             0
         )
         .expect("Error in sending a message 'NFTAction::Mint' to nft contract")
         .await
     }
-    
+
     pub async fn transfer_match_nft(nft_contract: ActorId, to: ActorId, token_id: TokenId, transaction_id: u64) -> Result<NFTEvent, ()>{
         match msg::send_for_reply_as::<NFTAction, NFTEvent>(
-            nft_contract,   
+            nft_contract,
             NFTAction::TranserNFTToUser { 
                 transaction_id, 
                 to, 
@@ -279,15 +659,15 @@ impl Contract {
         .expect("Error in sending a message 'NFTAction::Transfer' to nft contract")
         .await
     }
-    
+
     pub async fn nfts_data_by_token_id(nft_contract: ActorId, tokens_id: Vec<TokenId>, user: UserId) -> Result<NFTEvent, Error> {
         msg::send_for_reply_as::<NFTAction, NFTEvent>(
-            nft_contract, 
+            nft_contract,
             NFTAction::NFTDataFromTokensIdbyUser {
                 tokens_id,
                 user
             },
-             0, 
+             0,
              0
         )
         .expect("Error in sending a message 'NFTAction::Transfer' to nft contract")
@@ -442,32 +822,32 @@ impl Contract {
     
     pub async fn mint_default_card(&mut self, token_id: u8) -> RutzoEvent {
         let user_id = msg::source();
-        
+
         if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
-        } 
-        
-        let nfts_minted_data = self.default_tokens_minted_by_id.get_mut(&user_id).unwrap();
-        
-        if !nfts_minted_data.can_mint {
-            return RutzoEvent::MaxMintsReached(user_id);    
         }
-        
+
+        let nfts_minted_data = self.default_tokens_minted_by_id.get_mut(&user_id).unwrap();
+
+        if !nfts_minted_data.can_mint {
+            return RutzoEvent::MaxMintsReached(user_id);
+        }
+
         let answer = Contract::mint_default_nft_to_user(
-            self.nft_contract.unwrap(), 
+            self.nft_contract.unwrap(),
             token_id,
             user_id,
             self.transaction_id
         )
         .await
         .expect("Unable to decode NFTEvent");
-        
+
         let NFTEvent::Transfer(_) = answer else {
-            return RutzoEvent::ErrorCallingNFTContract; 
+            return RutzoEvent::ErrorCallingNFTContract;
         };
-        
+
         self.transaction_id = self.transaction_id.saturating_add(1);
-        
+
         self.default_tokens_minted_by_id
             .entry(user_id)
             .and_modify(|minted_data| {
@@ -477,10 +857,10 @@ impl Contract {
                 }
             })
             .or_default();
-        
+
         RutzoEvent::Minted(TokenId::default())
     }
-    
+
     pub async fn mint_card(&mut self, token_id: u8) -> RutzoEvent {
         let user_id = msg::source();
         
@@ -562,9 +942,9 @@ impl Contract {
             past_games: vec![],
             is_logged_id: true
         });       
-        
+
         self.users_online += 1;
-        
+
         self.default_tokens_minted_by_id.insert(user_id, UserDefaultMints {
             nfts_minted: Vec::new(),
             can_mint: true
@@ -574,162 +954,162 @@ impl Contract {
     
     pub fn login_user(&mut self, user_id: UserId) -> RutzoEvent {
         // Check if the user is register
-        if !self.is_register(&user_id) {    
+        if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
         }
-        
+
         let user_data = self.games_information_by_user
             .get_mut(&user_id)
             .unwrap();
-        
+
         if user_data.is_logged_id {
             return RutzoEvent::AccountAlreadyLoggedIn(user_id);
         }
-        
+
         user_data.is_logged_id = true;
         self.users_online += 1;
-        
+
         RutzoEvent::LoginSucces
-    }  
-    
+    }
+
     pub fn logout_user(&mut self, user_id: UserId) -> RutzoEvent {
         // Check if the user is register
-        if !self.is_register(&user_id) {    
+        if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
         }
-        
+
         let user_data = self.games_information_by_user
             .get_mut(&user_id)
             .unwrap();
-        
+
         if !user_data.is_logged_id {
             return RutzoEvent::UserIsNotLoggedIn(user_id);
         }
-        
+
         self.users_online -= 1;
         user_data.is_logged_id = false;
-        
+
         RutzoEvent::LogoutSuccess
     }
-    
+
     pub fn is_logged(&self, user_id: UserId) -> bool {
         let user_data = self.games_information_by_user
             .get(&user_id)
             .unwrap();
-        
+
         user_data.is_logged_id
     }
-    
+
     pub fn is_register(&self, user_id: &UserId) ->  bool {
         self.games_information_by_user.contains_key(user_id)
     }
     
     pub async fn send_nft_to_winner(&mut self, user_id: UserId, nft_id: TokenId) -> RutzoEvent {
         // Check if the user is register
-        if !self.is_register(&user_id) {    
+        if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
         }
-        
+
         let Some((user_winner, game_id)) = self.pending_transfers.get(&user_id) else {
-          return RutzoEvent::UserDoesNotHasPendingTransfer;  
+          return RutzoEvent::UserDoesNotHasPendingTransfer;
         };
-        
+
         let Some(game_data) = self.games2.get(*game_id) else {
             return RutzoEvent::GameIdDoesNotExists(*game_id as u64);
         };
-        
+
         let user_chosen_cards =  if game_data.user_1.user_id == user_id {
             &game_data.user_1.nfts_chosen
         } else {
             &game_data.user_2.as_ref().unwrap().nfts_chosen
         };
-        
+
         let Some(CardData { nft_token_id, .. }) = user_chosen_cards.iter().find(|&card_data| card_data.nft_token_id == nft_id) else {
             return RutzoEvent::NftIdIsNotInGamId {
                 nft_id,
                 game_id: *game_id as u64
             };
         };
-        
+
         if Contract::transfer_match_nft(
             self.nft_contract.unwrap(),
-            *user_winner, 
+            *user_winner,
             *nft_token_id,
             self.transaction_id
         ).await.is_err() {
             return RutzoEvent::PendingTransfer;
         }
-        
+
         self.transaction_id = self.transaction_id.saturating_add(1);
         self.pending_transfers.remove(&user_id);
-        
+
         RutzoEvent::TransferSuccess(nft_id)
     }
-    
+
     // Function to create a match, and checking if the user is already in a match
     pub async fn join_game(&mut self, user_id: UserId, tokens_id: Vec<TokenId>, play_with_bot: bool) -> RutzoEvent {
         // Check if the user is register
-        if !self.is_register(&user_id) {    
+        if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
         }
-        
+
         // Check if the user has a NFT pending transfer
         if self.pending_transfers.get(&user_id).is_some() {
             return RutzoEvent::PendingTransfer;
         }
-        
-        // Check if the user is already in a game 
+
+        // Check if the user is already in a game
         if let Some(user_current_game) = self.user_actual_game_id(user_id) {
             return RutzoEvent::UserIsAlreadyInAGame(
                 user_current_game as u64
             );
-        } 
-        
+        }
+
         // Check if total NFT send to the action is less or greater than 3
         if tokens_id.len() > 3 || tokens_id.len() < 3 {
             return RutzoEvent::TotalTokensIdIsIncorrect(tokens_id);
         }
-        
-        // Get the answer of NFT data, if error, end the action        
+
+        // Get the answer of NFT data, if error, end the action
         let Ok(answer) = Contract::nfts_data_by_token_id(
-            self.nft_contract.unwrap(), 
+            self.nft_contract.unwrap(),
             tokens_id,
             user_id
         ).await else {
             return RutzoEvent::CommunicationError(self.nft_contract.unwrap());
         };
-        
+
         // If answer is that the contract is not the main, end the funcion
         if answer == NFTEvent::ActionOnlyForMainContract {
             return RutzoEvent::ContractIsNotTheMain;
         }
-        
+
         // Get data from the message, if the message is not the correct, end the function
         // Is important because at the same time, it chekcs if he has the three nfts
         let NFTEvent::NFTsData(nfts_tokens_metadata) = answer else {
             return RutzoEvent::WrongMessageFromNFTContract;
         };
-        
+
         // Creating new vector for the cards of the player
         let mut nfts_chosen = Vec::new();
-        
+
         // Format the three cards for the game
-        for (nft_token_id, token_metadata) in nfts_tokens_metadata.into_iter() {  
-            // If one card is None, end the method          
+        for (nft_token_id, token_metadata) in nfts_tokens_metadata.into_iter() {
+            // If one card is None, end the method
             let Some(nft_data) = token_metadata else {
                 return RutzoEvent::NftWithTokenIdDoesNotExists(nft_token_id);
             };
-                
+
             // Getting the type of type of the card
             let Ok(nft_type) = NFTCardType::string_to_type(&nft_data.description) else {
                 return RutzoEvent::NFTTypeIsIncorrect((nft_token_id, nft_data.description));
             };
-            
+
             // Getting the power of the card
             let nft_power: Power = nft_data.reference
                 .parse()
                 .expect("error parsing power");
-            
+
             // Format the information of the card fot the game
             let card_data = CardData {
                 nft_token_id,
@@ -737,17 +1117,17 @@ impl Contract {
                 nft_power,
                 nft_data
             };
-                
+
             // Save the formated information of the card
             nfts_chosen.push(card_data);
         }
-        
+
         // Data is ready to storage in a match
         let user_game_data = UserGameData2 {
             user_id,
             nfts_chosen
         };
-        
+
         // If player plays with bot, create match without adding it in pendings
         // matchs and finish the function
         if play_with_bot {
@@ -755,7 +1135,7 @@ impl Contract {
             self.create_game_and_set_player_data(user_game_data, play_with_bot);
             return RutzoEvent::MatchJoined;
         }
-        
+
         // Check if a match exists, if not, create one and join user to the match.
         let game_id = if let Some(game_id) = self.games_waiting.pop() {
             self.games2[game_id].user_2 = Some(user_game_data);
@@ -767,50 +1147,50 @@ impl Contract {
             self.create_game_and_set_player_data(user_game_data, play_with_bot);
             actual_game_id
         };
-        
+
         self.set_player_in_current_game(user_id, game_id);
-        
+
         RutzoEvent::MatchJoined
     }
-    
+
     // Method create a new game and join the current user to that game
     pub fn create_game_and_set_player_data(&mut self, user_game_data: UserGameData2, playing_with_bot: bool) {
         let mut new_game = GameData {
             user_1: user_game_data,
-            playing_with_bot, 
+            playing_with_bot,
             ..Default::default()
         };
-        
+
         if !playing_with_bot {
-            new_game.match_state = MatchState::LookingForEnemy;          
+            new_game.match_state = MatchState::LookingForEnemy;
         }
-        
+
         self.games2.push(new_game);
         self.game_id = self.game_id.saturating_add(1);
     }
-    
+
     // Function to call when user is already in a match and the user chose a card
     pub async fn throw_card(&mut self, user_id: UserId, card_id: TokenId) -> RutzoEvent {
         // Check if the user is register
-        if !self.is_register(&user_id) {    
+        if !self.is_register(&user_id) {
             return RutzoEvent::AccountNotExists(user_id);
         }
-        
+
         // Get user actual game id, if it does not exists, finish the method
         let Some(user_current_game) = self.user_actual_game_id(user_id) else {
             return RutzoEvent::UserIsNotInAGame(user_id);
         };
-        
+
         // Get game data, if it does not exist or it throw an error, finish the method
         let Some(game_data) = self.games2.get_mut(user_current_game) else {
-            return RutzoEvent::GameIdDoesNotExists(user_current_game as u64);            
+            return RutzoEvent::GameIdDoesNotExists(user_current_game as u64);
         };
-        
+
         if game_data.playing_with_bot {
             if !Contract::player_contains_selected_card(&game_data.user_1.nfts_chosen, card_id) {
                return RutzoEvent::NFTSelectedIsNotInCardsSelected(card_id);
             }
-            return Contract::game_with_bot(game_data, card_id); 
+            return Contract::game_with_bot(game_data, card_id);
             /*
             match Contract::game_with_bot(game_data, card_id) {
                 MatchResult::PlayerOneWins => {
@@ -825,12 +1205,12 @@ impl Contract {
             }
             */
         }
-        
+
         // If user2 is none, it means that the game is serching an enemy
         if game_data.user_2.is_none() {
             return RutzoEvent::GameIsWaitingPlayer(user_current_game as u64);
         }
-        
+
         // check if the actual caller is user1
         if game_data.user_1.user_id == user_id {
             // If user already throw a card, finish the method
@@ -853,150 +1233,150 @@ impl Contract {
             }
             game_data.round_data.user2_card = Some(card_id);
         }
-        
+
         game_data.round_state = MatchState::InProgress;
-        
+
         // It is checked if any user has not chosen their letter
         if game_data.round_data.user1_card.is_none() || game_data.round_data.user2_card.is_none() {
             return RutzoEvent::UserChoseCard;
         }
-        
+
         self.game_with_user(user_current_game)
     }
-    
+
      pub fn game_with_user(&mut self, game_id: GameId) -> RutzoEvent {
         let game_data = self.games2.get_mut(game_id).unwrap();
-         
+
         let Some(user1_card_id) = game_data.round_data.user1_card.as_ref() else {
             return RutzoEvent::UserHasNotYetSelectedACard(
                 game_data.user_1.user_id
             );
         };
-        
+
         let Some(user2_card_id) = game_data.round_data.user2_card.as_ref() else {
             return RutzoEvent::UserHasNotYetSelectedACard(
                 game_data.user_2.as_ref().unwrap().user_id
             );
         };
-        
+
         let Some(user1_card_data) = game_data
             .user_1
             .nfts_chosen
             .iter()
             .find(|card_data| card_data.nft_token_id == *user1_card_id) else {
                 return RutzoEvent::NFTSelectedIsNotInCardsSelected(*user1_card_id);
-        };    
-        
+        };
+
         let Some(user2_card_data) = game_data
-            .user_2 
-            .as_ref ()           
+            .user_2
+            .as_ref ()
             .unwrap()
             .nfts_chosen
             .iter()
             .find(|card_data| card_data.nft_token_id == *user2_card_id) else {
             return RutzoEvent::NFTSelectedIsNotInCardsSelected(*user2_card_id);
         };
-        
+
         let user_1 = game_data.user_1.user_id;
         let user_2 = game_data.user_2.as_ref().unwrap().user_id;
-        
+
         let CardData {
             nft_type: user1_nft_type,
             nft_power: user1_nft_power,
             nft_token_id: user1_chosen_nft,
             ..
         } = user1_card_data;
-        
+
         let CardData {
             nft_type: user2_nft_type,
             nft_power: user2_nft_power,
             nft_token_id: user2_chosen_nft,
             ..
         } = user2_card_data;
-        
+
         let round_result = Contract::start_round(
             user1_nft_type.clone(),
             *user1_nft_power,
             user2_nft_type.clone(),
             *user2_nft_power
         );
-        
+
         let round_state: MatchState;
-        
+
         match round_result {
             MatchResult::PlayerOneWins => {
-                round_state = MatchState::RoundFinished { 
+                round_state = MatchState::RoundFinished {
                     winner: UserRoundData {
                         user_id: user_1,
                         chosen_nft: *user1_chosen_nft
-                    }, 
+                    },
                     loser: UserRoundData {
                         user_id: user_2,
                         chosen_nft: *user2_chosen_nft
-                    }, 
-                    draw: false 
+                    },
+                    draw: false
                 };
                 game_data.user1_wins += 1;
             },
             MatchResult::PlayerTwoWins => {
-                round_state = MatchState::RoundFinished { 
+                round_state = MatchState::RoundFinished {
                     winner: UserRoundData {
                         user_id: user_2,
                         chosen_nft: *user2_chosen_nft
-                    }, 
+                    },
                     loser: UserRoundData {
                         user_id: user_1,
                         chosen_nft: *user1_chosen_nft
-                    }, 
-                    draw: false 
+                    },
+                    draw: false
                 };
                 game_data.user2_wins += 1;
             },
             MatchResult::Draw => {
-                round_state = MatchState::RoundFinished { 
+                round_state = MatchState::RoundFinished {
                     winner: UserRoundData {
                         user_id: user_1,
                         chosen_nft: *user1_chosen_nft
-                    }, 
+                    },
                     loser: UserRoundData {
                         user_id: user_2,
                         chosen_nft: *user2_chosen_nft
-                    }, 
-                    draw: true 
+                    },
+                    draw: true
                 };
             }
         }
-        
+
         let actual_round = game_data.round;
         game_data.round += 1;
         game_data.round_data.user1_card = None;
         game_data.round_data.user2_card = None;
         game_data.round_state = round_state;
-        
+
         if game_data.round >= 3 && game_data.user1_wins != game_data.user2_wins {
             game_data.match_state = if game_data.user1_wins > game_data.user2_wins {
                 self.pending_transfers.insert(user_2, (user_1, game_id));
-                MatchState::Finished { 
-                    winner: user_1, 
-                    loser: user_2 
+                MatchState::Finished {
+                    winner: user_1,
+                    loser: user_2
                 }
             } else {
                 self.pending_transfers.insert(user_1, (user_2, game_id));
                 MatchState::Finished {
                     winner: user_2,
-                    loser: user_1 
+                    loser: user_1
                 }
             };
-            
+
             self.player_finish_game(user_1, game_id);
             self.player_finish_game(user_2, game_id);
-            
+
             return RutzoEvent::MatchFinished(game_id as u64);
         }
-        
+
         RutzoEvent::RoundFinished(actual_round)
     }
-    
+
     pub fn set_player_in_current_game(&mut self, user_id: ActorId, game_id: GameId) {
         self.games_information_by_user
             .entry(user_id)
@@ -1005,7 +1385,7 @@ impl Contract {
                 user_game_data.recent_past_game = None;
             });
     }
-    
+
     pub fn player_finish_game(&mut self, user_id: ActorId, game_id: GameId) {
         self.games_information_by_user
             .entry(user_id)
@@ -1015,16 +1395,16 @@ impl Contract {
                 user_game_data.past_games.push(game_id);
             });
     }
-    
+
     pub fn user_actual_game_id(&self, user_id: ActorId) -> Option<GameId> {
         self.games_information_by_user
             .get(&user_id)
             .unwrap()
             .current_game
-    } 
-    
-    
-    
+    }
+
+
+
     //pub async fn play_game(&mut self, user_id: ActorId, token_id: TokenId, power: u8) -> RutzoEvent {
     pub async fn play_game(&mut self, user_id: ActorId, token_id: TokenId, play_with_bot: bool) -> RutzoEvent {
         if !self.is_register(&user_id) {    
@@ -1048,7 +1428,7 @@ impl Contract {
             return RutzoEvent::TransferSuccess(token_id);
         }
             */
-            
+
         let answer = Contract::nft_data_by_tokenid(
             self.nft_contract.unwrap(), 
             token_id
@@ -1107,7 +1487,7 @@ impl Contract {
             self.play_bot().await
         }
     }
-    
+
     pub async fn play_online(&mut self, user_id: ActorId, token_id: TokenId, nft_type: NFTCardType, nft_power: Power, nft_data: TokenMetadata) -> RutzoEvent {
         let (game_data, game_id) = match self.games_waiting.pop() {
             None => {
