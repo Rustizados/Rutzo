@@ -1,7 +1,6 @@
 import { MAIN_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { useState } from "react";
-import { ReactComponent as Banner } from "@/assets/images/marketplace.svg";
 import { DefaultNfts, RegisterButton, NftsOnSale } from "@/components";
 import { ProgramMetadata } from "@gear-js/api";
 import "./Marketplace.scss";
@@ -43,10 +42,10 @@ function Marketplace() {
 
   return (
     <div className="text-center">
-      <Banner style={{ width: "50%", alignSelf: "center", padding: 0 }} />
-      <h2 style={{ marginBottom: 65 }}>
+      <h1 style={{ marginBottom: 30 }}>Explore Marketplace</h1>
+      <p>
         Get ready for the battle with some cool NFTs
-      </h2>
+      </p>
       {
         isRegister ? (
           <>

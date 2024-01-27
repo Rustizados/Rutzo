@@ -186,7 +186,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
             title={nft.name}
             type={nft.description.toLowerCase()}
             value={nft.reference}
-            price={6}
+            price={nft.price}
             key={nft.saleId}
           >
             {

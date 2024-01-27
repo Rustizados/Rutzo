@@ -3,7 +3,6 @@ import styles from './Card.module.scss';
 import { Icon } from '../icon';
 import { PowerBar } from '../power';
 import { CardDialog } from './CardDialog';
-//import { Modal } from './Modal';
 import { Modal } from '../modal/Modal';
 
 interface CardProps {
@@ -67,19 +66,25 @@ class Card extends React.Component<CardProps, CardState> {
            <div className={styles.graphics}>
             <img className={styles.hexagon} src={image} alt="NFTimage" />
           </div>
+          <p className={styles.title}>{title}</p>
 
           <div className={styles.content}>
-            <p className={styles.title}>{title}</p>
-            <div className={styles.typec}>
-              <Icon name={type} />
-              <p className={styles.type}>{type}</p>
+
+            <div className={styles.details}>
+             <p>Type: {type}</p>
+             <p>Power: {value}%</p>
             </div>
-            <div>
-              <PowerBar progress={value} />
+            
+            <div className={styles.price}>
+              <p className={styles.priceText}>${price} TVara</p>
             </div>
           </div>
+
+          <div className={styles.button_container}>
+          { children }
+          </div>
         </div>
-        {dialogOpen && (
+        {/*{dialogOpen && (
           <Modal onClose={this.handleClose}>
             <CardDialog
               isOpen={dialogOpen}
@@ -93,7 +98,7 @@ class Card extends React.Component<CardProps, CardState> {
               { children }
             </CardDialog>
           </Modal>
-        )}
+        )}*/}
       </div>
     );
   }

@@ -1,4 +1,7 @@
-import { Card, Facedowncard, PlayButton, EmptySlot } from "@/components";
+import {Card, Facedowncard, PlayButton, EmptySlot} from "@/components";
+import useGameLogic from "@/hooks/useGameLogic";
+import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
+import { useState } from "react";
 
 
 import "./slide-in.css";
@@ -41,7 +44,7 @@ function BoardGame() {
     const cardsNumber: number = 3;
 
     const isButtonDisabled = selectedCards.length !== cardsNumber;
-  
+
     return (
       <div>
         <div className="mainContainer flex flex-col items-center  ">
@@ -117,7 +120,7 @@ function BoardGame() {
 
 
           <div style={{ ...containerStyles, flexDirection: "column" }} className={"w-full flex flex-col items-center "}>
-  
+
             <div id="gamearea" className="playArea flex flex-col items-center">
                 <h2 className="text-2xl my-4 font-semibold ">Play</h2>
 
@@ -140,7 +143,7 @@ function BoardGame() {
                   {/* <CardComponent selectedCard={cardToPlay} /> */}
                   {
                     cardToPlay && (
-                      <Card 
+                      <Card
                         image={cardToPlay[1].media}
                         title={cardToPlay[1].name}
                         type={cardToPlay[1].description.toLowerCase()}
@@ -151,7 +154,7 @@ function BoardGame() {
                   }
                   {
                     enemyCard ? (
-                      <Card 
+                      <Card
                         image={enemyCard.media}
                         title={enemyCard.name}
                         type={enemyCard.description.toLowerCase()}
@@ -161,15 +164,15 @@ function BoardGame() {
                       <Facedowncard />
                     )
                   }
-                  
+
                 </div>
-  
+
                 <div className="buttonArea ">
                   {cardToPlay && (
                     <div>
                       {
                         !userPressPlayButton ? (
-                          <PlayButton 
+                          <PlayButton
                             onJoiningGame={() => handlePlayButton()} // {setUserPressPlayButton(true)}}
                             //onPressed={() => {setUserPressPlayButton(true)}}
                             onClick={() => {console.log("me clockearon D:");
@@ -204,7 +207,7 @@ function BoardGame() {
                           </div>
                         )
                       }
-                      
+
                     </div>
                   )}
                 </div>

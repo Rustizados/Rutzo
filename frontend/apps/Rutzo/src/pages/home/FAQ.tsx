@@ -5,7 +5,7 @@ import "./home_styles.css";
 function FAQ() {
   return (
     <div>
-      <Accordion>
+      <Accordion className="accordion">
         <Accordion.Item eventKey="0">
           <Accordion.Header>How do I create an account?</Accordion.Header>
           <Accordion.Body>

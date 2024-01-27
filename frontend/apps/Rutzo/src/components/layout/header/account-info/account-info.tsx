@@ -8,6 +8,7 @@ import { useApi, useAccount, useBalance, useBalanceFormat } from '@gear-js/react
 
 // import { Button } from '@/components/ui/button';
 import { Button } from '@gear-js/ui';
+import styles from './account-info.module.scss';
 // import { AvaVaraBlack, ChevronDown, CrossIcon } from '@/assets/temp/images';
 
 import { useState } from 'react';
@@ -34,7 +35,7 @@ export function AccountInfo() {
       {account ? (
         <Wallet balance={formattedBalance} address={account.address} name={account.meta.name} onClick={openModal} />
       ) : (
-        <Button icon={userSVG} text="Sign in" onClick={openModal} />
+        <Button icon={userSVG} text="Sign in" onClick={openModal} className={styles.login_button}/>
       )}
       {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
     </>
