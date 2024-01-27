@@ -2,7 +2,7 @@ import { Feature } from "./Feature";
 import { FaCartShopping } from "react-icons/fa6";
 import { IoBagHandle } from "react-icons/io5";
 import { FaLayerGroup } from "react-icons/fa";
-import {Carousel} from "@/components";
+
 
 const featureData = [
   {

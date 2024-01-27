@@ -1,4 +1,4 @@
-import {Card, Carousel, Facedowncard, PlayButton} from "@/components";
+import {Card, Facedowncard, PlayButton} from "@/components";
 import useGameLogic from "@/hooks/useGameLogic";
 import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import { useState } from "react";
