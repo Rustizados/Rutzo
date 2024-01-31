@@ -64,6 +64,7 @@ function BoardGame() {
                                     value={elemento.reference}
                                     key={nftId}
                                     onCardClick={() => {cardSelected(nftId, false)}}
+                                    children={undefined}
                                 />
                             );
                         })}

@@ -1,7 +1,7 @@
 import { ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { useApi, useAccount } from "@gear-js/react-hooks";
-import { CollectionCard } from "../collection-card";
+import { Card } from "../card/Card";
 import { NFT_CONTRACT } from "@/app/consts";
 
 
@@ -43,7 +43,7 @@ function MyNFTCollection() {
       {tokensForOwnerState.length > 0 ? (
         tokensForOwnerState.map((element: any) => {
           const [nftId, elemento] = element;
-          return <CollectionCard 
+          return <Card 
             image={elemento.media}
             title={elemento.name}
             type={elemento.description.toLowerCase()}

@@ -68,21 +68,33 @@ class Card extends React.Component<CardProps, CardState> {
           </div>
           <p className={styles.title}>{title}</p>
 
-          <div className={styles.content}>
+          <div className={children !== undefined ? styles.hiddeable : styles.content}>
 
             <div className={styles.details}>
              <p>Type: {type}</p>
              <p>Power: {value}%</p>
             </div>
-            
+
+            {children !== undefined 
+            ?
             <div className={styles.price}>
               <p className={styles.priceText}>${price} TVara</p>
             </div>
+            :
+            null
+            }
+            
           </div>
 
+          {children != undefined ?
           <div className={styles.button_container}>
           { children }
           </div>
+          :
+          null
+        }
+
+          
         </div>
         {/*{dialogOpen && (
           <Modal onClose={this.handleClose}>

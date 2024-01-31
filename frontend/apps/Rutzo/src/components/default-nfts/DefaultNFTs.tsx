@@ -188,10 +188,9 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
             value={nft.reference}
             price={nft.price}
             key={nft.saleId}
-          >
-            {
+            children={
               !minting ?  (
-                <Button text="Mint" onClick={() => {
+                <Button text="Mint" className="bg-green-500" onClick={() => {
                   const saleId = Number(nft.saleId.toString());
                   setMinting(true);
                   mintDefaultNft(saleId);
@@ -200,7 +199,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
                 <Spinner animation="border" variant="success" />
               )
             }
-          </Card>
+          />
         )
       }
     </div>

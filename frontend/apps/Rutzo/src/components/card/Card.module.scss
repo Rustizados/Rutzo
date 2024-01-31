@@ -68,7 +68,7 @@
   align-self: center;
 }
 
-.content {
+.content, .hiddeable {
   width: 100%;
   padding: 0 5%;
   display: flex;
@@ -83,7 +83,7 @@
   display: none;
 }
 
-.card:hover .content {
+.card:hover .hiddeable {
   display: none;
 }
 

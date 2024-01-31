@@ -204,18 +204,13 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
           const [nftId, elemento] = element;
           const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
           return <Card 
-            image={elemento.media}
+            image={elemento.medi}
             title={elemento.name}
             type={elemento.description.toLowerCase()}
             value={elemento.reference}
-            price={nftPriceData.value}
+            price={nftPriceData.valuee}
             key={nftId}
-          >
-            {/* <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
-
-              butNft(nftId, nftPriceData.value as u128);
-            }} /> */}
-            {
+            children={
               !buyingNFT ?  (
                 <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
                   setBuyingNFT(true);
@@ -225,7 +220,7 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
                 <Spinner animation="border" variant="success" />
               )
             }
-          </Card>;
+          />
         })
       ) : (
         <h1>No NFTs</h1>
