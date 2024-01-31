@@ -43,7 +43,7 @@ return (
   </div>
 
   <div className="section">
-    <h1 id="features" className="title">Features</h1>
+    <h1 id="features" className="title text-4xl font-extrabold dark:text-white">Features</h1>
     <Features />
   </div>  
 

@@ -7,6 +7,7 @@ interface CardProps {
   title: string;
   type: string;
   value: number;
+  onCardClick?: () => void;
 }
 
 function CollectionCard(props: CardProps) {
