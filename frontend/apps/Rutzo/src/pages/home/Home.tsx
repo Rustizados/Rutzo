@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Features } from "./Features";
 import { HowToStart } from "./HowToStart/HowToStart";
 import { FAQ } from "./FAQ";
@@ -9,18 +10,36 @@ import { Members } from "./Members/Members";
 
 function Home() {
 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const bannerImages = [
+    "https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg",
+    "https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg",
+    "https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg",
+  ];
+
 const images = [
-'https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg',
+'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
+'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
+'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
+'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
 ];
 
 const images2 = [
-'https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
-'https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
-'https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
+'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
+'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
+'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
 ];
+
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === bannerImages.length - 1 ? 0 : prevIndex + 1
+    );
+  }, 3000);
+
+  return () => clearInterval(intervalId); // Cleanup the interval on component unmount
+}, [currentImageIndex]);
 
 return (
 <div className="About">
@@ -34,11 +53,11 @@ return (
       < Play style={{ marginTop: "40px" }} id="action_button" />
     </div>
     <div className="Banner">
-      <img src="https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg" alt="NFTs"
+      <img src={bannerImages[(currentImageIndex+1)%3]} alt="NFTs"
         style={{ transform: 'rotate(20deg)' }} />
-      <img src="https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg" alt="NFTs"
+      <img src={bannerImages[(currentImageIndex+2)%3]} alt="NFTs"
         style={{ transform: 'rotate(10deg)' }} />
-      <img src="https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg" alt="NFTs" />
+      <img src={bannerImages[currentImageIndex]} alt="NFTs" />
     </div>
   </div>
 
