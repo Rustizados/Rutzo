@@ -1,5 +1,4 @@
 import { IconType } from 'react-icons/lib';
-import { TbExternalLink } from "react-icons/tb";
 import styles from './HowToStart.module.scss'
 
 interface StepProps {
