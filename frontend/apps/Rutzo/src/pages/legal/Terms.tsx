@@ -1,4 +1,4 @@
-import { TermSection } from './TermSection';
+import { LegalSection } from './LegalSection';
 
 function TermsAndConditions() {
   return (
@@ -28,7 +28,7 @@ function TermsAndConditions() {
           SERVICE.
         </p>
 
-        <TermSection title="1. Service description">
+        <LegalSection title="1. Service description">
           Rutzo is an online gaming platform that allows users to compete with each other using NFTs as virtual cards.
           Users, referred to as "players", participate in matches where the goal is to win cards from the opponent. Each
           player must have at least 3 cards to play. The platform also includes a marketplace where players can buy,
@@ -45,9 +45,9 @@ function TermsAndConditions() {
           cards available on our marketplace. We do not execute or effectuate purchases, transfers, or sales of NFTs. To
           use our Service, you must use a third-party wallet compatible with the Vara cryptocurrency and connected to
           the Vara Network, which allows you to engage in transactions on blockchains.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="2. Age and parental permission">
+        <LegalSection title="2. Age and parental permission">
           Players must be at least 13 years old to use Rutzo. If you are under 18, you need the explicit permission of
           your parents or legal guardians to participate in the game and operate cryptocurrency wallets.
           <br />
@@ -59,9 +59,9 @@ function TermsAndConditions() {
           We strongly advise parents and legal guardians to actively participate in and be aware of their minor's Rutzo
           experience. As a responsible gaming platform, Rutzo values the well-being of its users, particularly minors,
           and encourages a supportive and secure gaming environment.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="3. Use of NFTs and Virtual Cards">
+        <LegalSection title="3. Use of NFTs and Virtual Cards">
           In Rutzo, the gaming experience revolves around the utilization of virtual cards, which are represented as
           NFTs (Non-Fungible Tokens). These NFTs bring a unique and irreplaceable quality to each card within the game.
           <br />
@@ -78,9 +78,9 @@ function TermsAndConditions() {
           and equitable gaming environment for all participants. Players can trust that Rutzo will take appropriate
           measures to ensure the continued integrity of the virtual card system, promoting fair play and a positive user
           experience.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="4. Matches and results">
+        <LegalSection title="4. Matches and results">
           In the dynamic world of Rutzo, the outcome of matches holds a significant impact on the virtual card
           possessions of the players.
           <br />
@@ -100,9 +100,9 @@ function TermsAndConditions() {
           <br />
           Players can engage in Rutzo with confidence, knowing that the platform is dedicated to fostering a competitive
           yet fair atmosphere, where outcomes are determined by skill and strategy rather than external factors.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="5. Financial Responsibility and In-Game Purchases">
+        <LegalSection title="5. Financial Responsibility and In-Game Purchases">
           In the Rutzo gaming universe, financial transactions play a pivotal role in enhancing the gaming experience,
           and players must navigate these transactions responsibly.
           <br />
@@ -123,9 +123,9 @@ function TermsAndConditions() {
           Our goal is to provide an immersive and secure gaming environment, and we appreciate the cooperation of
           players in upholding the financial responsibility integral to their Rutzo experience. Together, we contribute
           to creating a gaming community built on trust, responsibility, and shared enjoyment.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="6. Contact">
+        <LegalSection title="6. Contact">
           Communication is key, and Rutzo values the connection with its players. If you have any questions, concerns,
           or feedback related to Rutzo, we encourage you to reach out to us. Your inquiries are important to us, and we
           are here to assist you in any way possible.
@@ -145,9 +145,9 @@ function TermsAndConditions() {
           <br />
           Your feedback helps us continuously improve Rutzo and deliver an exceptional gaming experience. We appreciate
           your engagement and look forward to assisting you on your Rutzo journey.
-        </TermSection>
+        </LegalSection>
 
-        <TermSection title="7. Modifications to Terms and Conditions">
+        <LegalSection title="7. Modifications to Terms and Conditions">
           At Rutzo, we believe in transparency and keeping our players informed. As the gaming landscape evolves and
           Rutzo grows, we reserve the right to make adjustments to these terms and conditions to reflect any necessary
           updates or enhancements to our services.
@@ -163,7 +163,7 @@ function TermsAndConditions() {
           We value your ongoing participation in the Rutzo community and appreciate your understanding as we work to
           improve and refine our platform. If you have any questions or concerns about these modifications, feel free to
           reach out to our support team, as outlined in Section 6.
-        </TermSection>
+        </LegalSection>
 
         <p className="mt-8 text-lg">
           By using Rutzo, you agree to these terms and conditions. Have fun playing on Rutzo!

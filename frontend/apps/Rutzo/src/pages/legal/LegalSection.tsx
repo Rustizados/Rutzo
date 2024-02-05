@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-function TermSection({title, children}: {title: string, children: ReactNode}){
+function LegalSection({title, children}: {title: string, children: ReactNode}){
     return (
         <div>
             <h2 className=" text-2xl sm:text-3xl font-semibold mt-8">{title}</h2>
@@ -12,4 +12,4 @@ function TermSection({title, children}: {title: string, children: ReactNode}){
     
 }
 
-export { TermSection };
+export { LegalSection };
