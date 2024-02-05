@@ -62,7 +62,7 @@ return (
             <a href="/terms">Terms</a>
           </li>
           <li>
-            <a href="/#how-to-start">Privacy</a>
+            <a href="/privacy">Privacy</a>
           </li>
           <li>
             <a href="/#faq">Support</a>
