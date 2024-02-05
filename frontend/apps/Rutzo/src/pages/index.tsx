@@ -6,6 +6,7 @@ import { Profile } from './profile';
 import { Game } from './game';
 import { Select } from './select';
 import { Fight } from './fight';
+import { TermsAndConditions } from './legal/Terms';
 
 const routes = [
     { path: '/', Page: Home },
@@ -14,7 +15,8 @@ const routes = [
     { path: '/select', Page: Select },
     { path: '/profile', Page: Profile },
     { path: '/game', Page: Game },
-    { path: '/fight', Page: Fight }
+    { path: '/fight', Page: Fight },
+    { path: '/terms', Page: TermsAndConditions }
 ];
 
 function Routing() {

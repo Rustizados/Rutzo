@@ -59,7 +59,7 @@ return (
         <h4>Legal</h4>
         <ul>
           <li>
-            <a href="/#features">Terms</a>
+            <a href="/terms">Terms</a>
           </li>
           <li>
             <a href="/#how-to-start">Privacy</a>
