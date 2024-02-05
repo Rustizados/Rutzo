@@ -65,7 +65,7 @@ return (
             <a href="/privacy">Privacy</a>
           </li>
           <li>
-            <a href="/#faq">Support</a>
+            <a href="mailto:rustizados@gmail.com?subject=Rutzo Support">Support</a>
           </li>
         </ul>
       </div>
