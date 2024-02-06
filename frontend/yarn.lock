@@ -10058,6 +10058,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-twitter-embed@npm:4.0.4":
+  version: 4.0.4
+  resolution: "react-twitter-embed@npm:4.0.4"
+  dependencies:
+    scriptjs: "npm:^2.5.9"
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 5c5395a8421fd67752f4eae993b682175a3757e73c338f1d0ec56cf413206ae01c9197d39dfee41d0726f4740703a9a9fdce4ac66d1529dbecf0967f7953be39
+  languageName: node
+  linkType: hard
+
 "react@npm:18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
@@ -10403,6 +10415,7 @@ __metadata:
     react-icons: "npm:^4.9.0"
     react-router-dom: "npm:6.10.0"
     react-transition-group: "npm:4.4.5"
+    react-twitter-embed: "npm:4.0.4"
     sass: "npm:1.62.0"
     styled-components: "npm:6.1.8"
     tailwind: "npm:4.0.0"
@@ -10501,6 +10514,13 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: b777f7ca0115e6d93e126ac490dbd82642d14983b3079f58f35519d992fa46260be7d6e6cede433a92db70306310c6f5f06e144f0e40c484199e09c1f7be53dd
+  languageName: node
+  linkType: hard
+
+"scriptjs@npm:^2.5.9":
+  version: 2.5.9
+  resolution: "scriptjs@npm:2.5.9"
+  checksum: 7b81adefb3ce7761a9b13f4cc22c6c77418a3f6a828bf400c9184ea3801c3fc2c352c4966382cece4a60cc843e0d1a1087bcf96b9a81a1bb6de7ddc60fd80811
   languageName: node
   linkType: hard
 
