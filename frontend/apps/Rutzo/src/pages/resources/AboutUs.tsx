@@ -1,13 +1,14 @@
-import { Statistics } from "./Statistics";
-import { Story } from "./Story";
-import { WhoWeAre } from "./WhoWeAre";
+import { PoweredBy } from './PoweredBy';
+import { Statistics } from './Statistics';
+import { Story } from './Story';
+import { WhoWeAre } from './WhoWeAre';
 
 function AboutUs() {
   return (
     <div className="h-auto">
-      <div className="flex-col sm:flex sm:flex-row">
-        <div className="w-full sm:w-1/2 p-5 sm:p-10 ">
-          <h1 className=" text-3xl sm:text-5xl font-semibold mb-6 ">
+      <div className="flex-col md:flex md:flex-row">
+        <div className="w-full md:w-1/2 p-5 md:p-10 ">
+          <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
             Evolving <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">Web3 gaming</span>
           </h1>
           <p>
@@ -26,11 +27,11 @@ function AboutUs() {
           </p>
         </div>
 
-        <div className="w-full sm:w-1/2">
+        <div className="w-full md:w-1/2">
           <img
             src="https://media.licdn.com/dms/image/D4E22AQHEOZcvBrxjhQ/feedshare-shrink_1280/0/1694568627416?e=1710374400&v=beta&t=Ku-7IiRCL-ZKPyytYLU0czZflgJfqQlspqywQGyGaQ8"
             alt="NFTs"
-            className="h-96 rounded-3xl m-auto sm:h-96 sm:w-96 sm:object-cover sm:object-center sm:shadow-2"
+            className="h-96 rounded-3xl m-auto md:h-96 md:w-96 md:object-cover md:object-center md:shadow-2"
           />
         </div>
       </div>
@@ -40,6 +41,8 @@ function AboutUs() {
       <WhoWeAre />
 
       <Story />
+
+      <PoweredBy />
     </div>
   );
 }

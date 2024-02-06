@@ -86,7 +86,7 @@ class Card extends React.Component<CardProps, CardState> {
             
           </div>
 
-          {children != undefined ?
+          {children !== undefined ?
           <div className={styles.button_container}>
           { children }
           </div>
