@@ -13,7 +13,7 @@ return (
       <Socials />
     </div>
     <div className={styles.footer_sections}>
-      <div className="marketplace">
+      <div>
         <h4>Marketplace</h4>
         <ul>
           <li>
@@ -27,7 +27,7 @@ return (
           </li>
         </ul>
       </div>
-      <div className="about">
+      <div>
         <h4>Resources</h4>
         <ul>
           <li>
@@ -41,21 +41,7 @@ return (
           </li>
         </ul>
       </div>
-      <div className="resources">
-        <h4>Company</h4>
-        <ul>
-          <li>
-            <a href="/#features">Media</a>
-          </li>
-          <li>
-            <a href="/#how-to-start">Blog</a>
-          </li>
-          <li>
-            <a href="/#faq">Pricing</a>
-          </li>
-        </ul>
-      </div>
-      <div className="company">
+      <div>
         <h4>Legal</h4>
         <ul>
           <li>
