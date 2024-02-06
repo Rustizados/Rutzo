@@ -1,4 +1,5 @@
 import { Statistics } from "./Statistics";
+import { Story } from "./Story";
 import { WhoWeAre } from "./WhoWeAre";
 
 function AboutUs() {
@@ -37,6 +38,8 @@ function AboutUs() {
       <Statistics />
 
       <WhoWeAre />
+
+      <Story />
     </div>
   );
 }
