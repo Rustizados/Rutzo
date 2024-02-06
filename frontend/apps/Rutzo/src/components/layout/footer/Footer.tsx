@@ -31,7 +31,7 @@ return (
         <h4>Resources</h4>
         <ul>
           <li>
-            <a href="/#features">About us</a>
+            <a href="/about">About us</a>
           </li>
           <li>
             <a href="/#how-to-start">Game rules</a>

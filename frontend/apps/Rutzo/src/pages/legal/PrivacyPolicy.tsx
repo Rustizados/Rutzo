@@ -3,7 +3,7 @@ import { LegalSection } from './LegalSection';
 function PrivacyPolicy() {
   return (
     <div>
-      <div className="container mx-auto mt-8 p-4 sm:p-8 block max-w-4xl h-auto">
+      <div className="mx-auto mt-8 p-4 sm:p-8 block max-w-4xl h-auto">
         <h1 className="text-5xl font-semibold mb-6">Privacy Policy</h1>
 
         <p className="italic">Last updated: February 5, 2024</p>
@@ -156,7 +156,6 @@ function PrivacyPolicy() {
           </a>
           .
         </LegalSection>
-
       </div>
     </div>
   );
