@@ -1,8 +1,4 @@
 import {Card, Facedowncard, PlayButton, EmptySlot} from "@/components";
-import useGameLogic from "@/hooks/useGameLogic";
-import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
-import { useState } from "react";
-
 
 import "./slide-in.css";
 import "./fire.css";
@@ -47,10 +43,10 @@ function BoardGame() {
 
     return (
       <div>
-        <div className="mainContainer flex flex-col items-center  ">
+        <div className="flex flex-col items-center  ">
 
             <CardsContainer
-                className="border-gray-800 from-slate-500 to-gray-900"
+                className="bg-acrylic"
                 title="My Collection"
             >
                     <div className={"flex flex-row justify-around w-full "}> {/* Añadir un div contenedor o usar Fragment */}
@@ -78,7 +74,7 @@ function BoardGame() {
 
             </CardsContainer>
             <CardsContainer
-                className="border-violet-800 from-emerald-600 to-violet-800"
+                className="bg-green-acrylic"
                 title="Selected Cards"
             >
                 <div className={"flex flex-row justify-around w-full"}>
