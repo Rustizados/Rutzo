@@ -2,6 +2,7 @@ import { PoweredBy } from './PoweredBy';
 import { Statistics } from './Statistics';
 import { Story } from './Story';
 import { WhoWeAre } from './WhoWeAre';
+import { Founders } from './Founders';
 
 function AboutUs() {
   return (
@@ -43,6 +44,8 @@ function AboutUs() {
       <Story />
 
       <PoweredBy />
+
+      <Founders />
     </div>
   );
 }
