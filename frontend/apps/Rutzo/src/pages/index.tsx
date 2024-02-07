@@ -9,6 +9,7 @@ import { Fight } from './fight';
 import { TermsAndConditions } from './legal/Terms';
 import { PrivacyPolicy } from './legal/PrivacyPolicy';
 import { AboutUs } from './resources/AboutUs';
+import { Rules } from './resources/Rules';
 
 const routes = [
     { path: '/', Page: Home },
@@ -21,6 +22,7 @@ const routes = [
     { path: '/terms', Page: TermsAndConditions },
     { path: '/privacy', Page: PrivacyPolicy },
     { path: '/about', Page: AboutUs },
+    { path: '/rules', Page: Rules},
 ];
 
 function Routing() {

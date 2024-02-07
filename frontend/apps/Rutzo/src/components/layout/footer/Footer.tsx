@@ -34,7 +34,7 @@ return (
             <a href="/about">About us</a>
           </li>
           <li>
-            <a href="/#how-to-start">Game rules</a>
+            <a href="/rules">Game rules</a>
           </li>
           <li>
             <a href="/#faq">Tutorial</a>
