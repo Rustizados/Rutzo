@@ -3,6 +3,7 @@ import { Statistics } from './Statistics';
 import { Story } from './Story';
 import { WhoWeAre } from './WhoWeAre';
 import { Founders } from './Founders';
+import { Community } from './Community';
 
 function AboutUs() {
   return (
@@ -46,6 +47,8 @@ function AboutUs() {
       <PoweredBy />
 
       <Founders />
+
+      <Community />
     </div>
   );
 }

@@ -9,17 +9,21 @@ const socials = [
   { href: 'https://instagram.com/rustizados', icon: FaInstagram }
 ];
 
-function Socials() {
+interface SocialsProps {
+  className?: string;
+}
+
+function Socials({ className = "" }: SocialsProps) {
   const getItems = () =>
     socials.map(({ href, icon: Icon }) => (
       <li key={href}>
-        <a href={href} target="_blank" rel="noreferrer">
-          <Icon />
+        <a href={href} target="_blank" rel="noreferrer" >
+          <Icon className={className}/>
         </a>
       </li>
     ));
 
-  return <ul className={styles.socials}>{getItems()}</ul>;
+  return <ul className={`${styles.socials} ${className}`}>{getItems()}</ul>;
 }
 
 export { Socials };
