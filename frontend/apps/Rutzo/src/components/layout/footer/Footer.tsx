@@ -17,7 +17,7 @@ return (
         <h4>Marketplace</h4>
         <ul>
           <li>
-            <a href="/marketplace">All cards</a>
+            <a href="/all">All cards</a>
           </li>
           <li>
             <a href="/marketplace">How we design NFTs</a>

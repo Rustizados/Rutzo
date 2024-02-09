@@ -10,6 +10,7 @@ import { TermsAndConditions } from './legal/Terms';
 import { PrivacyPolicy } from './legal/PrivacyPolicy';
 import { AboutUs } from './resources/AboutUs';
 import { Rules } from './resources/Rules';
+import { AllNFTs } from './nfts/AllNFTs';
 
 const routes = [
     { path: '/', Page: Home },
@@ -23,6 +24,7 @@ const routes = [
     { path: '/privacy', Page: PrivacyPolicy },
     { path: '/about', Page: AboutUs },
     { path: '/rules', Page: Rules},
+    { path: '/all', Page: AllNFTs },
 ];
 
 function Routing() {
