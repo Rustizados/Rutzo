@@ -9,8 +9,8 @@ function Footer() {
       <div className={styles.footer_main}>
         <div className={styles.brand}>
           <Logo />
-          <p>
-            This growth plan will help you reach your resolutions and achieve the goals you have been striving towards.
+          <p className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl text-center px-2 py-1">
+            Evolving Web3 gaming
           </p>
           <Socials />
         </div>
