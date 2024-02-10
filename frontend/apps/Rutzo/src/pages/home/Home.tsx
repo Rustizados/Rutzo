@@ -7,6 +7,7 @@ import { Play } from '@/components/play/Play';
 import { Carousel } from '@/components/layout/carousel/Carousel';
 import { Member } from "./Members/Member";
 import { Members } from "./Members/Members";
+import { Community } from "../resources/Community";
 
 function Home() {
 
@@ -123,6 +124,8 @@ return (
     </div>
 
   </div>
+
+  <Community />
 
 </div>
 );
