@@ -21,7 +21,7 @@ function Component() {
     <>
       <Header isAccountVisible={isAccountReady} />
       <main>
-        <Routing />
+        {isAppReady ? <Routing /> : <ApiLoader />}
       </main>
       <Footer />
     </>
