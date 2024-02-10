@@ -30,7 +30,7 @@ export function Header({ isAccountVisible }: Props) {
           </li>
         </ul>
       </div>
-      < Play style={{marginInline: "20px"}}/>
+      < Play style={{marginInline: "20px"}} link="/play"/>
       {isAccountVisible && <AccountInfo />}
     </header>
   );

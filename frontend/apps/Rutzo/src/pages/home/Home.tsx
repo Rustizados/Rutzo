@@ -38,7 +38,7 @@ return (
       </h1>
       <p>Play epic battles on Rutzo and become the king of NFT cards. As long as you win more battles, you´ll win more
         cards.</p>
-      < Play style={{ marginTop: "40px" }} id="action_button" />
+      < Play style={{ marginTop: "40px" }} id="action_button" link="/play" />
     </div>
     <div className="Banner">
       <img src={bannerImages[(currentImageIndex+1)%3]} alt="NFTs"
