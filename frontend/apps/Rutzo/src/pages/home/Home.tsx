@@ -19,19 +19,6 @@ function Home() {
     "https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg",
   ];
 
-const images = [
-'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
-'https://rutzo.studio/NFT/lightning/nova_lighting.jpg',
-];
-
-const images2 = [
-'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
-'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
-'https://rutzo.studio/NFT/poison/angel_of_death_poison.jpg',
-];
-
 useEffect(() => {
   const intervalId = setInterval(() => {
     setCurrentImageIndex((prevIndex) =>
@@ -79,8 +66,7 @@ return (
           cards.
         </p>
       </div>
-      <Carousel images={images} style={{}} />
-      <Carousel images={images2} style={{ marginInline: "50px" }} />
+      <Carousel />
 
       <div className="marketplace_button">
         <a href="/marketplace">Go to Marketplace</a>
