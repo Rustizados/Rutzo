@@ -12,7 +12,7 @@ function Feature({ image: Icon, title, content }: FeatureProps) {
     <div className='feature' id='fbackground'>
       <div className='image-container'>
       <span className="icon">
-        <Icon />
+        <Icon className="mx-auto lg:m-0"/>
       </span>
       </div>
       <div className="feature-content">      

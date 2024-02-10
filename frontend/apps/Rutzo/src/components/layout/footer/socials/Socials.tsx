@@ -4,7 +4,7 @@ import { FaInstagram } from "react-icons/fa";
 import styles from './Socials.module.scss';
 
 const socials = [
-  { href: 'https://github.com/brandonhxrr/Rutzo', icon: FaGithub },
+  { href: 'https://github.com/Rustizados', icon: FaGithub },
   { href: 'https://x.com/Rustizados', icon: FaXTwitter },
   { href: 'https://instagram.com/rustizados', icon: FaInstagram }
 ];

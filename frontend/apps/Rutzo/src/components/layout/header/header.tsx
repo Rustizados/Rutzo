@@ -17,7 +17,7 @@ export function Header({ isAccountVisible }: Props) {
       <div className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
         <ul className={`${styles.list} ${isMenuOpen ? styles.show : ''}`}>
           <li>
-            <a className='text-white' href="/#features">Features</a>
+            <a href="/about">About us</a>
           </li>
           <li>
             <a href="/#how-to-start">How to start</a>

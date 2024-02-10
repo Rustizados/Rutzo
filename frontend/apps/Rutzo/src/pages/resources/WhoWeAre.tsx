@@ -9,7 +9,7 @@ function WhoWeAre() {
       <iframe
         width="900"
         height="500"
-        src="https://www.youtube.com/embed/bV0RAcuG2Ao?si=QjvhXRITXI3Sk1hX"
+        src="https://www.youtube.com/embed/vA6TmxxRA04?si=S1xSTJRMKBPH48tY"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
