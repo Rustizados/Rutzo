@@ -5,7 +5,6 @@ import { FAQ } from "./FAQ";
 import "./Home.scss";
 import { Play } from '@/components/play/Play';
 import { Carousel } from '@/components/layout/carousel/Carousel';
-import { Member } from "./Members/Member";
 import { Members } from "./Members/Members";
 import { Community } from "../resources/Community";
 
@@ -42,10 +41,10 @@ return (
     </div>
     <div className="Banner">
       <img src={bannerImages[(currentImageIndex+1)%3]} alt="NFTs"
-        style={{ transform: 'rotate(20deg)' }} />
+        style={{ transform: 'rotate(20deg)' }} className="border-2 border-acrylic"/>
       <img src={bannerImages[(currentImageIndex+2)%3]} alt="NFTs"
-        style={{ transform: 'rotate(10deg)' }} />
-      <img src={bannerImages[currentImageIndex]} alt="NFTs" />
+        style={{ transform: 'rotate(10deg)' }} className="border-2 border-acrylic"/>
+      <img src={bannerImages[currentImageIndex]} alt="NFTs" className="border-2 border-acrylic"/>
     </div>
   </div>
 
