@@ -204,11 +204,11 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
           const [nftId, elemento] = element;
           const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
           return <Card 
-            image={elemento.medi}
+            image={elemento.media}
             title={elemento.name}
             type={elemento.description.toLowerCase()}
             value={elemento.reference}
-            price={nftPriceData.valuee}
+            price={nftPriceData.value}
             key={nftId}
             children={
               !buyingNFT ?  (
