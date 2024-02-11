@@ -1,15 +1,18 @@
-import { TwitterTweetEmbed, TwitterFollowButton } from 'react-twitter-embed';
-
 function Story() {
   return (
     <div className=" text-center rounded-3xl flow-root">
       <h1 className="text-3xl sm:text-5xl font-semibold m-10 sm:m-16">
-      <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">Our Story</span></h1>
+        <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">Our Story</span>
+      </h1>
       <div className="flex flex-col-reverse sm:flex md:flex-row">
-        <div className="w-full sm:w-1/2 p-0 md:px-20">
-          <TwitterTweetEmbed tweetId={'1676410571124625409'} />
-          <TwitterFollowButton screenName={'rustizados'} />
+        <div className="w-full sm:w-1/2 p-0 md:px-20 flex justify-center items-center">
+          <img
+            src="https://rutzo.studio/images/hackathon.png"
+            alt="Hackathon"
+            className="w-full h-96 object-cover rounded-3xl"
+          />
         </div>
+
         <div className="w-full sm:w-1/2 p-5 md:px-20">
           <p className="text-left">
             In June 2023, Vara Network and Gear organized the Main Hackathon 2023 at the ITAM facilities where more than

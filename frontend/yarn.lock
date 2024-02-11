@@ -10058,6 +10058,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-tweet-embed@npm:2.0.0":
+  version: 2.0.0
+  resolution: "react-tweet-embed@npm:2.0.0"
+  peerDependencies:
+    react: ">=17"
+  checksum: 390e3de0c51418e1fd91802de672f057cbe83e0e01c8251d92f06b7307b9e197a55de869dd0d597f5f57c15be4c1a7256824a7e8eb75d255321f0f3d88c7f3dc
+  languageName: node
+  linkType: hard
+
 "react-twitter-embed@npm:4.0.4":
   version: 4.0.4
   resolution: "react-twitter-embed@npm:4.0.4"
@@ -10415,6 +10424,7 @@ __metadata:
     react-icons: "npm:^4.9.0"
     react-router-dom: "npm:6.10.0"
     react-transition-group: "npm:4.4.5"
+    react-tweet-embed: "npm:2.0.0"
     react-twitter-embed: "npm:4.0.4"
     sass: "npm:1.62.0"
     styled-components: "npm:6.1.8"

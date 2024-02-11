@@ -24,9 +24,6 @@ function Footer() {
               <li>
                 <a href="/rules">Game rules</a>
               </li>
-              <li>
-                <a href="/#faq">Tutorial</a>
-              </li>
             </ul>
           </div>
           <div>
