@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const images = [
   'https://rutzo.studio/NFT/fighting/atlacatl_fighting.jpg',
@@ -29,19 +29,19 @@ function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayImages, setDisplayImages] = useState<string[]>([]);
 
+  const rotateImages = useCallback(() => {
+    const newDisplayImages = getNextImages();
+    setCurrentIndex((prevIndex) => (prevIndex + 6) % images.length);
+    setDisplayImages(newDisplayImages);
+  }, [currentIndex]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       rotateImages();
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const rotateImages = () => {
-    const newDisplayImages = getNextImages();
-    setCurrentIndex((prevIndex) => (prevIndex + 6) % images.length);
-    setDisplayImages(newDisplayImages);
-  };
+  }, [rotateImages]);
 
   const getNextImages = () => {
     const startIndex = currentIndex % images.length;

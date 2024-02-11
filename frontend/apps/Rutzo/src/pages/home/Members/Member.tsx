@@ -21,17 +21,17 @@ function Member({ name, role, github, linkedin, instagram, image }: MemberProps)
                 <p className={styles.member_role}>{role}</p>
                 <div className={styles.member_links}>
                     { github !== "" ?
-                        <a href={"https://github.com/" + github} target="_blank">
+                        <a href={"https://github.com/" + github} target="_blank" rel="noopener">
                             <FaGithub />
                         </a> : ""
                     }
                     { linkedin !== "" ?
-                        <a href={"https://linkedin.com/in/" + linkedin} target="_blank">
+                        <a href={"https://linkedin.com/in/" + linkedin} target="_blank" rel="noopener">
                             <FaLinkedin />
                         </a> : ""
                     }
                     { instagram !== "" ?
-                        <a href={"https://instagram.com/" + instagram} target="_blank">
+                        <a href={"https://instagram.com/" + instagram} target="_blank" rel="noopener">
                             <FaInstagram />
                         </a> : ""    
                     }

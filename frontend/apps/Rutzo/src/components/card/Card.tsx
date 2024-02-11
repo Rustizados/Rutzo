@@ -48,7 +48,6 @@ class Card extends React.Component<CardProps, CardState> {
   render() {
     const { image, title, type, value, price } = this.props;
     const { children } = this.props;
-    const { dialogOpen } = this.state;
 
     return (
       <div className={styles.cards_container}>
