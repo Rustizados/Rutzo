@@ -44,7 +44,7 @@ function Founders() {
       </h1>
       <div className="block justify-between mx-5 p-5 lg:p-5 lg:flex">
         {founders.map((founder) => (
-          <a href={founder.github} className="cursor-pointer" target="_blank">
+          <a href={founder.github} className="cursor-pointer" target="_blank" rel="noreferrer">
             <div className="m-5 w-40 lg:w-auto mx-auto lg:m-10">
               <img
                 src={founder.imageUrl}

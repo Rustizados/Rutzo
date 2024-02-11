@@ -18,17 +18,17 @@ function BoardGame() {
         tokensForOwnerState,
         selectedCards,
         cardToPlay,
-        nftsLoaded,
-        userInMatch,
+        //nftsLoaded,
+        //userInMatch,
         matchInProgress,
-        actualUserInMatch,
+        //actualUserInMatch,
         enemyCard,
         userWonTheMatch,
         handlePlayButton,
         cardSelected,
         addCardToPlay,
         removeCardToPlay,
-        resetBoard,
+        //resetBoard,
     } = useGameState();
   
     const containerStyles = {
@@ -105,7 +105,7 @@ function BoardGame() {
                         <br/>
                             <a
                                 className={`btn-primary ${isButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
-                                href={!isButtonDisabled ? "#gamearea" : undefined}
+                                href={!isButtonDisabled ? "#gamearea" : ""}
                                 onClick={e => isButtonDisabled && e.preventDefault()}
                             >
                                 Let's Go!

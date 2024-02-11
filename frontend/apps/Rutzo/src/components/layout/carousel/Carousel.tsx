@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const images = [
   'https://rutzo.studio/NFT/fighting/atlacatl_fighting.jpg',
@@ -29,21 +29,7 @@ function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayImages, setDisplayImages] = useState<string[]>([]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      rotateImages();
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const rotateImages = () => {
-    const newDisplayImages = getNextImages();
-    setCurrentIndex((prevIndex) => (prevIndex + 6) % images.length);
-    setDisplayImages(newDisplayImages);
-  };
-
-  const getNextImages = () => {
+  const getNextImages = useCallback(() => {
     const startIndex = currentIndex % images.length;
     const endIndex = (startIndex + 6) % images.length;
     if (endIndex > startIndex) {
@@ -51,7 +37,23 @@ function Carousel() {
     } else {
       return [...images.slice(startIndex), ...images.slice(0, endIndex)];
     }
-  };
+  }, [currentIndex]);
+  
+  const rotateImages = useCallback(() => {
+    const newDisplayImages = getNextImages();
+    setCurrentIndex((prevIndex) => (prevIndex + 6) % images.length);
+    setDisplayImages(newDisplayImages);
+  }, [getNextImages]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      rotateImages();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [rotateImages]);
+
+  
 
   return (
     <div className="grid grid-cols-6 gap-4">

@@ -35,7 +35,7 @@ function AllNFTs() {
             <img
               className="h-auto max-w-full rounded-lg object-cover object-center"
               src={imageUrl}
-              alt={`gallery-photo-${index}`}
+              alt={`gallery-${index}`}
             />
           </div>
         ))}

@@ -26,7 +26,7 @@ useEffect(() => {
   }, 3000);
 
   return () => clearInterval(intervalId); // Cleanup the interval on component unmount
-}, [currentImageIndex]);
+}, [currentImageIndex, bannerImages.length]);
 
 return (
 <div className="About">

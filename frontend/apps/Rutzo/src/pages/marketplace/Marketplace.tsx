@@ -59,7 +59,7 @@ function Marketplace() {
             <div className="cards-container">
               <DefaultNfts onMinted={setData} />
               <br />
-              {totalNftsToMint == 0 && <NftsOnSale />}
+              {totalNftsToMint === 0 && <NftsOnSale />}
             </div>
           </div>
         </>
