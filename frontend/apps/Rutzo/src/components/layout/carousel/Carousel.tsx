@@ -29,11 +29,21 @@ function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayImages, setDisplayImages] = useState<string[]>([]);
 
+  const getNextImages = useCallback(() => {
+    const startIndex = currentIndex % images.length;
+    const endIndex = (startIndex + 6) % images.length;
+    if (endIndex > startIndex) {
+      return images.slice(startIndex, endIndex);
+    } else {
+      return [...images.slice(startIndex), ...images.slice(0, endIndex)];
+    }
+  }, [currentIndex]);
+  
   const rotateImages = useCallback(() => {
     const newDisplayImages = getNextImages();
     setCurrentIndex((prevIndex) => (prevIndex + 6) % images.length);
     setDisplayImages(newDisplayImages);
-  }, [currentIndex]);
+  }, [getNextImages]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,15 +53,7 @@ function Carousel() {
     return () => clearInterval(interval);
   }, [rotateImages]);
 
-  const getNextImages = () => {
-    const startIndex = currentIndex % images.length;
-    const endIndex = (startIndex + 6) % images.length;
-    if (endIndex > startIndex) {
-      return images.slice(startIndex, endIndex);
-    } else {
-      return [...images.slice(startIndex), ...images.slice(0, endIndex)];
-    }
-  };
+  
 
   return (
     <div className="grid grid-cols-6 gap-4">
