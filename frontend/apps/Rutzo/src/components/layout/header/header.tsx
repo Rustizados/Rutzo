@@ -1,7 +1,9 @@
 import React from 'react';
 import { Logo } from './logo';
 import { AccountInfo } from './account-info';
-import { Play } from '@/components/play/Play';
+// import { Play } from '@/components/play/Play';
+import { RedirectionButton } from '@/components/redirection-button/RedirectionButton';
+import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import styles from './header.module.scss';
 
 type Props = {
@@ -30,28 +32,11 @@ export function Header({ isAccountVisible }: Props) {
           </li>
         </ul>
       </div>
-      < Play style={{marginInline: "20px"}} link="/play"/>
+      <RedirectionButton style={{marginInline: "20px", marginRight: "15px"}} link="/play">
+        <GameController/>
+        PLAY
+      </RedirectionButton>
       {isAccountVisible && <AccountInfo />}
     </header>
   );
-
-  // return (
-  //   <>
-  //     <header className={styles.header}>
-  //       <Container className={styles.header__container}>
-  //         <Logo className={styles.header__logo} />
-  //         <AccountInfo openWallet={openAndCloseChange} isOpen={isOpenChange} />
-  //       </Container>
-  //       {isOpenChange && (
-  //         <Container>
-  //           <WalletChange onClose={openAndCloseChange} openConnectWallet={openConnectWallet} />
-  //         </Container>
-  //       )}
-  //     </header>
-
-  //     <ModalBackground isOpen={isOpenChange} onClick={closeChange} />
-
-  //     <AnimatePresence>{isOpenConnectWallet && <WalletConnect onClose={closConnectWallet} />}</AnimatePresence>
-  //   </>
-  // );
 }

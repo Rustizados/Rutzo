@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAccount, useApi } from '@gear-js/react-hooks';
 import { MAIN_CONTRACT, NFT_CONTRACT} from '../app/consts';
 import { ProgramMetadata } from "@gear-js/api";
+
 const useContractData = () => {
     const { api } = useApi();
     const { account } = useAccount();
@@ -10,14 +11,17 @@ const useContractData = () => {
     const [isRegister, setIsRegister] = useState(false);
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
-
-
     const fetchData = async () => {
         if (!account || !api) return;
+
+        // console.log("Si esta cargada la api y eso");
 
         const stateResult = await api
             .programState
             .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
+        
+        // console.log("Si se pud obtener la informacion del usuario");
+        
 
         const stateFormated: any = stateResult.toJSON();
 

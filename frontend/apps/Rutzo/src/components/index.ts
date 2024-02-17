@@ -10,6 +10,7 @@ import { Facedowncard } from './facedowncard/facedowncard';
 import { PlayButton } from './play-button/PlayButton';
 import { BoardGame } from './board-game/BoardGame';
 import {EmptySlot} from './empty-slot/EmptySlot';
+import { RedirectionButton } from './redirection-button/RedirectionButton';
 
 export { 
     Header, 
@@ -25,5 +26,6 @@ export {
     Facedowncard,
     PlayButton,
     BoardGame,
-    EmptySlot
+    EmptySlot,
+    RedirectionButton
 };

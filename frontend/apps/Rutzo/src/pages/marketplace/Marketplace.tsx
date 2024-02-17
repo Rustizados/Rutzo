@@ -44,7 +44,7 @@ function Marketplace() {
   return (
     <div className="text-center">
       <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
-        Explore <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">Marketplace</span>
+        Explore <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl p-1">Marketplace</span>
       </h1>
       <p className="text-xl">Get ready for the battle with some cool NFTs</p>
       {isRegister ? (
