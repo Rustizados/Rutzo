@@ -7,6 +7,7 @@ import { gasToSpend, sleepReact } from "@/app/utils";
 import { useState } from "react";
 import { SvgLoader } from "../loaders";
 import useVoucherUtils from "@/hooks/useVoucherUtils";
+import { RedirectionButton } from "../redirection-button/RedirectionButton";
 
 function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
   // const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
@@ -130,7 +131,9 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
   // return <Button text="Play"  onClick={signer} />;
 
   return !loadingSignature
-    ? <Button text="Play" onClick={signer} />
+    ? <RedirectionButton style={{ marginInline: '20px', margin: 'auto' }} link="/game">
+        PLAY
+      </RedirectionButton> // <Button text="Play" onClick={signer}  />
     : <SvgLoader /> //<Spinner animation="border" variant="success" />;
 }
 export { PlayButton };
