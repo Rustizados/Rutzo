@@ -153,7 +153,7 @@ function RegisterButton({ onRegister }: any) {
 
   return account ? (
     !userIsSigning
-      ? <Button text="Register" onClick={signer} />
+      ? <Button text="Register" onClick={signer} className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl"/>
       : <Spinner animation="border" variant="success" />
   ) : (
     <>

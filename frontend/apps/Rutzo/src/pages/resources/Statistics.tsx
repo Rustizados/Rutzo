@@ -3,7 +3,7 @@ import { FaUsers } from "react-icons/fa";
 import { RiNftFill } from "react-icons/ri";
 
 const data = [
-    {title: "Founded", value: "2021", icon: TbTimelineEvent},
+    {title: "Founded", value: "2023", icon: TbTimelineEvent},
     {title: "Total Users", value: "10+", icon: FaUsers},
     {title: "NFTs", value: "100", icon: RiNftFill}
 ];

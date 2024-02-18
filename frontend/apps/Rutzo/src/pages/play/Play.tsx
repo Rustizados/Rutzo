@@ -48,7 +48,7 @@ function Play() {
         )
       ) : (
         <UserEmptyAccount>
-          <p className="alert">Register to get free Cards</p>
+          <p className="text-base">Register to get free Cards</p>
           <RegisterButton onRegister={fetchData} />
         </UserEmptyAccount>
       )}
