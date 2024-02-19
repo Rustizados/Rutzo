@@ -10,6 +10,54 @@ function Marketplace() {
   const { account } = useAccount();
   const [isRegister, setIsRegister] = useState(false);
   const [totalNftsToMint, setTotalNftsToMint] = useState(5);
+  const [selectedType, setSelectedType] = useState('all');
+
+  const nftTypes = [
+    'all',
+    'normal',
+    'fire',
+    'water',
+    'electric',
+    'grass',
+    'ice',
+    'fighting',
+    'poison',
+    'ground',
+    'flying',
+    'psychic',
+    'bug',
+    'rock',
+    'ghost',
+    'dragon',
+    'dark',
+    'steel',
+    'fairy',
+  ];
+
+  interface TypeColors {
+    [key: string]: string;
+  }
+
+  const typeColors: TypeColors = {
+    "normal": 'from-gray-400 to-gray-600',
+    "fire": 'from-red-400 to-yellow-400',
+    "water": 'from-blue-400 to-blue-600',
+    "electric": 'from-yellow-400 to-yellow-600',
+    "grass": 'from-green-400 to-green-600',
+    "ice": 'from-blue-200 to-blue-400',
+    "fighting": 'from-red-600 to-red-800',
+    "poison": 'from-purple-400 to-purple-600',
+    "ground": 'from-yellow-600 to-yellow-800',
+    "flying": 'from-blue-300 to-blue-500',
+    "psychic": 'from-purple-600 to-purple-800',
+    "bug": 'from-green-600 to-green-800',
+    "rock": 'from-yellow-800 to-yellow-900',
+    "ghost": 'from-purple-700 to-purple-900',
+    "dragon": 'from-blue-700 to-blue-900',
+    "dark": 'from-gray-700 to-gray-900',
+    "steel": 'from-gray-500 to-gray-700',
+    "fairy": 'from-pink-400 to-pink-600',
+  };
 
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
@@ -41,12 +89,29 @@ function Marketplace() {
 
   setData();
 
+  const handleChipClick = (type: string) => {
+    setSelectedType(type);
+  };
+
   return (
     <div className="text-center">
       <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
         Explore <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">Marketplace</span>
       </h1>
-      <p className="text-xl">Get ready for the battle with some cool NFTs</p>
+
+      <p className="text-xl">Get ready for the battle with some cool NFTs</p>    
+
+      <div className="chips-container flex flex-wrap max-h-32 overflow-y-auto mx-10 justify-center">
+        {nftTypes.map((type) => (
+          <span
+            key={type}
+            className={`${(selectedType === type) ? 'bg-gradient-to-r ' + typeColors[type] : ''} m-3 rounded-3xl p-2 cursor-pointer ${(type === "all" && selectedType === "all") ? 'bg-gradient-to-r from-purple-800 to-green-500' : ''}`}
+            onClick={() => handleChipClick(type)}>
+            {type}
+          </span>
+        ))}
+      </div>
+      
       {isRegister ? (
         <>
           {totalNftsToMint > 0 && (
@@ -59,7 +124,7 @@ function Marketplace() {
             <div className="cards-container">
               <DefaultNfts onMinted={setData} />
               <br />
-              {totalNftsToMint === 0 && <NftsOnSale />}
+              {totalNftsToMint === 0 && <NftsOnSale type={selectedType} />}
             </div>
           </div>
         </>

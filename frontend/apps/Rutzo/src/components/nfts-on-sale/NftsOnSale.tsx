@@ -1,5 +1,5 @@
 import { ProgramMetadata, GearKeyring } from "@gear-js/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApi, useAccount, useAlert, useBalance, useBalanceFormat, useVoucher } from "@gear-js/react-hooks";
 import { Card } from "../card/Card";
 import { NFT_CONTRACT, MAIN_CONTRACT, ONE_TVARA_VALUE, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
@@ -12,9 +12,10 @@ import Spinner from 'react-bootstrap/Spinner';
 
 interface DefaultNftsProos {
   onSaled?: any;
+  type: string;
 }
 
-export function NftsOnSale({onSaled}: DefaultNftsProos) {
+export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
   const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
   const { getFormattedBalanceValue } = useBalanceFormat();
   const { api, isApiReady } = useApi();
@@ -202,8 +203,10 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
       {tokensForOwnerState.length > 0 ? (
         tokensForOwnerState.map((element: any) => {
           const [nftId, elemento] = element;
+          
           const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
-          return <Card 
+
+          return (elemento.description.toLowerCase() === type || type === "all") ? <Card 
             image={elemento.media}
             title={elemento.name}
             type={elemento.description.toLowerCase()}
@@ -220,7 +223,10 @@ export function NftsOnSale({onSaled}: DefaultNftsProos) {
                 <Spinner animation="border" variant="success" />
               )
             }
-          />
+          /> : 
+          <p className="text-xl">
+            There are no NFTs of this type
+          </p>;
         })
       ) : (
         <h1>No NFTs</h1>
