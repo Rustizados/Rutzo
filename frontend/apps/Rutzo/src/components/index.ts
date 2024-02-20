@@ -11,6 +11,7 @@ import { PlayButton } from './play-button/PlayButton';
 import { BoardGame } from './board-game/BoardGame';
 import {EmptySlot} from './empty-slot/EmptySlot';
 import { RedirectionButton } from './redirection-button/RedirectionButton';
+import { Slick } from './slick/Slick';
 
 export { 
     Header, 
@@ -27,5 +28,6 @@ export {
     PlayButton,
     BoardGame,
     EmptySlot,
-    RedirectionButton
+    RedirectionButton,
+    Slick,
 };

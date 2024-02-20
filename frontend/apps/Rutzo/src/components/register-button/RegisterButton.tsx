@@ -1,4 +1,4 @@
-import { useAccount, useApi, useAlert, useVoucherBalanceDeprecated, useBalanceFormat } from "@gear-js/react-hooks";
+import { useAccount, useApi, useAlert, useBalanceFormat } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
@@ -28,7 +28,7 @@ function RegisterButton({ onRegister }: any) {
   } = useVoucherUtils();
 
 
-  const voucherBalance = useVoucherBalanceDeprecated(MAIN_CONTRACT.PROGRAM_ID, "0x523dda1e177405c8d2a17b9fdb61e757f8b7a9fe01c281ff1329f5a38721a755");
+  // const voucherBalance = useVoucherBalanceDeprecated(MAIN_CONTRACT.PROGRAM_ID, "0x523dda1e177405c8d2a17b9fdb61e757f8b7a9fe01c281ff1329f5a38721a755");
 
   const { getFormattedBalanceValue } = useBalanceFormat();
 

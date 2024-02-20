@@ -1,10 +1,12 @@
-import {Card, Facedowncard, PlayButton, EmptySlot} from "@/components";
+import {Card, Facedowncard, PlayButton, EmptySlot, Slick} from "@/components";
 
 import "./slide-in.css";
 import "./fire.css";
 import "./selectedCards.css";
 import "./MainGame.css";
 import useGameState from "@/hooks/useGameState";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 
@@ -43,14 +45,16 @@ function BoardGame() {
 
     return (
       <div>
-        <div className="flex flex-col items-center  ">
+        <div className="flex flex-col items-center ">
 
             <CardsContainer
-                className="bg-acrylic"
+                className="bg-acrylic max-h-[450px] overflow-y-auto"
                 title="My Collection"
             >
-                    <div className={"flex flex-row justify-around w-full "}> {/* Añadir un div contenedor o usar Fragment */}
-                        {tokensForOwnerState.map((element: any) => {
+                    <div className={"grid grid-cols-3 justify-items-center w-full "}> {/* Añadir un div contenedor o usar Fragment */}
+
+
+                      {tokensForOwnerState.map((element: any) => {
                             const [nftId, elemento] = element;
                             return (
                                 <Card
@@ -70,7 +74,9 @@ function BoardGame() {
                                 <EmptySlot key={`empty-${index}`} /> // Modificado para tener una clave más única
                             ))
                         }
+
                     </div>
+
 
             </CardsContainer>
             <CardsContainer
