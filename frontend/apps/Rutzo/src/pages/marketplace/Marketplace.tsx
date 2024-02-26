@@ -4,8 +4,12 @@ import { useState } from 'react';
 import { DefaultNfts, RegisterButton, NftsOnSale } from '@/components';
 import { ProgramMetadata } from '@gear-js/api';
 import './Marketplace.scss';
+import {useSelector, useDispatch} from "react-redux";
+
 
 function Marketplace() {
+  const cards = useSelector((state: any) => state.cards.cards);
+  const dispatch = useDispatch();
   const { api } = useApi();
   const { account } = useAccount();
   const [isRegister, setIsRegister] = useState(false);
@@ -14,6 +18,9 @@ function Marketplace() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   const setData = async () => {
+
+
+
     if (!api) return;
 
     const stateResult = await api.programState.read(
@@ -46,6 +53,7 @@ function Marketplace() {
       <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
         Explore <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl p-1">Marketplace</span>
       </h1>
+      <p> {cards.length} available</p>
       <p className="text-xl">Get ready for the battle with some cool NFTs</p>
       {isRegister ? (
         <>

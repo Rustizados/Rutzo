@@ -2,6 +2,7 @@ import React from 'react';
 import { Logo } from './logo';
 import { AccountInfo } from './account-info';
 // import { Play } from '@/components/play/Play';
+import { Link } from 'react-router-dom';
 import { RedirectionButton } from '@/components/redirection-button/RedirectionButton';
 import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import styles from './header.module.scss';
@@ -15,20 +16,24 @@ export function Header({ isAccountVisible }: Props) {
 
   return (
     <header className={styles.header}>
+
       <Logo />
+
+
       <div className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
+
         <ul className={`${styles.list} ${isMenuOpen ? styles.show : ''}`}>
           <li>
-            <a href="/about">About us</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <a href="/#how-to-start">How to start</a>
+           <Link to="/#how-to-start">How to start</Link>
           </li>
           <li>
-            <a href="/#faq">FAQ</a>
+           <Link to={"/#faq"}>FAQ</Link>
           </li>
           <li>
-            <a href="/marketplace">Marketplace</a>
+            <Link to="/marketplace">Marketplace</Link>
           </li>
         </ul>
       </div>

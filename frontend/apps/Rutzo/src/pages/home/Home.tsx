@@ -7,8 +7,12 @@ import { Play } from '@/components/play/Play';
 import { Carousel } from '@/components/layout/carousel/Carousel';
 import { Members } from "./Members/Members";
 import { Community } from "../resources/Community";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Home() {
+  const cards = useSelector((state: any) => state.cards.cards);
+  const dispatch = useDispatch();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -35,10 +39,20 @@ return (
       <h1>
         Challenge and conquer the <span className="GradientTitle">World of NFTs</span>
       </h1>
+
+
+
       <p>Play epic battles on Rutzo and become the king of NFT cards. As long as you win more battles, you´ll win more
         cards.</p>
       < Play style={{ marginTop: "40px" }} id="action_button" link="/play" />
+      <p> cards {cards.length} available</p>
+      <button onClick={() => dispatch({ type: "cards/addCard", payload: { name: "new card" } })}>Add Card</button>
+      <Link to="/marketplace">Go to Marketplace</Link>
+
     </div>
+
+
+
     <div className="Banner">
       <img src={bannerImages[(currentImageIndex+1)%3]} alt="NFTs"
         style={{ transform: 'rotate(20deg)' }} className="border-2 border-acrylic"/>

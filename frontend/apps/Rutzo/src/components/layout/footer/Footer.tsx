@@ -1,6 +1,7 @@
 import { Socials } from './socials';
 import { Copyright } from './copyright';
 import { Logo } from '../header/logo';
+import {Link} from 'react-router-dom'
 import styles from './Footer.module.scss';
 
 function Footer() {
@@ -19,7 +20,7 @@ function Footer() {
             <h4>Resources</h4>
             <ul>
               <li>
-                <a href="/about">About us</a>
+                <Link to='/about'>About us</Link>
               </li>
               <li>
                 <a href="/rules">Game rules</a>
