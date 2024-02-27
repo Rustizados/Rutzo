@@ -1,26 +1,33 @@
-import { gasToSpend, sleepReact } from "@/app/utils";
-import { ProgramMetadata, GearKeyring } from "@gear-js/api";
+import { gasToSpend } from "@/app/utils";
+import { ProgramMetadata } from "@gear-js/api";
 import { useState } from "react";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { useApi, useAccount, useAlert, useVoucher, useBalanceFormat } from "@gear-js/react-hooks";
-import { MAIN_CONTRACT, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
+import { useApi, useAccount, useAlert, TemplateAlertOptions } from "@gear-js/react-hooks";
+import { MAIN_CONTRACT } from "@/app/consts";
 import { Card } from "../card/Card";
 import { Button } from "@gear-js/ui";
-import Spinner from 'react-bootstrap/Spinner';
+import { SvgLoader } from "../loaders"; 
+import useVoucherUtils from "@/hooks/useVoucherUtils";
 
 interface DefaultNftsProos {
   onMinted?: any;
 }
 
 function DefaultNfts({onMinted}: DefaultNftsProos) {
-  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
-  const { getFormattedBalanceValue } = useBalanceFormat();
   const { api } = useApi();
   const { account } = useAccount();
   const [defaultsNFTs, setDefaultsNFTs] = useState<any>([]);
   const [canMint, setCanMint] = useState(true);
   const [minting, setMinting] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  const { 
+    voucherExists,
+    voucherExpired,
+    renewVoucherOneHour,
+    accountVoucherId,
+    addTwoTokensToVoucher,
+    voucherBalance
+  } = useVoucherUtils();
   const alert = useAlert();
 
   const mintDefaultNft = async (nftId: number) => {
@@ -31,44 +38,25 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
       return;
     }
 
-    const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+    const voucherAlreadyExists = await voucherExists();
 
-    if (!voucherExists) {
+    if (!voucherAlreadyExists) {
       alert.error("Voucher does not exist!");
       return;
     }
 
-    if (isVoucherExists && voucherBalance) {
-      const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
-      if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
-        const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
-        const mainContractVoucher = api.voucher.issue(
-          account?.decodedAddress ?? "0x00",
-          MAIN_CONTRACT.PROGRAM_ID,
-          2_000_000_000_000
-        );
-        const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-        let addedVarasToVoucher = false;
-        try {
-          await mainContractVoucher.extrinsic.signAndSend(
-            keyring,
-            async (event) => {
-              const eventData = event.toHuman();
-              const { status }: any = eventData;
-              if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
-            }
-          );
-        } catch (error: any) {
-          console.error(`${error.name}: ${error.message}`);
-          return
-        }
-        /* eslint-disable no-await-in-loop */
-        while (!addedVarasToVoucher) {
-          await sleepReact(500);
-        }
-        alert.remove(addingTVarasAlertId);
-        alert.success("Added TVaras");
-      }
+    const voucherId = await accountVoucherId();
+
+    if (await voucherExpired(voucherId)) {
+      console.log("Voucher expired");
+      await renewVoucherOneHour(voucherId);
+    }
+
+    const accountVoucherBalance = await voucherBalance(voucherId);
+
+    if (accountVoucherBalance < 11) {
+      console.log("Voucher does not have enough tokens");
+      await addTwoTokensToVoucher(voucherId);
     }
 
     const gas = await api.program.calculateGas.handle(
@@ -91,7 +79,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
       account: account.decodedAddress
     }, mainContractMetadata);
 
-    const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+    const voucherTx = api.voucher.call(voucherId, { SendMessage: transferExtrinsic });
     let alertLoaderId: any = null;
 
     try {
@@ -101,7 +89,10 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
         { signer },
         ({ status, events }) => {
           if (!alertLoaderId) {
-            alertLoaderId = alert.loading("processing mint");
+            const alertOptions: TemplateAlertOptions = {
+                title: "Rutzo action"
+            }
+            alertLoaderId = alert.loading("processing mint", alertOptions);
           }
           if (status.isInBlock) {
             console.log(
@@ -196,7 +187,7 @@ function DefaultNfts({onMinted}: DefaultNftsProos) {
                   mintDefaultNft(saleId);
                 }} />
               ) : (
-                <Spinner animation="border" variant="success" />
+                <SvgLoader />
               )
             }
           />

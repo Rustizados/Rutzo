@@ -8,7 +8,8 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "@gear-js/ui";
 import { AnyNumber } from "@polkadot/types/types";
 import { u128 } from "@polkadot/types";
-import Spinner from 'react-bootstrap/Spinner';
+import { SvgLoader } from "../loaders"; 
+import useVoucherUtils from "@/hooks/useVoucherUtils";
 
 interface DefaultNftsProos {
   onSaled?: any;
@@ -16,7 +17,7 @@ interface DefaultNftsProos {
 }
 
 export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
-  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
+  //const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
   const { getFormattedBalanceValue } = useBalanceFormat();
   const { api, isApiReady } = useApi();
   const { account, accounts } = useAccount();
@@ -27,6 +28,14 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
   const [buyingNFT, setBuyingNFT] = useState(false);
   const formattedBalance = isApiReady && balance ? getFormattedBalance(balance) : undefined;
   const alert = useAlert();
+  const { 
+    voucherExists,
+    voucherExpired,
+    renewVoucherOneHour,
+    accountVoucherId,
+    addTwoTokensToVoucher,
+    voucherBalance
+  } = useVoucherUtils();
 
   const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
   const mainMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
@@ -54,7 +63,7 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
 
     const localaccount = account?.address;
     const isVisibleAccount = accounts?.some(
-      (visibleAccount) => visibleAccount.address === localaccount
+      (visibleAccount: { address: string }) => visibleAccount.address === localaccount
     );
 
     if (isVisibleAccount) {
@@ -64,44 +73,26 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
         return;
       }
 
-      const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+      // const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+      const voucherAlreadyExists = await voucherExists();
 
-      if (!voucherExists) {
+      if (!voucherAlreadyExists) {
         alert.error("voucher does not exist!");
         return;
       }
 
-      if (isVoucherExists && voucherBalance) {
-        const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
-        if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
-          const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
-          const mainContractVoucher = api.voucher.issue(
-            account?.decodedAddress ?? "0x00",
-            MAIN_CONTRACT.PROGRAM_ID,
-            2_000_000_000_000
-          );
-          const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-          let addedVarasToVoucher = false;
-          try {
-            await mainContractVoucher.extrinsic.signAndSend(
-              keyring,
-              async (event) => {
-                const eventData = event.toHuman();
-                const { status }: any = eventData;
-                if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
-              }
-            );
-          } catch (error: any) {
-            console.error(`${error.name}: ${error.message}`);
-            return
-          }
-          /* eslint-disable no-await-in-loop */
-          while (!addedVarasToVoucher) {
-            await sleepReact(500);
-          }
-          alert.remove(addingTVarasAlertId);
-          alert.success("Added TVaras");
-        }
+      const voucherId = await accountVoucherId();
+
+      if (await voucherExpired(voucherId)) {
+        console.log("Voucher expired");
+        await renewVoucherOneHour(voucherId);
+      }
+
+      const accountVoucherBalance = await voucherBalance(voucherId);
+
+      if (accountVoucherBalance < 11) {
+        console.log("Voucher does not have enough tokens");
+        await addTwoTokensToVoucher(voucherId);
       }
 
       const gas = await api.program.calculateGas.handle(
@@ -126,7 +117,7 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
         account: account.decodedAddress
       }, mainMetadata);
 
-      const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+      const voucherTx = api.voucher.call(voucherId, { SendMessage: transferExtrinsic });
 
       let alertLoaderId: any = null;
 
@@ -135,7 +126,7 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
         .signAndSend(
           account?.decodedAddress,
           { signer },
-          ({ status, events }) => {
+            ({ status, events }: { status: any, events: any }) => {
             if (!alertLoaderId) {
               alertLoaderId = alert.loading("processing purchase");
             }
@@ -220,7 +211,8 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
                   butNft(nftId, nftPriceData.value as u128);
                 }} />
               ) : (
-                <Spinner animation="border" variant="success" />
+                // <Spinner animation="border" variant="success" />
+                <SvgLoader />
               )
             }
           /> : 

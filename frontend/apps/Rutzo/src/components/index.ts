@@ -10,6 +10,8 @@ import { Facedowncard } from './facedowncard/facedowncard';
 import { PlayButton } from './play-button/PlayButton';
 import { BoardGame } from './board-game/BoardGame';
 import {EmptySlot} from './empty-slot/EmptySlot';
+import { RedirectionButton } from './redirection-button/RedirectionButton';
+import { Slick } from './slick/Slick';
 
 export { 
     Header, 
@@ -25,5 +27,7 @@ export {
     Facedowncard,
     PlayButton,
     BoardGame,
-    EmptySlot
+    EmptySlot,
+    RedirectionButton,
+    Slick,
 };

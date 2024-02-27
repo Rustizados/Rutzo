@@ -150,7 +150,7 @@ function useGameState() {
 
         /* eslint-disable no-await-in-loop */
         while (!matchFinished) {
-            console.log("Buscando partida!!");
+            // console.log("Buscando partida!!");
 
             const stateResult = await api
                 .programState

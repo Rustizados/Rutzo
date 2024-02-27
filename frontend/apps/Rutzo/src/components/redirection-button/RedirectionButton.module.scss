@@ -1,0 +1,32 @@
+.highlight{
+    background: var(--gradient);
+    border-radius: 24px;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    font-family: "press_start_tp";
+    width: fit-content;
+
+    // width: 120px;
+  }
+  
+  .highlight:hover{
+    transition: all 0.3s ease-in-out;
+    filter:  drop-shadow(5px 5px 0 var(--secondary-color)) hue-rotate(5deg) drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.827) );
+  }
+  
+  .highlight a {
+    color: #FFF !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+  
+  .highlight svg {
+    font-weight: bold;
+    width: 1em;
+    height: 1em;
+    margin-right: 10px;
+    font-size: 20px;
+    color: #FFF;
+  }

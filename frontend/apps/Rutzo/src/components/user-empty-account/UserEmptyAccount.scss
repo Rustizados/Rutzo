@@ -1,7 +1,9 @@
 .alert, .empty_container {
+    display: flex;
     text-align: center;
     align-content: center;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -15,6 +17,7 @@ p.alert {
 
 #alert_img {
     width: 15%;
+    border-radius: 10%;
 }
 
 .empty_container *, .alert .playcontainer, .alert h1 {

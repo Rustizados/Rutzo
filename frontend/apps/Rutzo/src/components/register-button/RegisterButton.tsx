@@ -1,16 +1,15 @@
-import { useAccount, useApi, useAlert } from "@gear-js/react-hooks";
+import { useAccount, useApi, useAlert, useBalanceFormat } from "@gear-js/react-hooks";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import {
-  GearKeyring,
-  ProgramMetadata,
-} from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT, seed } from "@/app/consts";
 import { gasToSpend } from "@/app/utils";
 import { useState } from "react";
 import { AccountsModal } from "../layout/header/account-info/accounts-modal";
-import Spinner from 'react-bootstrap/Spinner';
 import { ReactComponent as userSVG } from  '@/assets/images/icons/login.svg';
+import { SvgLoader } from "../loaders";
+
+import useVoucherUtils from "@/hooks/useVoucherUtils";
 
 function RegisterButton({ onRegister }: any) {
   const alert = useAlert();
@@ -20,8 +19,22 @@ function RegisterButton({ onRegister }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
+  const { 
+    createNewVoucher, 
+    voucherExpired,
+    renewVoucherOneHour,
+    voucherExists,
+    accountVoucherId
+  } = useVoucherUtils();
+
+
+  // const voucherBalance = useVoucherBalanceDeprecated(MAIN_CONTRACT.PROGRAM_ID, "0x523dda1e177405c8d2a17b9fdb61e757f8b7a9fe01c281ff1329f5a38721a755");
+
+  const { getFormattedBalanceValue } = useBalanceFormat();
+
+
   // Function to register user
-  const registerUser = async () => {
+  const registerUser = async (voucherId: string) => {
     if (!account || !api || !accounts) return;
 
     const localaccount = account?.address;
@@ -30,7 +43,6 @@ function RegisterButton({ onRegister }: any) {
     );
 
     if (isVisibleAccount) {
-      // Create a message extrinsic
 
       const { signer } = await web3FromSource(account.meta.source);
 
@@ -52,7 +64,7 @@ function RegisterButton({ onRegister }: any) {
         account: account.decodedAddress
       }, mainContractMetadata);
 
-      const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+      const voucherTx = api.voucher.call(voucherId, { SendMessage: transferExtrinsic });
 
       try {
         await voucherTx
@@ -92,54 +104,36 @@ function RegisterButton({ onRegister }: any) {
   // Function to create voucher to main contract
   const setMainContractVoucher = async () => {
     if (!api || !account) return;
-    // Se genera el "issue" para crear el voucher para el usuario
-    // En este caso, para el main contract
 
-    setUserIsSigning(true);
-
-    const voucherAlreadyExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
-
-    if (voucherAlreadyExists) {
+    if (await voucherExists()) {
       console.log("Voucher already exists");
-      await registerUser();
+
+      const voucherId = await accountVoucherId();
+
+      if (await voucherExpired(voucherId)) {
+        console.log("Voucher expired");
+        await renewVoucherOneHour(voucherId);
+      }
+
+      await registerUser(voucherId);
+
       return;
     }
 
-    const mainContractVoucher = api.voucher.issue(
-      account?.decodedAddress ?? "0x00",
-      MAIN_CONTRACT.PROGRAM_ID,
-      13_000_000_000_000
-      // 18_000_000_000_000
-      // 10_000_000_000_000
-    );
-
-    const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-
-    // Se firma el voucher con la cuenta del administrador para el main Contract
+    console.log("Voucher does not exists");
 
     try {
-      await mainContractVoucher.extrinsic.signAndSend(
-        keyring,
-        async (event) => {
-          console.log(event.toHuman());
-        }
-      );
-    } catch (error: any) {
-      console.error(`${error.name}: ${error.message}`);
+      const voucherId = await createNewVoucher();
+      await registerUser(voucherId);
+    } catch (error) {
+      console.log("Error creating voucher");
     }
-
-    let voucherExists = false;
-    /* eslint-disable no-await-in-loop */
-    while (!voucherExists) {
-      voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account?.decodedAddress ?? "0x00");
-    }
-
-    await registerUser();
   }
 
   const signer = async () => {
     console.log("signer");
     if (!account || !accounts || !api) return;
+    setUserIsSigning(true);
     await setMainContractVoucher();
   };
 
@@ -154,16 +148,77 @@ function RegisterButton({ onRegister }: any) {
   return account ? (
     !userIsSigning
       ? <Button text="Register" onClick={signer} className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl"/>
-      : <Spinner animation="border" variant="success" />
+      : <SvgLoader />
   ) : (
     <>
-      <Button icon={userSVG} text="Sign in" onClick={openModal} />
+      <Button icon={userSVG} text="Sign in" onClick={openModal} className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl" />
       {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
     </>
   );
 
 }
 
-
-
 export { RegisterButton };
+
+
+
+
+
+
+
+
+// const mainContractVoucher = await api.voucher.issue(
+//       account?.decodedAddress ?? "0x00",
+//       11_000_000_000_000, // 11 TVaras
+//       1_200, // An hour in blocks
+//       [MAIN_CONTRACT.PROGRAM_ID]
+//     );
+
+//     console.log("Se hizo el issue del voucher");
+//     console.log(`Con id: ${mainContractVoucher.voucherId}`);
+    
+
+//     // const mainContractVoucher = api.voucher.issue(
+//     //   account?.decodedAddress ?? "0x00",
+//     //   MAIN_CONTRACT.PROGRAM_ID,
+//     //   13_000_000_000_000
+//     //   // 18_000_000_000_000
+//     //   // 10_000_000_000_000
+//     // );
+
+//     const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
+
+//     // Se firma el voucher con la cuenta del administrador para el main Contract
+
+//     try {
+//       console.log("Se firmara el voucher!");
+//       await mainContractVoucher.extrinsic.signAndSend(
+//         keyring,
+//         async (event) => {
+//           console.log(event.toHuman()); 
+//           const extrinsicJSON: any = event.toHuman();
+//           if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
+//             const objectKey = Object.keys(extrinsicJSON.status)[0];
+//             if (objectKey === "Finalized") {
+//               console.log("Ya se finalizo de crear el voucher");
+//               await registerUser(mainContractVoucher.voucherId);
+//             }
+//           }
+//         }
+//       );
+//     } catch (error: any) {
+//       console.error(`${error.name}: ${error.message}`);
+//     }
+
+
+//     // return;
+  
+//     // /* eslint-disable no-await-in-loop */
+//     // while (!voucherExists) {
+//     //   // voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account?.decodedAddress ?? "0x00");
+//     // }
+
+//     // console.log("VOUCHER EXISTS");
+
+
+//     // await registerUser();

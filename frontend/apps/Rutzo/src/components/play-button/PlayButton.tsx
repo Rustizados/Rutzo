@@ -5,16 +5,25 @@ import { Button } from "@gear-js/ui";
 import { MAIN_CONTRACT, VOUCHER_MIN_LIMIT, seed } from "@/app/consts";
 import { gasToSpend, sleepReact } from "@/app/utils";
 import { useState } from "react";
-import Spinner from 'react-bootstrap/Spinner';
+import { SvgLoader } from "../loaders";
+import useVoucherUtils from "@/hooks/useVoucherUtils";
 
 function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any) {
-  const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
-  const { getFormattedBalanceValue } = useBalanceFormat();
+  // const { isVoucherExists, voucherBalance } = useVoucher(MAIN_CONTRACT.PROGRAM_ID);
+  // const { getFormattedBalanceValue } = useBalanceFormat();
   const { accounts, account } = useAccount();
   const { api } = useApi();
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
   const [loadingSignature, setLoadingSignature] = useState(false);
   const alert = useAlert();
+  const { 
+    voucherExists,
+    voucherExpired,
+    renewVoucherOneHour,
+    accountVoucherId,
+    addTwoTokensToVoucher,
+    voucherBalance
+  } = useVoucherUtils();
 
 
   const signer = async () => {
@@ -32,49 +41,31 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
         return;
       }
 
-      const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
+      // const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
 
-      if (!voucherExists) {
-        alert.error("voucher does not exist!");
+      const voucherAlreadyExists = await voucherExists();
+
+      if (!voucherAlreadyExists) {
+        alert.error("Voucher does not exist!");
         return;
       }
 
       setLoadingSignature(true);
       onPressed(true);
 
-      if (isVoucherExists && voucherBalance) {
-        const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
-        if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
-          const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
-          const mainContractVoucher = api.voucher.issue(
-            account?.decodedAddress ?? "0x00",
-            MAIN_CONTRACT.PROGRAM_ID,
-            2_000_000_000_000
-          );
-          const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-          let addedVarasToVoucher = false;
-          try {
-            await mainContractVoucher.extrinsic.signAndSend(
-              keyring,
-              async (event) => {
-                const eventData = event.toHuman();
-                const { status }: any = eventData;
-                if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
-              }
-            );
-          } catch (error: any) {
-            console.error(`${error.name}: ${error.message}`);
-            return
-          }
-          /* eslint-disable no-await-in-loop */
-          while (!addedVarasToVoucher) {
-            await sleepReact(500);
-          }
-          alert.remove(addingTVarasAlertId);
-          alert.success("Added TVaras");
-        }
+      const voucherId = await accountVoucherId();
+
+      if (await voucherExpired(voucherId)) {
+        console.log("Voucher expired");
+        await renewVoucherOneHour(voucherId);
       }
 
+      const accountVoucherBalance = await voucherBalance(voucherId);
+
+      if (accountVoucherBalance < 11) {
+        console.log("Voucher does not have enough tokens");
+        await addTwoTokensToVoucher(voucherId);
+      }
 
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
@@ -96,7 +87,7 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
         account: account.decodedAddress
       }, mainContractMetadata);
 
-      const voucherTx = api.voucher.call({ SendMessage: transferExtrinsic });
+      const voucherTx = api.voucher.call(voucherId, { SendMessage: transferExtrinsic });
       let alertLoaderId: any = null;
 
       try {
@@ -139,7 +130,44 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
   // return <Button text="Play"  onClick={signer} />;
 
   return !loadingSignature
-    ? <Button text="Play" onClick={signer} />
-    : <Spinner animation="border" variant="success" />;
+    ? <Button text="Play" onClick={signer} color="gradient" />
+    : <SvgLoader /> //<Spinner animation="border" variant="success" />;
 }
 export { PlayButton };
+
+
+
+
+
+// if (isVoucherExists && voucherBalance) {
+      //   const voucherTotalBalance = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+      //   if (voucherTotalBalance < VOUCHER_MIN_LIMIT) {
+      //     const addingTVarasAlertId = alert.loading("Adding TVaras to the voucher");
+      //     const mainContractVoucher = api.voucher.issue(
+      //       account?.decodedAddress ?? "0x00",
+      //       MAIN_CONTRACT.PROGRAM_ID,
+      //       2_000_000_000_000
+      //     );
+      //     const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
+      //     let addedVarasToVoucher = false;
+      //     try {
+      //       await mainContractVoucher.extrinsic.signAndSend(
+      //         keyring,
+      //         async (event) => {
+      //           const eventData = event.toHuman();
+      //           const { status }: any = eventData;
+      //           if (Object.keys(status)[0] === "Finalized") addedVarasToVoucher = true;
+      //         }
+      //       );
+      //     } catch (error: any) {
+      //       console.error(`${error.name}: ${error.message}`);
+      //       return
+      //     }
+      //     /* eslint-disable no-await-in-loop */
+      //     while (!addedVarasToVoucher) {
+      //       await sleepReact(500);
+      //     }
+      //     alert.remove(addingTVarasAlertId);
+      //     alert.success("Added TVaras");
+      //   }
+      // }

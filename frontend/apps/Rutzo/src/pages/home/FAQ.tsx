@@ -1,5 +1,8 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/20/solid';
+import {Slick} from "@/components";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const FAQs = [
   {
@@ -32,9 +35,10 @@ const FAQs = [
 function FAQ() {
   return (
     <div className="w-full px-4 pt-4">
+      <Slick><div>Hola</div><div>Adiós</div></Slick>
       <div className="mx-auto w-full rounded-2xl bg-background p-2">
-        {FAQs.map((faq) => (
-          <Disclosure as="div" className="mt-2">
+        {FAQs.map((faq, index) => (
+          <Disclosure as="div" className="mt-2" key={index}>
             {({ open }) => (
               <>
                 <Disclosure.Button
