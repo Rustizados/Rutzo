@@ -13,6 +13,7 @@ import {Home} from "@/pages/home";
 import {Play} from "@/pages/play";
 import {AboutUs} from "@/pages/resources";
 import {Marketplace} from "@/pages/marketplace";
+import {Game} from "@/pages/game";
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: '/play', element: <Play /> },
       { path: '/about', element: <AboutUs /> },
       { path: '/marketplace', element: <Marketplace /> },
+      { path: '/game', element: <Game /> },
     ],
   },
 
