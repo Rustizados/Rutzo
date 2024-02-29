@@ -45,13 +45,7 @@ return (
       <p>Play epic battles on Rutzo and become the king of NFT cards. As long as you win more battles, you´ll win more
         cards.</p>
       < Play style={{ marginTop: "40px" }} id="action_button" link="/play" />
-      <p> cards {cards.length} available</p>
-      <button onClick={() => dispatch({ type: "cards/addCard", payload: { name: "new card" } })}>Add Card</button>
-      <Link to="/marketplace">Go to Marketplace</Link>
-
     </div>
-
-
 
     <div className="Banner">
       <img src={bannerImages[(currentImageIndex+1)%3]} alt="NFTs"
