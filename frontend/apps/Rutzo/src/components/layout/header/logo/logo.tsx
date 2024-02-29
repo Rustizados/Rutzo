@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { ReactComponent as RutzoLogo } from  '@/assets/images/logo.svg'
-import './logo.module.scss';
+// import './logo.module.scss';
 
-function Logo() {
+const  Logo = () => {
   return (
-    <Link to="/">
-      <RutzoLogo />
-    </Link>
+    <div>
+      <Link to="/">
+        <div> <RutzoLogo /> </div>
+      </Link>
+    </div>
   );
 }
 

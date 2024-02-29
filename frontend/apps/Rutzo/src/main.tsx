@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 //import { initErrorTracking, logPublicEnvs } from '@dapps-frontend/error-tracking';
-import { App } from './app';
+import {App} from './app';
+import {store} from "@/store/store";
+import {Provider} from "react-redux";
 
-//initErrorTracking();
-//logPublicEnvs();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
 );
