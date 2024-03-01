@@ -67,10 +67,15 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
         await addTwoTokensToVoucher(voucherId);
       }
 
+
+      // ahi
+      // estado de contrato
+      //
+
       const gasMainContract = await api.program.calculateGas.handle(
         account?.decodedAddress ?? "0x00",
         MAIN_CONTRACT.PROGRAM_ID,
-        { PlayGame: [tokenId] },
+        { PlayGame: [tokenId]},
         0,
         false,
         mainContractMetadata
