@@ -5,7 +5,13 @@ import { RegisterButton, MyNFTCollection, UserEmptyAccount, RedirectionButton } 
 import useContractData from '@/hooks/useContractData';
 import { Play as PlayButton } from '@/components/play/Play';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { increment} from "@/features/counterSlice";
+
+
 function Play() {
+  const dispatch = useDispatch();
+  const count = useSelector((state: any) => state.counter.value);
   const { hasEnoughCards, fetchData, numberOfNfts, isRegister } = useContractData();
 
   useEffect(() => {
@@ -15,6 +21,8 @@ function Play() {
 
   return (
     <div className="play-title">
+      <button onClick={() => dispatch(increment())}>Increment</button>
+      <div>{count}</div>
       {isRegister ? (
         hasEnoughCards ? (
           <div className="alert">

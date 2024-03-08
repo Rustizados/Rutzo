@@ -11,6 +11,7 @@ import { PrivacyPolicy } from './legal/PrivacyPolicy';
 import { AboutUs } from './resources/AboutUs';
 import { Rules } from './resources/Rules';
 import { AllNFTs } from './nfts/AllNFTs';
+import Match from "@/pages/match/Match";
 
 const routes = [
     { path: '/', Page: Home },

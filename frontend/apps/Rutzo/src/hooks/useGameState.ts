@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
 import {MAIN_CONTRACT, NFT_CONTRACT} from "@/app/consts";
 import {sleepReact} from "@/app/utils";
+import {useSelector, useDispatch} from "react-redux";
+import {addCard} from "@/features/cardsSlice";
+
 
 function useGameState() {
     const alert = useAlert();
@@ -21,6 +24,9 @@ function useGameState() {
 
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
     const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
+
+    const dispatch = useDispatch();
+    const cards = useSelector((state: any) => state.cards.cards);
     // ... all your state and functions here
 
     const resetBoard = () => {
@@ -278,6 +284,7 @@ function useGameState() {
     }
 
     const cardSelected = (tokenId: any, selected: boolean) => {
+        pushCard(tokenId)
         if (!selected) {
             const nftSelected = tokensForOwnerState.find((token: any) => token[0] === tokenId);
             const actualSelectedCards = [nftSelected, ...selectedCards];
@@ -300,6 +307,14 @@ function useGameState() {
         setTokensForOwnerState([nftSelected, ...tokensForOwnerState]);
     }
 
+    const pushCard = (tokenId: any ) => {
+        dispatch(addCard(tokenId));
+
+
+        return true;
+
+    }
+
     const setData = async () => {
         if (!api) return;
 
@@ -316,6 +331,8 @@ function useGameState() {
                 .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftContractMetadata);
 
             const nftStateFormated: any = resultNfts.toJSON();
+
+            console.log("NFTS CARGADOS", nftStateFormated.tokensForOwner ?? [])
 
             const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
 
