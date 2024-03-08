@@ -1,11 +1,13 @@
-// import { Logo } from '@/components/layout/header/logo/logo';
-import { SvgLoader } from '../svg-loader/SvgLoader'; 
+import { ReactComponent as RutzoLogo } from '@/assets/images/logo.svg';
+import { SvgLoader } from '../svg-loader/SvgLoader';
 
 function ApiLoader() {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      {/*<Logo />*/}
-      <SvgLoader />
+    <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-col text-center">
+        <RutzoLogo />
+        <SvgLoader />
+      </div>
     </div>
   );
 }
