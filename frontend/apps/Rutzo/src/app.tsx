@@ -11,13 +11,15 @@ import {ApiLoader} from "@/components";
 
 import {Home} from "@/pages/home";
 import {Play} from "@/pages/play";
-import {AboutUs} from "@/pages/resources";
+import {AboutUs, Rules} from "@/pages/resources";
 import {Marketplace} from "@/pages/marketplace";
 import {Game} from "@/pages/game";
 import Match from "@/pages/match/Match";
 
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AllNFTs } from './pages/nfts/AllNFTs';
+import { PrivacyPolicy, TermsAndConditions } from './pages/legal';
 
 // import { useWalletSync } from '@/features/wallet/hooks';
 const router = createBrowserRouter([
@@ -27,9 +29,13 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/play', element: <Play /> },
-      { path: '/about', element: <AboutUs /> },
       { path: '/marketplace', element: <Marketplace /> },
       { path: '/game', element: <Game /> },
+      { path: '/rules', element: <Rules />},
+      { path: '/all', element: <AllNFTs />},
+      { path: '/terms', element: <TermsAndConditions />},
+      { path: '/privacy', element: <PrivacyPolicy />},
+      { path: '/about', element: <AboutUs /> },
       { path: '/match', element: <Match /> },
 
     ],

@@ -39,6 +39,7 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
 
   const nftMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
   const mainMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
+  
 
   const butNft = async (tokenId: number, price: AnyNumber) => {
     if (!account || !api) {
@@ -191,38 +192,51 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
 
   return (
     <div>
-      {tokensForOwnerState.length > 0 ? (
-        tokensForOwnerState.map((element: any) => {
-          const [nftId, elemento] = element;
-          
-          const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
+  {tokensForOwnerState.length > 0 ? (
+    <>
+      {tokensForOwnerState.map((element: any) => {
+        const [nftId, elemento] = element;
 
-          return (elemento.description.toLowerCase() === type || type === "all") ? <Card 
-            image={elemento.media}
-            title={elemento.name}
-            type={elemento.description.toLowerCase()}
-            value={elemento.reference}
-            price={nftPriceData.value}
-            key={nftId}
-            children={
-              !buyingNFT ?  (
-                <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
-                  setBuyingNFT(true);
-                  butNft(nftId, nftPriceData.value as u128);
-                }} />
-              ) : (
-                // <Spinner animation="border" variant="success" />
-                <SvgLoader />
-              )
-            }
-          /> : 
-          <p className="text-xl">
-            There are no NFTs of this type
-          </p>;
-        })
-      ) : (
-        <h1>No NFTs</h1>
+        const nftPriceData = nftsPrices.find((nftPrice: any) => nftId === nftPrice.tokenId);
+
+        return (
+          elemento.description.toLowerCase() === type || type === "all" ? (
+            <Card 
+              image={elemento.media}
+              title={elemento.name}
+              type={elemento.description.toLowerCase()}
+              value={elemento.reference}
+              price={nftPriceData.value}
+              key={nftId}
+              children={
+                !buyingNFT ? (
+                  <Button text={`$${nftPriceData.value} TVara`} onClick={() => {
+                    setBuyingNFT(true);
+                    butNft(nftId, nftPriceData.value as u128);
+                  }} />
+                ) : (
+                  // <Spinner animation="border" variant="success" />
+                  <SvgLoader />
+                )
+              }
+            />
+          ) : null
+        );
+      })}
+      {tokensForOwnerState.every((element: any) => {
+        const [nftId, elemento] = element;
+        return elemento.description.toLowerCase() !== type && type !== "all";
+      }) && (
+        <p className="text-xl">
+          There are no NFTs of this type
+        </p>
       )}
-    </div>
+    </>
+  ) : (
+    <h1>No NFTs</h1>
+  )}
+</div>
+
+
   );
 }
