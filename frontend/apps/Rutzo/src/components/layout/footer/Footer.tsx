@@ -31,10 +31,10 @@ function Footer() {
             <h4>NFTs</h4>
             <ul>
               <li>
-                <a href="/all">All cards</a>
+                <Link to="/all">All cards</Link>
               </li>
               <li>
-                <a href="/marketplace">Marketplace</a>
+                <Link to="/marketplace">Marketplace</Link>
               </li>
             </ul>
           </div>
@@ -45,7 +45,7 @@ function Footer() {
                 <a href="/terms">Terms</a>
               </li>
               <li>
-                <a href="/privacy">Privacy</a>
+                <Link to="/privacy">Privacy</Link>
               </li>
               <li>
                 <a href="mailto:rustizados@gmail.com?subject=Rutzo Support">Support</a>
