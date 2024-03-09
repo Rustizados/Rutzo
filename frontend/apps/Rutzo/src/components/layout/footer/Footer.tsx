@@ -23,7 +23,7 @@ function Footer() {
                 <Link to='/about'>About us</Link>
               </li>
               <li>
-                <a href="/rules">Game rules</a>
+                <Link to='/rules'>Rules</Link>
               </li>
             </ul>
           </div>
