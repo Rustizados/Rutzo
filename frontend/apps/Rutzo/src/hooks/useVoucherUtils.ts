@@ -1,6 +1,6 @@
-import { GearKeyring, IUpdateVoucherParams } from '@gear-js/api';
+import { GearKeyring, HexString, IUpdateVoucherParams } from '@gear-js/api';
 import { useAccount, useApi, useAlert, TemplateAlertOptions, useBalanceFormat } from '@gear-js/react-hooks';
-import { MAIN_CONTRACT, ONE_TVARA_VALUE, seed } from '@/app/consts';
+import { MAIN_CONTRACT, ONE_TVARA_VALUE, VOUCHER_MIN_LIMIT, seed } from '@/app/consts';
 
 const useVoucherUtils = () => {
     const { getFormattedBalanceValue } = useBalanceFormat();
@@ -8,10 +8,10 @@ const useVoucherUtils = () => {
     const { account } = useAccount();
     const alert = useAlert();
 
-    const createNewVoucher = (): Promise<string> => {
+    const createNewVoucher = (account: HexString): Promise<HexString> => {
         return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("No se inicio la api o account");
+            if (!api) {
+                console.log("No se inicio la api");
                 reject("Error creating voucher");
                 return;
             }
@@ -25,7 +25,7 @@ const useVoucherUtils = () => {
             // Se genera el "issue" para crear el voucher para el usuario
             // En este caso, para el main contract
             const voucherIssued =  await api.voucher.issue(
-                account?.decodedAddress ?? "0x00",
+                account,
                 ONE_TVARA_VALUE * 11, // 11 TVaras
                 1_200, // An hour in blocks
                 [MAIN_CONTRACT.PROGRAM_ID]
@@ -40,7 +40,7 @@ const useVoucherUtils = () => {
             try {
                 await voucherIssued.extrinsic.signAndSend(
                     keyring,
-                    async (event) => {
+                    async (event: any) => {
                         console.log(event.toHuman()); 
                         const extrinsicJSON: any = event.toHuman();
                         if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
@@ -62,6 +62,22 @@ const useVoucherUtils = () => {
             }
         });
     }
+
+    const updateVoucher = async (account: HexString, voucherId: string): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            if (await voucherExpired(voucherId)) {
+                await renewVoucherOneHour(voucherId);
+            }
+            
+            const actualVoucherBalance = await voucherBalance(voucherId);
+
+            if (actualVoucherBalance < VOUCHER_MIN_LIMIT) {
+                await addTwoTokensToVoucher(voucherId);
+            }
+
+            resolve();
+        });
+    };
 
     const voucherExpired = async (voucherId: string): Promise<boolean> => {
         return new Promise(async (resolve, reject) => {
@@ -94,15 +110,15 @@ const useVoucherUtils = () => {
         });
     }
 
-    const voucherExists = async (): Promise<boolean> => {
+    const voucherExists = async (account: HexString): Promise<boolean> => {
         return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("api or account is not ready");
+            if (!api) {
+                console.log("api is not ready");
                 reject(false);
                 return;
             }
 
-            const vouchers = await api.voucher.getAllForAccount(account?.decodedAddress, MAIN_CONTRACT.PROGRAM_ID);
+            const vouchers = await api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID);
 
             resolve(
                 Object.keys(vouchers).length > 0
@@ -110,15 +126,15 @@ const useVoucherUtils = () => {
         });
     }
 
-    const accountVoucherId = async (): Promise<string> => {
+    const accountVoucherId = async (account: HexString): Promise<string> => {
         return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("api or account is not ready");
+            if (!api) {
+                console.log("api is not ready");
                 reject(false);
                 return;
             }
 
-            const vouchersData = await api.voucher.getAllForAccount(account?.decodedAddress, MAIN_CONTRACT.PROGRAM_ID);
+            const vouchersData = await api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID);
             const vouchersId = Object.keys(vouchersData);
 
             if (vouchersId.length < 1) {
@@ -160,7 +176,7 @@ const useVoucherUtils = () => {
             try {
                 await voucherUpdate.signAndSend(
                     keyring,
-                    async (event) => {
+                    async (event: any) => {
                         console.log(event.toHuman()); 
                         const extrinsicJSON: any = event.toHuman();
                         if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
@@ -212,7 +228,7 @@ const useVoucherUtils = () => {
             try {
                 await voucherUpdate.signAndSend(
                     keyring,
-                    async (event) => {
+                    async (event: any) => {
                         console.log(event.toHuman()); 
                         const extrinsicJSON: any = event.toHuman();
                         if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
@@ -242,7 +258,8 @@ const useVoucherUtils = () => {
         voucherExists, 
         renewVoucherOneHour,
         accountVoucherId,
-        addTwoTokensToVoucher
+        addTwoTokensToVoucher,
+        updateVoucher
     };
 }
 

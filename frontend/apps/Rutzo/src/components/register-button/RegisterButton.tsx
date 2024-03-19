@@ -105,10 +105,10 @@ function RegisterButton({ onRegister }: any) {
   const setMainContractVoucher = async () => {
     if (!api || !account) return;
 
-    if (await voucherExists()) {
+    if (await voucherExists(account.decodedAddress)) {
       console.log("Voucher already exists");
 
-      const voucherId = await accountVoucherId();
+      const voucherId = await accountVoucherId(account.decodedAddress);
 
       if (await voucherExpired(voucherId)) {
         console.log("Voucher expired");
@@ -123,7 +123,7 @@ function RegisterButton({ onRegister }: any) {
     console.log("Voucher does not exists");
 
     try {
-      const voucherId = await createNewVoucher();
+      const voucherId = await createNewVoucher(account.decodedAddress);
       await registerUser(voucherId);
     } catch (error) {
       console.log("Error creating voucher");

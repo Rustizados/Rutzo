@@ -101,3 +101,13 @@ export const gasToSpend = (gasInfo: GasInfo): bigint => {
 }
 
 export const sleepReact = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+export const generatePassword = () => {
+  var length = 15,
+      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+}
