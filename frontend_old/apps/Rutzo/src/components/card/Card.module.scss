@@ -1,0 +1,93 @@
+.cards_container {
+  display: inline;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 200px;
+  height: 300px;
+  padding: 10px;
+  margin-inline: 20px;
+  margin-block: 20px;
+  display: inline-block;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--background);
+  box-shadow: 0 0.5rem 2rem rgba(0,0,0,.3);
+}
+
+.price {
+  width: 50%;
+  font-size: 1.0em;
+  font-weight: bold;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.price p {
+  width: 100%;
+}
+
+.graphics{
+  display: flex;
+  justify-content: center;
+}
+
+.type{
+  border: white 2px solid;
+  border-radius: 16px;
+  padding: 0 8px;
+  display: inline;
+  margin: 8px;
+}
+
+.title{
+  font-family: inter;
+  font-weight: bold;
+  margin: 1rem;
+}
+
+.details {
+  width: 50%;
+}
+
+.details p {
+  font-family: ia_writer;
+  font-size: 0.7em;
+  text-align: justify;
+  margin: 0 1em;
+  text-transform: uppercase;
+}
+
+.hexagon {
+  display: block;
+  width: 100%;
+  background-size: cover;
+  border-radius: 10px;
+  align-self: center;
+}
+
+.content, .hiddeable {
+  width: 100%;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+}
+
+.content p{
+  margin: 0;
+}
+
+.button_container {
+  display: none;
+}
+
+.card:hover .hiddeable {
+  display: none;
+}
+
+.card:hover .button_container {
+  display: block;
+}
+

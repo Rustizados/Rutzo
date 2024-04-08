@@ -1,0 +1,102 @@
+@use 'assets/styles';
+@use '@gear-js/ui/variables' as *;
+@import 'global.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #7834CF;
+  --secondary-color: #3DDC84;
+  --light-blue: #89C6FF;
+  --dark-blue: #3633D0;
+  --background: #080614;
+  --background-gradient: linear-gradient(to right, var(--background), #17113A);
+  --gradient: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  --blue-gradient: linear-gradient(to right, var(--light-blue), var(--dark-blue));
+  --acrylic: #ffffff26;
+}
+
+@font-face {
+  font-family: 'valorax';
+  src: url('./fonts/valorax.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'press_start_tp';
+  src: url('./fonts/press_start_tp.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'apex';
+  src: url('./fonts/apex.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'jetbrains_mono';
+  src: url('./fonts/jetbrains_mono.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'call_ops_duty';
+  src: url('./fonts/call_ops_duty.otf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'inter';
+  src: url('./fonts/inter.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'space_grotesk';
+  src: url('./fonts/space_grotesk.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'ia_writer';
+  src: url('./fonts/ia_writer_duo.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'clash_display';
+  src: url('./fonts/clash_display.ttf');
+  font-weight: normal;
+}
+
+a {
+  color: white !important
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: clash_display;
+}
+
+p {
+  font-family: space_grotesk;
+}
+
+#root {
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+main {
+  flex: 1;
+  padding: 30px 0 60px;
+  position: relative;
+}
+
+body {
+  background: var(--background-gradient);
+  color:white !important;
+}

@@ -1,0 +1,55 @@
+.alert, .empty_container {
+    display: flex;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: white;
+}
+
+p.alert {
+    font-size: 1.5em;
+}
+
+#alert_img {
+    width: 15%;
+    border-radius: 10%;
+}
+
+.empty_container *, .alert .playcontainer, .alert h1 {
+    margin-block: 20px;
+    
+}
+.empty_container button {
+    background-color: #6248f8;
+    border-radius: 40px;
+    font-size: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.empty_containe .button:hover{
+    background-color: #3DDC84;
+  }
+
+.mintContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: auto;
+    background: rgba(34, 20, 77, 0.97);
+
+}
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}

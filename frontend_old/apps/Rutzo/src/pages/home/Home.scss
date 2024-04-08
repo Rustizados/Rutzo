@@ -1,0 +1,165 @@
+.Main {
+  display: flex;
+}
+
+.MainTitle {
+  margin-bottom: 20px;
+  padding: 0 5%;
+  max-width: 700px;
+}
+
+.MainTitle h1 {
+  font-family: inter;
+}
+
+.MainTitle h1 span{
+  background-image: var(--gradient);
+  font-weight: 900;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+}
+
+.MainTitle p {
+  font-size: 16px;
+  padding-top: 30px;
+}
+
+.Banner {
+  width: 100%;
+  padding: 0 5%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    border-radius: 20px;
+    max-width: calc(50% - 1%);
+    max-height: 100%;
+    transition: all 0.5s ease;
+    position: absolute;
+  }
+}
+
+.Main h1 {
+  font-weight: bold;
+  font-size: 67px;
+}
+
+.title {
+  font-weight: bold;
+  margin: 5% 0;
+}
+
+.centered {
+  width: 100%;
+  margin-block: 10%;
+
+  h1 {
+    font-size: 5vw;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  p {
+    max-width: 70vw;
+    margin: 2% auto;
+    margin-bottom: 10%;
+    text-align: center;
+    font-family: inter;
+    font-size: 1.5vw;
+  }
+}
+
+.section {
+  margin: 10%;
+}
+
+.marketplace_button {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  background: transparent;
+  font-family: inter;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5vw;
+  margin-top: 30px;
+  border: 2px solid var(--primary-color);
+}
+
+.marketplace_button:hover {
+  background: var(--blue-gradient);
+  border: none;
+}
+
+@media screen and (max-width: 1016px) {
+  .Main {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .MainTitle {
+    padding: 10% 5%;
+    text-align: center;
+  }
+
+  #action_button {
+    margin: 0 auto;
+  }
+
+  .title {
+    text-align: center;
+  }
+  
+  .Banner {
+    padding: 0 5%;
+    width: 50%;
+    height: 200px;
+  }
+
+  .Banner img {
+    max-width: 100%;
+    max-height: 100%;
+    transition: all 0.5s ease;
+  }
+
+  .Main h1 {
+    font-size: 7vw;
+  }
+
+  .MainTitle p {
+    font-size: 2.5vw;
+  }
+
+  .section {
+    margin: 15% 0;
+  }
+
+  .centered p {
+    font-size: 2vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .MainTitle h1 {
+    font-size: 10vw;
+  }
+  .centered h1 {
+    font-size: 8vw;
+  }
+
+  .MainTitle p {
+    font-size: 4vw;
+  }
+
+  .centered p {
+    font-size: 4vw;
+  } 
+}

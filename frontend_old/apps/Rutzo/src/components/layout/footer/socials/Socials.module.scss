@@ -1,0 +1,12 @@
+.socials {
+  display: flex;
+
+  & > *:not(:last-child) {
+    margin-right: 24px;
+  }
+}
+
+.socials a {
+  font-size: 20px;
+  color: white;
+}

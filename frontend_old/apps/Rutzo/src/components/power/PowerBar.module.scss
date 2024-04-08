@@ -1,0 +1,27 @@
+.progressBar {
+  width: 100%;
+  height: 10px;
+  background-color: #222;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-block: 30px;
+}
+
+.progress {
+  height: 100%;
+  background-color: #7834cf;
+  box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
+   0 0 70px #fff, 0 0 80px #fff, 0 0 100px #fff, 0 0 150px #fff;
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon {
+  from {
+    box-shadow: 0 0 10px #7834cf, 0 0 20px #7834cf, 0 0 30px #7834cf, 0 0 40px #7834cf,
+      0 0 70px #7834cf, 0 0 80px #7834cf, 0 0 100px #7834cf, 0 0 150px #7834cf;
+  }
+  to {
+    box-shadow: 0 0 5px #7834cf, 0 0 10px #7834cf, 0 0 15px #7834cf, 0 0 20px #7834cf,
+      0 0 35px #7834cf, 0 0 40px #7834cf, 0 0 50px #7834cf, 0 0 75px #7834cf;
+  }
+}
