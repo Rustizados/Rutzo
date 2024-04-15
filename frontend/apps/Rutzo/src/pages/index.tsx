@@ -5,6 +5,7 @@ import { Play } from './play';
 import { Profile } from './profile';
 import { Game } from './game';
 import { Select } from './select';
+import Selection from "@/pages/selection/Selection";
 import { Fight } from './fight';
 import { TermsAndConditions } from './legal/Terms';
 import { PrivacyPolicy } from './legal/PrivacyPolicy';

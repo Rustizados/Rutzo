@@ -55,8 +55,9 @@ function Select() {
               <div>
                 {
                   userNftsNumber > 2 ? (
-                      <div>
-                      <BoardGame />
+                      <div className="mx-32">
+                        <h1 className='title text-4xl font-extrabold dark:text-white'>Choose your cards</h1>
+                        <BoardGame />
                       </div>
                   ) : (
                       <div>

@@ -35,6 +35,9 @@ useEffect(() => {
 return (
 <div className="About">
   <div className="Main">
+    <Link to="/fight"> Fight </Link>
+    <Link to="/select"> Select </Link>
+    <Link to="/selection"> Selection </Link>
     <div className="MainTitle">
       <h1>
         Challenge and conquer the <span className="GradientTitle">World of NFTs</span>

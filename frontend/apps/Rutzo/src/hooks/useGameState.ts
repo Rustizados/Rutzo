@@ -1,10 +1,11 @@
-import { ProgramMetadata } from "@gear-js/api";
-import { useState } from 'react';
-import { useApi, useAccount, useAlert } from "@gear-js/react-hooks";
+import {ProgramMetadata} from "@gear-js/api";
+import {useState} from 'react';
+import {useAccount, useAlert, useApi} from "@gear-js/react-hooks";
 import {MAIN_CONTRACT, NFT_CONTRACT} from "@/app/consts";
 import {sleepReact} from "@/app/utils";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addCard} from "@/features/cardsSlice";
+import {CardProps} from "@/interfaces/Card";
 
 
 function useGameState() {
@@ -375,7 +376,7 @@ function useGameState() {
         cardSelected,
         addCardToPlay,
         removeCardToPlay,
-        resetBoard
+        resetBoard,
     };
 }
 
