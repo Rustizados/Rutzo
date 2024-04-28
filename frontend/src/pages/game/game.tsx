@@ -4,6 +4,7 @@ import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import { UserEmptyAccount, RegisterButton, BoardGame, MyNFTCollection } from "@/components";
+import {Link} from 'react-router-dom'
 
 function Game() {
   const { api } = useApi();
@@ -48,6 +49,7 @@ function Game() {
 
   return (
     <div>
+      <Link to={'/match'}>Go to Match</Link>
       {
         isRegister ? (
           <div>

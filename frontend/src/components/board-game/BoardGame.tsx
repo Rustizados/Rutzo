@@ -107,10 +107,17 @@ function BoardGame() {
                         </div>
 
 
-                        <div>
-                        <br/>
+                        <div className='flex items-center justify-center '>
+
+
+
+
+
+
+
+
                             <a
-                                className={`btn-primary ${isButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
+                                className={`mt-4 ${isButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
                                 href={!isButtonDisabled ? "#gamearea" : ""}
                                 onClick={e => isButtonDisabled && e.preventDefault()}
                             >

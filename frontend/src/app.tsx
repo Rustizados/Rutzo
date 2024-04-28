@@ -2,8 +2,11 @@ import './app.scss';
 import './global.css';
 
 import { useAccount, useApi } from '@gear-js/react-hooks';
+import {  Footer } from '@/components/layout';
 import { withProviders } from '@/app/hocs';
+
 import { Layout} from "@/components/layout";
+import { Header } from '@/components/layout';
 import {ApiLoader} from "@/components";
 
 import {Home} from "@/pages/home";
@@ -11,6 +14,10 @@ import {Play} from "@/pages/play";
 import {AboutUs, Rules} from "@/pages/resources";
 import {Marketplace} from "@/pages/marketplace";
 import {Game} from "@/pages/game";
+import Match from "@/pages/match/Match";
+import {Select} from "@/pages/select";
+import Selection from "@/pages/selection/Selection";
+
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AllNFTs } from './pages/nfts/AllNFTs';
@@ -23,7 +30,13 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: '/', element: <Home /> },
-      { path: '/play', element: <Play /> },
+      { path: 'play',
+        element: <Play />,
+        children: [
+          { path: 'select', element: <Select /> },
+          { path: 'fight', element: <Match /> }
+        ]
+      },
       { path: '/marketplace', element: <Marketplace /> },
       { path: '/game', element: <Game /> },
       { path: '/rules', element: <Rules />},
@@ -31,6 +44,10 @@ const router = createBrowserRouter([
       { path: '/terms', element: <TermsAndConditions />},
       { path: '/privacy', element: <PrivacyPolicy />},
       { path: '/about', element: <AboutUs /> },
+      { path: '/select', element: <Select /> },
+      { path: '/selection', element: <Selection />},
+      { path: '/fight', element: <Match /> },
+
     ],
   },
 

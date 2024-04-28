@@ -5,12 +5,14 @@ import { Play } from './play';
 import { Profile } from './profile';
 import { Game } from './game';
 import { Select } from './select';
+import Selection from "@/pages/selection/Selection";
 import { Fight } from './fight';
 import { TermsAndConditions } from './legal/Terms';
 import { PrivacyPolicy } from './legal/PrivacyPolicy';
 import { AboutUs } from './resources/AboutUs';
 import { Rules } from './resources/Rules';
 import { AllNFTs } from './nfts/AllNFTs';
+import Match from "@/pages/match/Match";
 
 const routes = [
     { path: '/', Page: Home },

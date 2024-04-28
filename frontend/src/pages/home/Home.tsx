@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Features } from "./Features";
 import { HowToStart } from "./HowToStart/HowToStart";
 import { FAQ } from "./FAQ";
@@ -8,6 +8,7 @@ import { Carousel } from '@/components/layout/carousel/Carousel';
 import { Members } from "./Members/Members";
 import { Community } from "../resources/Community";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Home() {
   const cards = useSelector((state: any) => state.cards.cards);
@@ -34,6 +35,9 @@ useEffect(() => {
 return (
 <div className="About">
   <div className="Main">
+    <Link to="/fight"> Fight </Link>
+    <Link to="/select"> Select </Link>
+    <Link to="/selection"> Selection </Link>
     <div className="MainTitle">
       <h1>
         Challenge and conquer the <span className="GradientTitle">World of NFTs</span>
