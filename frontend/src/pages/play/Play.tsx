@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { increment} from "@/features/counterSlice";
+import { PrepareToPlay } from './PrepareToPlay';
 
 
 function Play() {
@@ -22,27 +23,30 @@ function Play() {
 
   return (
     <div className="play-title">
-      <button onClick={() => dispatch(increment())}>Increment</button>
+      {/*<button onClick={() => dispatch(increment())}>Increment</button>
       <Link to="/fight">Game</Link>
-      <Link to="/select">Select</Link>
+  <Link to="/select">Select</Link>
 
-      <div>{count}</div>
+      <div>{count}</div>*/}
       {isRegister ? (
         hasEnoughCards ? (
-          <div className="alert">
+          <PrepareToPlay />
+          /*<div className="alert">
             <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
             Your <span className="bg-gradient-to-r from-purple-800 to-green-500 rounded-xl p-1">collection</span>
           </h1>
             <MyNFTCollection />
             <br />
             <div className="playcontainer">
-              {/* <PlayButton style={{ marginInline: '20px', margin: 'auto' }} link="/game" /> */}
+              // <PlayButton style={{ marginInline: '20px', margin: 'auto' }} link="/game" /> 
               <RedirectionButton style={{ marginInline: '20px', margin: 'auto' }} link="/game">
                 <GameController />
                 PLAY
               </RedirectionButton>
             </div>
           </div>
+        */
+       
         ) : numberOfNfts > 0 ? (
           <div className="alert">
             <h1>You don't have enough Cards</h1>
