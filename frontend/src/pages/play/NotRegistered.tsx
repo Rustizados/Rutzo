@@ -1,9 +1,7 @@
-import "./UserEmptyAccount.scss";
 import { useState, useEffect } from "react";
-import { RedirectionButton } from "@/components";
-import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.svg";
+import { RegisterButton } from "@/components";
 
-function UserEmptyAccount() {
+function NotRegistered({children}: any) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const bannerImages = [
@@ -25,9 +23,9 @@ function UserEmptyAccount() {
   return (
     <div className="flex flex-col items-center justify-center">
       <h1 className=" text-3xl md:text-5xl font-semibold mb-6 ">
-        Oops! It looks like you don't have any cards
+        It looks like you aren't registered!
       </h1>
-      <p>Go to the marketplace and get some cool Cards!</p>
+      <p>Register and get some free cards</p>
 
       <div className="flex items-center justify-center space-x-[-50px] mt-10">
         <img
@@ -49,22 +47,10 @@ function UserEmptyAccount() {
         />
       </div>
       <div className="mt-10">
-        <RedirectionButton
-          style={{
-            marginInline: "20px",
-            height: "55px",
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-          link="/marketplace"
-        >
-          <ShoppingCart />
-          Marketplace
-        </RedirectionButton>
+            {children}
       </div>
     </div>
   );
 }
 
-export { UserEmptyAccount };
+export { NotRegistered };

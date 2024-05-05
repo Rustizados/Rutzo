@@ -1,5 +1,4 @@
-import { PlayButton } from "@/components";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
 import { RedirectionButton } from "@/components";
 
