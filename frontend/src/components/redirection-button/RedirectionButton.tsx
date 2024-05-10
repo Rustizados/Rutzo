@@ -5,6 +5,7 @@ type Props = {
     style: React.CSSProperties;
     id?: string;
     link: string;
+    onClick?: () => void;
     children?: any
 };
 

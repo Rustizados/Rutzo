@@ -96,6 +96,10 @@ main {
   position: relative;
 }
 
+.mono {
+  font-family: jetbrains_mono;
+}
+
 body {
   background: var(--background-gradient);
   color:white !important;

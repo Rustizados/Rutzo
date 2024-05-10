@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { ReactComponent as GameController } from "@/assets/images/game_controller.svg";
-import { RedirectionButton } from "@/components";
+import { DialogButton } from "./DialogButton";
 
 function PrepareToPlay() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isToggleActive, setToggleActive] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const bannerImages = [
     "https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg",
@@ -37,18 +37,18 @@ function PrepareToPlay() {
           src={bannerImages[(currentImageIndex + 1) % 3]}
           alt="NFTs"
           style={{ transform: "rotate(-30deg)" }}
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 z-10"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32"
         />
         <img
           src={bannerImages[(currentImageIndex + 2) % 3]}
           alt="NFTs"
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 -mt-12 z-20"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32 -mt-12 z-10"
         />
         <img
           src={bannerImages[currentImageIndex]}
           alt="NFTs"
           style={{ transform: "rotate(30deg)" }}
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 z-10"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32"
         />
       </div>
 
@@ -108,15 +108,7 @@ function PrepareToPlay() {
         </button>
       </div>
 
-      <div className="playcontainer">
-        <RedirectionButton
-          style={{ marginTop: "3em", margin: "auto" }}
-          link="/game"
-        >
-          <GameController />
-          PLAY
-        </RedirectionButton>
-      </div>
+      <DialogButton link="" isToggleActive={isToggleActive}/>
     </div>
   );
 }
