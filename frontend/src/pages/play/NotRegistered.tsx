@@ -32,18 +32,18 @@ function NotRegistered({children}: any) {
           src={bannerImages[(currentImageIndex + 1) % 3]}
           alt="NFTs"
           style={{ transform: "rotate(-30deg)" }}
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 z-10"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32"
         />
         <img
           src={bannerImages[(currentImageIndex + 2) % 3]}
           alt="NFTs"
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 -mt-12 z-20"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32 -mt-12 z-10"
         />
         <img
           src={bannerImages[currentImageIndex]}
           alt="NFTs"
           style={{ transform: "rotate(30deg)" }}
-          className="border-2 border-white max-w-full h-auto rounded-lg w-32 z-10"
+          className="border-2 border-white max-w-full h-auto rounded-lg w-32"
         />
       </div>
       <div className="mt-10">

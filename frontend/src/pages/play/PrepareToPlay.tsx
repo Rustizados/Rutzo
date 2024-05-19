@@ -5,6 +5,7 @@ function PrepareToPlay() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isToggleActive, setToggleActive] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [gameType, setGameType] = useState("regular"); // Estado para el tipo de partida
 
   const bannerImages = [
     "https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg",
@@ -52,11 +53,25 @@ function PrepareToPlay() {
         />
       </div>
 
-      <div className="flex items-center justify-center rounded-full mt-10 w-72 h-10">
-        <button className="text-xs flex items-center justify-center w-1/2 h-10 text-white bg-gray-950 hover:bg-gradient-to-r from-purple-800 to-green-400 rounded-l-full">
+      <div className="flex items-center justify-center rounded-full mt-10 w-72 h-10 bg-gradient-to-r from-purple-800 to-green-400">
+        <button
+          onClick={() => setGameType("regular")}
+          className={`text-xs flex items-center justify-center w-1/2 h-10 text-white rounded-l-full ${
+            gameType === "regular"
+              ? "bg-transparent"
+              : "bg-gray-950 hover:bg-transparent"
+          }`}
+        >
           Regular game
         </button>
-        <button className="text-xs flex items-center justify-center w-1/2 h-10 text-white rounded-r-full bg-gray-950 hover:bg-gradient-to-r from-purple-800 to-green-400">
+        <button
+          onClick={() => setGameType("quick")}
+          className={`text-xs flex items-center justify-center w-1/2 h-10 text-white rounded-r-full ${
+            gameType === "quick"
+              ? "bg-transparent"
+              : "bg-gray-950 hover:bg-transparent"
+          }`}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -108,7 +123,7 @@ function PrepareToPlay() {
         </button>
       </div>
 
-      <DialogButton link="/selection" isToggleActive={isToggleActive}/>
+      <DialogButton link="/selection" isToggleActive={isToggleActive} />
     </div>
   );
 }
