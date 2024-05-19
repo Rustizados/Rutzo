@@ -108,7 +108,7 @@ function PrepareToPlay() {
         </button>
       </div>
 
-      <DialogButton link="" isToggleActive={isToggleActive}/>
+      <DialogButton link="/selection" isToggleActive={isToggleActive}/>
     </div>
   );
 }
