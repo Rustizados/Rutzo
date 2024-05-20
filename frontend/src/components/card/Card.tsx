@@ -9,6 +9,7 @@ interface CardProps {
   price?: number;
   onCardClick?: () => void;
   children?: any;
+  scale?: number; // Añadida prop para escalar
 }
 
 interface CardState {
@@ -39,59 +40,62 @@ class Card extends React.Component<CardProps, CardState> {
     if (event.key === 'Enter' || event.key === ' ') {
       this.setState({ dialogOpen: true });
     }
-    }
+  }
 
   handleClose() {
     this.setState({ dialogOpen: false });
   }
 
   render() {
-    const { image, title, type, value, price } = this.props;
-    const { children } = this.props;
+    const { image, title, type, value, price, children, scale = 1 } = this.props; // Prop scale con valor por defecto 1
+
+    const scaledWidth = 13 * scale; // Base width 13rem
+    const scaledHeight = 20 * scale; // Base height 20rem
+    const scaledFontSize = 1 * scale; // Base font-size 1rem
+
+    const cardStyle = {
+      width: `${scaledWidth}rem`,
+      height: `${scaledHeight}rem`,
+      margin: `${0.5 * scale}rem`,
+      padding: `${0.5 * scale}rem`,
+      fontSize: `${scaledFontSize}rem`,
+    };
 
     return (
       <div className={styles.cards_container}>
         <div
-          className={styles.card + ' w-52 h-80 rounded-lg inline-block'}
+          className={`${styles.card} rounded-lg inline-block`}
+          style={cardStyle}
           onClick={this.handleClick}
           onKeyDown={(e) => this.handleKeyDown(e)}
           role="button"
           tabIndex={0}
         >
-           <div className={styles.graphics}>
+          <div className={styles.graphics}>
             <img className={styles.hexagon} src={image} alt="NFTimage" />
           </div>
-          <p className={styles.title}>{title}</p>
+          <p className={styles.title} style={{ fontSize: `${scaledFontSize * 1.2}rem` }}>{title}</p>
 
           <div className={children !== undefined ? styles.hiddeable : styles.content}>
-
-            <div className={styles.details}>
-             <p>Type: {type}</p>
-             <p>Power: {value}%</p>
+            <div className={styles.details} style={{ fontSize: `${scaledFontSize}rem` }}>
+              <p>Type: {type}</p>
+              <p>Power: {value}%</p>
             </div>
 
-            {children !== undefined 
-            ?
-            <div className={styles.price}>
-              <p className={styles.priceText}>${price} TVara</p>
+            {children !== undefined ? (
+              <div className={styles.price} style={{ fontSize: `${scaledFontSize}rem` }}>
+                <p className={styles.priceText}>${price} TVara</p>
+              </div>
+            ) : null}
+          </div>
+
+          {children !== undefined ? (
+            <div className={styles.button_container} style={{ fontSize: `${scaledFontSize}rem` }}>
+              {children}
             </div>
-            :
-            null
-            }
-            
-          </div>
-
-          {children !== undefined ?
-          <div className={styles.button_container}>
-          { children }
-          </div>
-          :
-          null
-        }
-
-          
+          ) : null}
         </div>
-        {/*{dialogOpen && (
+        {/* {dialogOpen && (
           <Modal onClose={this.handleClose}>
             <CardDialog
               isOpen={dialogOpen}
@@ -102,10 +106,10 @@ class Card extends React.Component<CardProps, CardState> {
               value={value}
               price={price ?? 0}
             >
-              { children }
+              {children}
             </CardDialog>
           </Modal>
-        )}*/}
+        )} */}
       </div>
     );
   }

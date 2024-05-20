@@ -3,7 +3,13 @@ import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.sv
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import {UserEmptyAccount, RegisterButton, BoardGame, MyNFTCollection} from "@/components";
+import {
+  UserEmptyAccount,
+  BoardGame,
+  MyNFTCollection,
+} from "@/components";
+import { NotRegistered } from "../play/NotRegistered";
+import { NotEnoughCards } from "../play/NotEnoughCards";
 
 function Select() {
   const { api } = useApi();
@@ -13,14 +19,16 @@ function Select() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
   const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
-
-
   const setData = async () => {
     if (!api) return;
 
-    const stateResult = await api
-        .programState
-        .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? "0x0" } }, mainContractMetadata);
+    const stateResult = await api.programState.read(
+      {
+        programId: MAIN_CONTRACT.PROGRAM_ID,
+        payload: { UserIsRegister: account?.decodedAddress ?? "0x0" },
+      },
+      mainContractMetadata
+    );
 
     const stateFormated: any = stateResult.toJSON();
 
@@ -29,9 +37,13 @@ function Select() {
     if (!isRegister) return;
 
     try {
-      const nftStateResult = await api
-          .programState
-          .read({ programId: NFT_CONTRACT.PROGRAM_ID, payload: { tokensForOwner: account?.decodedAddress ?? "0x0" } }, nftContractMetadata);
+      const nftStateResult = await api.programState.read(
+        {
+          programId: NFT_CONTRACT.PROGRAM_ID,
+          payload: { tokensForOwner: account?.decodedAddress ?? "0x0" },
+        },
+        nftContractMetadata
+      );
 
       const nftStateFormated: any = nftStateResult.toJSON();
 
@@ -49,56 +61,30 @@ function Select() {
   setData();
 
   return (
-      <div>
-        {
-          isRegister ? (
-              <div>
-                {
-                  userNftsNumber > 2 ? (
-                      <div className="mx-32">
-                        <h1 className='title text-4xl font-extrabold dark:text-white'>Choose your cards</h1>
-                        <BoardGame />
-                      </div>
-                  ) : (
-                      <div>
-                        {
-                          userNftsNumber > 0 ? (
-                              <div className="alert">
-                                <h1>You don&apos;t have enough Cards</h1>
-                                <MyNFTCollection />
-                                <br />
-                                <div className="playcontainer">
-                                  <div className="playcontainer">
-                                    <a href="/marketplace">
-                                      <ShoppingCart />
-                                      MARKETPLACE
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-                          ) : (
-                              <UserEmptyAccount>
-                                <p className="alert">Go to the marketplace and get some cool NFTs!</p>
-                                <div className="playcontainer">
-                                  <a href="/marketplace" className="alert">
-                                    MARKETPLACE
-                                  </a>
-                                </div>
-                              </UserEmptyAccount>
-                          )
-                        }
-                      </div>
-                  )
-                }
-              </div>
+    <div>
+      {isRegister ? (
+        <div>
+          {userNftsNumber > 2 ? (
+            <div className="mx-32">
+              <h1 className="title text-4xl font-extrabold dark:text-white">
+                Choose your cards
+              </h1>
+              <BoardGame />
+            </div>
           ) : (
-              <UserEmptyAccount>
-                <p className="alert">Register to get free cards</p>
-                <RegisterButton onRegister={setData} />
-              </UserEmptyAccount>
-          )
-        }
-      </div>
+            <div>
+              {userNftsNumber > 0 ? (
+                <NotEnoughCards />
+              ) : (
+                <UserEmptyAccount />
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <NotRegistered />
+      )}
+    </div>
   );
 }
 

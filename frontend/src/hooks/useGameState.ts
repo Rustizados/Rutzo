@@ -39,9 +39,9 @@ function useGameState() {
         setNftsLoaded(false);
         setUserPressPlayButton(false);
         setActualUserInMatch(account?.decodedAddress ?? "0x00");
-        setUserWonTheMatch(false);
+        setUserWonTheMatch(null);
         setEnemyCard(null);
-    }
+      }
 
     // Get the current user's match
     const getCurrentUserMatch = async (): Promise<number> => {
@@ -377,6 +377,7 @@ function useGameState() {
         addCardToPlay,
         removeCardToPlay,
         resetBoard,
+        setUserWonTheMatch
     };
 }
 
