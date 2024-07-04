@@ -7,7 +7,7 @@ function Story() {
       <div className="flex flex-col-reverse sm:flex md:flex-row">
         <div className="w-full sm:w-1/2 p-0 md:px-20 flex justify-center items-center">
           <img
-            src="https://rutzo.studio/images/hackathon.png"
+            src="https://www.rutzo.tech/images/hackathon.png"
             alt="Hackathon"
             className="w-full h-96 object-cover rounded-3xl"
           />

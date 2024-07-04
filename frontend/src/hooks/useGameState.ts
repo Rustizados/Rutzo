@@ -1,34 +1,34 @@
-import {ProgramMetadata} from "@gear-js/api";
-import {useState} from 'react';
-import {useAccount, useAlert, useApi} from "@gear-js/react-hooks";
-import {MAIN_CONTRACT, NFT_CONTRACT} from "@/app/consts";
-import {sleepReact} from "@/app/utils";
-import {useDispatch, useSelector} from "react-redux";
-import {addCard} from "@/features/cardsSlice";
-import {CardProps} from "@/interfaces/Card";
-
+import { ProgramMetadata } from "@gear-js/api";
+import { useState, useEffect } from 'react';
+import { useAccount, useAlert, useApi } from "@gear-js/react-hooks";
+import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
+import { sleepReact } from "@/app/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { addCard } from "@/features/cardsSlice";
+import { CardProps } from "@/interfaces/Card";
 
 function useGameState() {
     const alert = useAlert();
-    const {api} = useApi();
-    const {account} = useAccount();
-    const [userPressPlayButton, setUserPressPlayButton] = useState(false);  // -----
-    const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]); // ----
-    const [selectedCards, setSelectedCards] = useState<any>([]); // ----
-    const [cardToPlay, setCardToPlay] = useState<any | null>(null); // -----
-    const [nftsLoaded, setNftsLoaded] = useState(false);  // -----
-    const [userInMatch, setUserInMatch] = useState(false);  // ------
-    const [matchInProgress, setMatchInProgress] = useState(false);  // ------
-    const [actualUserInMatch, setActualUserInMatch] = useState("0x00");  // ----
-    const [enemyCard, setEnemyCard] = useState<any | null>(null);  // ----
-    const [userWonTheMatch, setUserWonTheMatch] = useState<boolean | null>(false);  //-- --
+    const { api } = useApi();
+    const { account } = useAccount();
+    const [userPressPlayButton, setUserPressPlayButton] = useState(false);
+    const [tokensForOwnerState, setTokensForOwnerState] = useState<any>([]);
+    const [selectedCards, setSelectedCards] = useState<any>([]);
+    const [cardToPlay, setCardToPlay] = useState<any | null>(null);
+    const [nftsLoaded, setNftsLoaded] = useState(false);
+    const [userInMatch, setUserInMatch] = useState(false);
+    const [matchInProgress, setMatchInProgress] = useState(false);
+    const [actualUserInMatch, setActualUserInMatch] = useState("0x00");
+    const [enemyName, setEnemyName] = useState<string | null>(null);
+    const [enemyCard, setEnemyCard] = useState<any | null>(null);
+    const [enemyCardCount, setEnemyCardCount] = useState<number>(0);
+    const [userWonTheMatch, setUserWonTheMatch] = useState<boolean | null>(false);
 
     const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
     const nftContractMetadata = ProgramMetadata.from(NFT_CONTRACT.METADATA);
 
     const dispatch = useDispatch();
     const cards = useSelector((state: any) => state.cards.cards);
-    // ... all your state and functions here
 
     const resetBoard = () => {
         setTokensForOwnerState([]);
@@ -41,9 +41,10 @@ function useGameState() {
         setActualUserInMatch(account?.decodedAddress ?? "0x00");
         setUserWonTheMatch(null);
         setEnemyCard(null);
-      }
+        setEnemyName(null);
+        setEnemyCardCount(0);
+    };
 
-    // Get the current user's match
     const getCurrentUserMatch = async (): Promise<number> => {
         if (!api) {
             console.error("API no disponible");
@@ -51,7 +52,7 @@ function useGameState() {
         }
 
         try {
-            const payload = account?.decodedAddress ? {PlayerIsInMatch: account.decodedAddress} : null;
+            const payload = account?.decodedAddress ? { PlayerIsInMatch: account.decodedAddress } : null;
             if (!payload) {
                 console.error("Dirección de cuenta no disponible");
                 return -1;
@@ -61,7 +62,7 @@ function useGameState() {
                 programId: MAIN_CONTRACT.PROGRAM_ID,
                 payload
             }, mainContractMetadata);
-            const {playerInMatch}: any = stateResult.toJSON();
+            const { playerInMatch }: any = stateResult.toJSON();
 
             return playerInMatch ?? -1;
         } catch (error) {
@@ -70,7 +71,6 @@ function useGameState() {
         }
     };
 
-    // Get the last user's match
     const getLastUserMatch = async (): Promise<number> => {
         if (!api) {
             console.error("API no disponible");
@@ -86,9 +86,9 @@ function useGameState() {
 
             const stateResult = await api.programState.read({
                 programId: MAIN_CONTRACT.PROGRAM_ID,
-                payload: {PlayerInformation: address}
+                payload: { PlayerInformation: address }
             }, mainContractMetadata);
-            const {playerInformation}: any = stateResult.toJSON();
+            const { playerInformation }: any = stateResult.toJSON();
 
             return playerInformation?.recentPastGame ?? -1;
         } catch (error) {
@@ -97,8 +97,34 @@ function useGameState() {
         }
     };
 
+    const getMatchDetails = async (matchId: number) => {
+        console.log("getMatchDetails", matchId);
+        if (!api) {
+            console.error("API no disponible");
+            return;
+        }
 
-    // Update the game with the selected card by the user
+        try {
+            console.log(`Obteniendo detalles del match ID: ${matchId}`);
+            const response = await api.programState.read({
+                programId: MAIN_CONTRACT.PROGRAM_ID,
+                payload: { GameInformationById: [matchId] }
+            }, mainContractMetadata);
+            const formattedState: any = response.toJSON();
+
+            const { user1, user2 } = formattedState.gameInformation;
+            const currentUser = account?.decodedAddress;
+
+            const opponent = currentUser === user1.userId ? user2 : user1;
+            console.log("opponent", opponent);
+            setEnemyName(opponent.userId);
+
+            return formattedState.gameInformation;
+        } catch (error) {
+            console.error("Error al obtener los detalles de la partida:", error);
+        }
+    };
+
     const updateGameWithSelectedCard = async (matchId: number) => {
         if (!api) {
             console.error("API no disponible");
@@ -108,11 +134,11 @@ function useGameState() {
         try {
             const response = await api.programState.read({
                 programId: MAIN_CONTRACT.PROGRAM_ID,
-                payload: {GameInformationById: [matchId]}
+                payload: { GameInformationById: [matchId] }
             }, mainContractMetadata);
             const formattedState: any = response.toJSON();
 
-            const {chosenNft: tokenId} = formattedState.gameInformation.user1;
+            const { chosenNft: tokenId } = formattedState.gameInformation.user1;
 
             if (tokensForOwnerState.length === 0) {
                 console.warn("No hay tokens NFT disponibles para el propietario");
@@ -125,40 +151,34 @@ function useGameState() {
                 return;
             }
 
-            // Actualizar el juego con la tarjeta seleccionada
             setCardToPlay(selectedNft);
-            // Eliminar la tarjeta seleccionada del estado del propietario
             setTokensForOwnerState(tokensForOwnerState.filter((nft: any) => nft[0] !== tokenId));
-            // Actualizar el estado del juego
             setMatchInProgress(true);
         } catch (error) {
             console.error("Error al actualizar el juego con la tarjeta seleccionada:", error);
         }
     };
 
-    // Show the match results
-    const showMatchResults = (currentUserAddress : `0x${string}`, matchData: any) => {
+    const showMatchResults = (currentUserAddress: `0x${string}`, matchData: any) => {
         const { matchState, user1, user2 } = matchData;
         const opponentData = user1.userId === currentUserAddress ? user2 : user1;
         const opponentCard = opponentData.nftData;
+        const opponentCardCount = opponentData.nftCount;
 
         const isDraw = Object.keys(matchState)[0] === "draw";
         const isWinner = !isDraw && matchState.finished.winner === currentUserAddress;
 
         setUserWonTheMatch(isDraw ? null : isWinner);
         setEnemyCard(opponentCard);
-    }
-
+        setEnemyCardCount(opponentCardCount);
+    };
 
     const userWaitingMatch = async (matchId: number) => {
         if (!api) return;
 
         let matchFinished = false;
 
-        /* eslint-disable no-await-in-loop */
         while (!matchFinished) {
-            // console.log("Buscando partida!!");
-
             const stateResult = await api
                 .programState
                 .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { MatchStateById: [matchId] } }, mainContractMetadata);
@@ -198,14 +218,13 @@ function useGameState() {
         const matchState = Object.keys(stateFormated.matchState)[0];
 
         if (matchState === 'inProgress') {
-            alert.error("Erron in contract, searching match");
+            alert.error("Error en el contrato, buscando partida");
             await userWaitingMatch(matchId);
             return;
         }
 
         resetBoard();
     }
-
 
     const handlePlayButton = async () => {
         if (!api) return;
@@ -214,8 +233,10 @@ function useGameState() {
         setUserPressPlayButton(true);
 
         if (matchId !== -1) {
+            console.log(`Match ID encontrado: ${matchId}`);
             setUserInMatch(true);
             setMatchInProgress(true);
+            getMatchDetails(matchId); // Obtener detalles del oponente
             await userWaitingMatch(matchId);
             return;
         }
@@ -223,6 +244,7 @@ function useGameState() {
         setUserInMatch(true);
 
         const lastMatchId = await getLastUserMatch();
+        console.log(`Último Match ID: ${lastMatchId}`);
 
         const matchInformationStateResponse = await api
             .programState
@@ -233,9 +255,9 @@ function useGameState() {
         const matchState = Object.keys(matchInformationState.matchState)[0];
 
         if (matchState === 'inProgress') {
-            alert.error("Erron in contract!, joined to match");
+            alert.error("Error en el contrato, unido a la partida");
             resetBoard();
-            alert.error("Error joining the game, try again!");
+            alert.error("Error al unirse al juego, ¡inténtalo de nuevo!");
             return;
         }
 
@@ -243,7 +265,6 @@ function useGameState() {
             .programState
             .read({ programId: MAIN_CONTRACT.PROGRAM_ID, payload: { GameInformationById: [lastMatchId] } }, mainContractMetadata);
         const stateFormated: any = stateResult.toJSON();
-
 
         showMatchResults(
             account?.decodedAddress ?? "0x00",
@@ -255,10 +276,6 @@ function useGameState() {
 
         resetBoard();
     }
-
-
-
-
 
     const setStateWithoutSelectedCards = (cards: [any], cardsSelected: [any]) => {
         const cardsLeft = cards.filter((card) => {
@@ -308,12 +325,9 @@ function useGameState() {
         setTokensForOwnerState([nftSelected, ...tokensForOwnerState]);
     }
 
-    const pushCard = (tokenId: any ) => {
+    const pushCard = (tokenId: any) => {
         dispatch(addCard(tokenId));
-
-
         return true;
-
     }
 
     const setData = async () => {
@@ -321,7 +335,6 @@ function useGameState() {
 
         if (actualUserInMatch !== account?.decodedAddress) {
             console.log("Se va a formatear el tablero este!");
-
             resetBoard();
         }
 
@@ -338,15 +351,15 @@ function useGameState() {
             const tokensForOwner: [any] = nftStateFormated.tokensForOwner ?? [];
 
             setStateWithoutSelectedCards(tokensForOwner, selectedCards);
-            // setTokensForOwnerState(tokensForOwner);
-
             setNftsLoaded(true);
         }
 
         if (!userInMatch) {
             const matchId = await getCurrentUserMatch();
             setActualUserInMatch(account?.decodedAddress ?? "0x00");
+            await getMatchDetails(matchId);
             if (matchId !== -1) {
+                await getMatchDetails(matchId);
                 await updateGameWithSelectedCard(matchId);
                 setUserInMatch(true);
                 setMatchInProgress(true);
@@ -356,11 +369,12 @@ function useGameState() {
         }
     };
 
-    // Load initial data and set up any listeners
-    setData();
+    useEffect(() => {
+        if (account && api) {
+            setData();
+        }
+    }, [account, api]);
 
-
-    // Export state and actions
     return {
         userPressPlayButton,
         tokensForOwnerState,
@@ -371,12 +385,14 @@ function useGameState() {
         matchInProgress,
         actualUserInMatch,
         enemyCard,
+        enemyCardCount,
         userWonTheMatch,
         handlePlayButton,
         cardSelected,
         addCardToPlay,
         removeCardToPlay,
         resetBoard,
+        enemyName,
         setUserWonTheMatch
     };
 }

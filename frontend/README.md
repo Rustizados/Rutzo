@@ -1,6 +1,6 @@
 # Rutzo
 
-![Rutzo Gaming Platform Banner](https://rutzo.studio/images/GitHub_Banner.png)
+![Rutzo Gaming Platform Banner](https://www.rutzo.tech/images/GitHub_Banner.png)
 
 ## Description
 
@@ -14,19 +14,19 @@ Built upon the robust Vara network, Rutzo ensures the integrity and immutability
 
 1. **Download the [Polkadot Extension](https://polkadot.js.org/extension/):**
    
-   ![Polkadot Extension](https://rutzo.studio/assets/extension-e18ac296.png)
+   ![Polkadot Extension](https://www.rutzo.tech/assets/extension-e18ac296.png)
 
 2. **Install and Set Up:**
    
    Install the extension and create your account. Then, seamlessly link your account with Rutzo.
 
-   ![Install and Set Up](https://rutzo.studio/assets/signin-a590982a.png)
+   ![Install and Set Up](https://www.rutzo.tech/assets/signin-a590982a.png)
 
 3. **Start Playing:**
    
    Once your account is set up, dive into the action and start accumulating cards. Begin your journey by exploring the marketplace and acquiring cards to kickstart your gaming endeavors.
 
-   ![Start Playing](https://rutzo.studio/assets/marketplace-2ae51ffb.svg)
+   ![Start Playing](https://www.rutzo.tech/assets/marketplace-2ae51ffb.svg)
 
 ## Our Team
 

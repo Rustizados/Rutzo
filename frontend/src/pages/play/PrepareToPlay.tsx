@@ -8,9 +8,9 @@ function PrepareToPlay() {
   const [gameType, setGameType] = useState("regular"); // Estado para el tipo de partida
 
   const bannerImages = [
-    "https://home.rutzo.studio/NFT/poison/quetzal_poison.jpg",
-    "https://home.rutzo.studio/NFT/lightning/nova_lighting.jpg",
-    "https://home.rutzo.studio/NFT/poison/angel_of_death_poison.jpg",
+    "https://www.rutzo.tech/NFT/poison/quetzal_poison.jpg",
+    "https://www.rutzo.tech/NFT/lightning/nova_lighting.jpg",
+    "https://www.rutzo.tech/NFT/poison/angel_of_death_poison.jpg",
   ];
 
   useEffect(() => {

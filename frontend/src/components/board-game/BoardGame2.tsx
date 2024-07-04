@@ -20,52 +20,72 @@ function BoardGame2() {
     userPressPlayButton,
     tokensForOwnerState,
     cardToPlay,
+    nftsLoaded,
+    userInMatch,
     matchInProgress,
+    actualUserInMatch,
     enemyCard,
+    enemyCardCount,
     userWonTheMatch,
-    setUserWonTheMatch, // Asegúrate de que esta función esté disponible en el hook useGameState
     handlePlayButton,
     cardSelected,
+    enemyName,
     addCardToPlay,
     removeCardToPlay,
-    resetBoard, // Añadida función para resetear el estado del juego
+    setUserWonTheMatch,
+    resetBoard,
   } = useGameState();
 
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(180); // 3 minutos en segundos
+  const [showDialog, setShowDialog] = useState(false);
 
   const handleNewGame = () => {
     resetBoard();
-    setIsPlayerTurn(true); // Resetear el turno
-    setUserWonTheMatch(null); // Resetear el estado de userWonTheMatch
+    setIsPlayerTurn(true);
+    setUserWonTheMatch(null);
     navigate("/selection");
   };
 
   const handleGoHome = () => {
     resetBoard();
-    setIsPlayerTurn(true); // Resetear el turno
-    setUserWonTheMatch(null); // Resetear el estado de userWonTheMatch
+    setIsPlayerTurn(true);
+    setUserWonTheMatch(null);
     navigate("/");
   };
 
-  useEffect(() => {
-    if (userPressPlayButton) {
-      // Lógica para cambiar el turno después de que el jugador haga su movimiento
-      setIsPlayerTurn((prevTurn) => !prevTurn);
-    }
-  }, [userPressPlayButton]);
+  let timer: NodeJS.Timeout;
 
-  const enemyCardsCount = tokensForOwnerState.length + (enemyCard ? 1 : 0);
+  useEffect(() => {
+    if (showDialog && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      clearInterval(timer);
+      setShowDialog(false);
+      navigate("/play");
+    }
+    return () => clearInterval(timer);
+  }, [showDialog, timeLeft, navigate]);
+
+  const cancelMatch = () => {
+    setShowDialog(false);
+    setTimeLeft(180);
+  };
+
+  const isButtonDisabled = selectedCards.length !== 3;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
       <div className="w-full max-w-5xl flex justify-between items-center mb-8">
         <div className="text-center">
           <img src="player_avatar_url" alt="Player Avatar" className="w-16 h-16 rounded-full mb-2"/>
-          <p className="text-lg">Player Name</p>
+          <p className="text-lg">{actualUserInMatch}</p>
         </div>
         <div className="text-center">
           <img src="enemy_avatar_url" alt="Enemy Avatar" className="w-16 h-16 rounded-full mb-2"/>
-          <p className="text-lg">Enemy Name</p>
+          <p className="text-lg">{enemyName}</p>
         </div>
       </div>
 
@@ -79,14 +99,14 @@ function BoardGame2() {
                 type={cardToPlay[1].description.toLowerCase()}
                 value={cardToPlay[1].reference}
                 onCardClick={() => removeCardToPlay(cardToPlay)}
-                scale={1.2} // Ajusta la escala según sea necesario
+                scale={1.2}
               />
             ) : (
-              <Facedowncard />
+              <Facedowncard scale={1.2} />
             )}
           </div>
           <div className="flex justify-center space-x-2">
-            {selectedCards.map((card: any, index: number) => {
+            {selectedCards.map((card: [string, any]) => {
               const [nftId, elemento] = card;
               return (
                 <Card
@@ -96,7 +116,7 @@ function BoardGame2() {
                   type={elemento.description.toLowerCase()}
                   value={elemento.reference}
                   onCardClick={() => addCardToPlay(card)}
-                  scale={0.6} // Ajusta la escala según sea necesario
+                  scale={0.6}
                 />
               );
             })}
@@ -114,15 +134,15 @@ function BoardGame2() {
                 title={enemyCard.name}
                 type={enemyCard.description.toLowerCase()}
                 value={enemyCard.reference}
-                scale={1.2} // Ajusta la escala según sea necesario
+                scale={1.2}
               />
             ) : (
-              <Facedowncard />
+              <Facedowncard scale={1.2} />
             )}
           </div>
           <div className="flex justify-center space-x-2">
-            {Array.from({ length: enemyCardsCount }).map((_, index) => (
-              <Facedowncard key={`facedown-${index}`} />
+            {Array.from({ length: enemyCardCount }).map((_, index) => (
+              <Facedowncard key={`facedown-${index}`} scale={0.6} />
             ))}
           </div>
         </div>
@@ -153,6 +173,41 @@ function BoardGame2() {
           </div>
         </div>
       )}
+
+      {showDialog && (
+        <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-75">
+          <div className="bg-white text-black p-8 rounded-lg text-center mb-4">
+            <h2>Searching for an opponent...</h2>
+            <p>Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</p>
+            <div className="flex space-x-4 mt-4">
+              <button
+                onClick={cancelMatch}
+                className="px-6 py-2 bg-gradient-to-r from-red-800 to-red-500 text-white rounded-full shadow-md hover:shadow-lg"
+              >
+                Cancel Match
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="fixed bottom-4 right-4">
+        <button
+          className={`px-6 py-2 rounded-full shadow-md ${
+            isButtonDisabled ? "bg-gray-500" : "bg-green-500 hover:bg-green-700"
+          }`}
+          onClick={(e) => {
+            if (isButtonDisabled) {
+              e.preventDefault();
+            } else {
+              handlePlayButton();
+            }
+          }}
+          disabled={isButtonDisabled}
+        >
+          Let's Go!
+        </button>
+      </div>
     </div>
   );
 }
