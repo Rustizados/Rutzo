@@ -20,6 +20,11 @@ const useContractUtils = () => {
     const sendMessage = async (signer: Signer): Promise<void> => {
         return new Promise (async (resolve, reject) => {
 
+            if (!api) {
+                console.error("API is undefined");
+                return;
+              }
+
             const transferExtrinsic = api.message.send({
                 destination: MAIN_CONTRACT.PROGRAM_ID,
                 payload: { Register: null },

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ReactComponent as ShoppingCart } from "@/assets/images/shopping_cart.svg";
 import { MAIN_CONTRACT, NFT_CONTRACT } from "@/app/consts";
 import { useApi, useAccount } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import { UserEmptyAccount, RegisterButton, BoardGame, MyNFTCollection } from "@/components";
 import {Link} from 'react-router-dom'
+import { BoardGame2 } from "@/components/board-game/BoardGame2";
+import { NotEnoughCards } from "../play/NotEnoughCards";
 
 function Game() {
   const { api } = useApi();
@@ -55,44 +56,14 @@ function Game() {
           <div>
             {
               userNftsNumber > 2 ? (
-                <BoardGame />
+                <BoardGame2 />
               ) : (
-                <div>
-                  {
-                    userNftsNumber > 0 ? (
-                      <div className="alert">
-                        <h1>You don&apos;t have enough NFTs</h1>
-                        <MyNFTCollection />
-                        <br />
-                        <div className="playcontainer">
-                          <div className="playcontainer">
-                            <a href="/marketplace">
-                              <ShoppingCart />
-                              MARKETPLACE
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <UserEmptyAccount>
-                        <p className="alert">Go to the marketplace and get some cool NFTs!</p>
-                        <div className="playcontainer">
-                          <a href="/marketplace" className="alert">
-                            MARKETPLACE
-                          </a>
-                        </div>
-                      </UserEmptyAccount>
-                    )
-                  }
-                </div>
+                <NotEnoughCards />
               )
             }
           </div>
         ) : (
-          <UserEmptyAccount>
-            <p className="alert">Register to get free cards</p>
-            <RegisterButton onRegister={setData} />
-          </UserEmptyAccount>
+          <UserEmptyAccount/>
         )
       }
     </div>
