@@ -31,7 +31,7 @@ function AboutUs() {
 
         <div className="w-full md:w-1/2">
           <img
-            src="https://media.licdn.com/dms/image/D4E22AQHEOZcvBrxjhQ/feedshare-shrink_1280/0/1694568627416?e=1710374400&v=beta&t=Ku-7IiRCL-ZKPyytYLU0czZflgJfqQlspqywQGyGaQ8"
+            src="https://www.rutzo.tech/images/logo.png"
             alt="NFTs"
             className="h-96 rounded-3xl m-auto md:h-96 md:w-96 md:object-cover md:object-center md:shadow-2"
           />

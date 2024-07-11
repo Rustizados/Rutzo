@@ -33,9 +33,7 @@ function SignlessDialog({ onClose }: { onClose: () => void }) {
       const account = await generateRandomAccount(password);
       setWalletAccount(account);
     };
-    if (true) {
       fetchAccount();
-    }
   }, [password]);
 
   const validateFields = () => {

@@ -75,14 +75,14 @@ export function NftsOnSale({onSaled, type}: DefaultNftsProos) {
       }
 
       // const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
-      const voucherAlreadyExists = await voucherExists();
+      const voucherAlreadyExists = await voucherExists(account.decodedAddress);
 
       if (!voucherAlreadyExists) {
         alert.error("voucher does not exist!");
         return;
       }
 
-      const voucherId = await accountVoucherId();
+      const voucherId = await accountVoucherId(account.decodedAddress);
 
       if (await voucherExpired(voucherId)) {
         console.log("Voucher expired");

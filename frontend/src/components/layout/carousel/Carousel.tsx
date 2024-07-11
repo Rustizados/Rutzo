@@ -14,7 +14,7 @@ const images = [
   'https://www.rutzo.tech/NFT/normal/jaguar_normal.jpg',
   'https://www.rutzo.tech/NFT/poison/angel_of_death_poison.jpg',
   'https://www.rutzo.tech/NFT/poison/ghoul_poison.jpg',
-  'https://www.rutzo.techchchch/NFT/poison/quetzal_poison.jpg',
+  'https://www.rutzo.tech/NFT/poison/quetzal_poison.jpg',
   'https://www.rutzo.tech/NFT/rock/maya_calavera_rock.jpg',
   'https://www.rutzo.tech/NFT/rock/zacualpan_rock.jpg',
   'https://www.rutzo.tech/NFT/water/ajolote_water.jpg',

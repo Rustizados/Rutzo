@@ -2,13 +2,9 @@ import "./app.scss";
 import "./global.css";
 
 import { useAccount, useApi } from "@gear-js/react-hooks";
-import { Footer } from "@/components/layout";
 import { withProviders } from "@/app/hocs";
-
 import { Layout } from "@/components/layout";
-import { Header } from "@/components/layout";
-import { ApiLoader, BoardGame } from "@/components";
-
+import { ApiLoader } from "@/components";
 import { Home } from "@/pages/home";
 import { Play } from "@/pages/play";
 import { AboutUs, Rules } from "@/pages/resources";

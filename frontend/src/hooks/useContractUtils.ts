@@ -1,4 +1,4 @@
-import { GearKeyring, HexString, IUpdateVoucherParams, ProgramMetadata } from '@gear-js/api';
+import { GearKeyring, HexString, ProgramMetadata } from '@gear-js/api';
 import { useAccount, useApi, useAlert, TemplateAlertOptions, useBalanceFormat } from '@gear-js/react-hooks';
 import { MAIN_CONTRACT, ONE_TVARA_VALUE, seed } from '@/app/consts';
 import { Signer } from '@polkadot/types/types';
@@ -24,6 +24,20 @@ const useContractUtils = () => {
                 console.error("API is undefined");
                 return;
               }
+
+            if(!account) {
+                console.error("Account is undefined");
+                return;
+            }
+
+            const gas = await api.program.calculateGas.handle(
+                account.decodedAddress,
+                MAIN_CONTRACT.PROGRAM_ID,
+                { Register: null },
+                0,
+                true,
+                mainContractMetadata
+            );
 
             const transferExtrinsic = api.message.send({
                 destination: MAIN_CONTRACT.PROGRAM_ID,

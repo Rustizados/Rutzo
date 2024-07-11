@@ -43,7 +43,7 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
 
       // const voucherExists = await api.voucher.exists(MAIN_CONTRACT.PROGRAM_ID, account.decodedAddress);
 
-      const voucherAlreadyExists = await voucherExists();
+      const voucherAlreadyExists = await voucherExists(account.decodedAddress);
 
       if (!voucherAlreadyExists) {
         alert.error("Voucher does not exist!");
@@ -53,7 +53,7 @@ function PlayButton({ onJoiningGame, onPressed=(x: boolean)=>{}, tokenId }: any)
       setLoadingSignature(true);
       onPressed(true);
 
-      const voucherId = await accountVoucherId();
+      const voucherId = await accountVoucherId(account.decodedAddress);
 
       if (await voucherExpired(voucherId)) {
         console.log("Voucher expired");

@@ -1,266 +1,263 @@
-import { GearKeyring, HexString, IUpdateVoucherParams } from '@gear-js/api';
+import { GearKeyring, HexString } from '@gear-js/api';
 import { useAccount, useApi, useAlert, TemplateAlertOptions, useBalanceFormat } from '@gear-js/react-hooks';
 import { MAIN_CONTRACT, ONE_TVARA_VALUE, VOUCHER_MIN_LIMIT, seed } from '@/app/consts';
 
 const useVoucherUtils = () => {
-    const { getFormattedBalanceValue } = useBalanceFormat();
-    const { api } = useApi();
-    const { account } = useAccount();
-    const alert = useAlert();
+  const { getFormattedBalanceValue } = useBalanceFormat();
+  const { api } = useApi();
+  const { account } = useAccount();
+  const alert = useAlert();
 
-    const createNewVoucher = (account: HexString): Promise<HexString> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api) {
-                console.log("No se inicio la api");
-                reject("Error creating voucher");
-                return;
+  const createNewVoucher = (account: HexString): Promise<HexString> => {
+    return new Promise((resolve, reject) => {
+      if (!api) {
+        console.log("No se inicio la api");
+        reject("Error creating voucher");
+        return;
+      }
+
+      const alertOptions: TemplateAlertOptions = {
+        title: "Rutzo action"
+      };
+
+      const creatingVoucherAlertId = alert.loading("Creating voucher", alertOptions);
+
+      api.voucher.issue(
+        account,
+        ONE_TVARA_VALUE * 11,
+        1_200,
+        [MAIN_CONTRACT.PROGRAM_ID]
+      ).then((voucherIssued) => {
+        console.log("voucher issued");
+
+        GearKeyring.fromSeed(seed, "AdminDavid").then((keyring) => {
+          voucherIssued.extrinsic.signAndSend(
+            keyring,
+            (event: any) => {
+              console.log(event.toHuman());
+              const extrinsicJSON: any = event.toHuman();
+              if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
+                const objectKey = Object.keys(extrinsicJSON.status)[0];
+                if (objectKey === "Finalized") {
+                  alert.remove(creatingVoucherAlertId);
+                  alert.success("Voucher created");
+                  console.log("Voucher created");
+                  resolve(voucherIssued.voucherId);
+                }
+              }
             }
-
-            const alertOptions: TemplateAlertOptions = {
-                title: "Rutzo action"
-            }
-
-            const creatingVoucherAlertId = alert.loading("Creating voucher", alertOptions);
-
-            // Se genera el "issue" para crear el voucher para el usuario
-            // En este caso, para el main contract
-            const voucherIssued =  await api.voucher.issue(
-                account,
-                ONE_TVARA_VALUE * 11, // 11 TVaras
-                1_200, // An hour in blocks
-                [MAIN_CONTRACT.PROGRAM_ID]
-            );
-
-            console.log("voucher issued");
-
-            const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-
-            // Se firma el voucher con la cuenta del administrador para el main Contract
-
-            try {
-                await voucherIssued.extrinsic.signAndSend(
-                    keyring,
-                    async (event: any) => {
-                        console.log(event.toHuman()); 
-                        const extrinsicJSON: any = event.toHuman();
-                        if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
-                            const objectKey = Object.keys(extrinsicJSON.status)[0];
-                            if (objectKey === "Finalized") {
-                                alert.remove(creatingVoucherAlertId);
-                                alert.success("Voucher created");
-                                console.log("Voucher created");
-                                resolve(voucherIssued.voucherId);
-                            }
-                        }
-                    }
-                );
-            } catch (error: any) {
-                console.error(`${error.name}: ${error.message}`);
-                alert.remove(creatingVoucherAlertId);
-                alert.error("Error creating voucher");
-                reject("Error creating voucher");
-            }
+          ).catch((error: any) => {
+            console.error(`${error.name}: ${error.message}`);
+            alert.remove(creatingVoucherAlertId);
+            alert.error("Error creating voucher");
+            reject("Error creating voucher");
+          });
         });
-    }
+      });
+    });
+  };
 
-    const updateVoucher = async (account: HexString, voucherId: string): Promise<void> => {
-        return new Promise(async (resolve, reject) => {
-            if (await voucherExpired(voucherId)) {
-                await renewVoucherOneHour(voucherId);
+  const updateVoucher = (account: HexString, voucherId: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      voucherExpired(voucherId).then((expired) => {
+        if (expired) {
+          renewVoucherOneHour(voucherId).then(() => {
+            voucherBalance(voucherId).then((balance) => {
+              if (balance < VOUCHER_MIN_LIMIT) {
+                addTwoTokensToVoucher(voucherId).then(() => resolve()).catch(reject);
+              } else {
+                resolve();
+              }
+            }).catch(reject);
+          }).catch(reject);
+        } else {
+          voucherBalance(voucherId).then((balance) => {
+            if (balance < VOUCHER_MIN_LIMIT) {
+              addTwoTokensToVoucher(voucherId).then(() => resolve()).catch(reject);
+            } else {
+              resolve();
             }
-            
-            const actualVoucherBalance = await voucherBalance(voucherId);
+          }).catch(reject);
+        }
+      }).catch(reject);
+    });
+  };
 
-            if (actualVoucherBalance < VOUCHER_MIN_LIMIT) {
-                await addTwoTokensToVoucher(voucherId);
-            }
+  const voucherExpired = (voucherId: string): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (!api || !account) {
+        console.log("Api or Account is not ready");
+        reject(false);
+        return;
+      }
 
-            resolve();
-        });
-    };
-
-    const voucherExpired = async (voucherId: string): Promise<boolean> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("Api or Account is not ready");
-                reject(false);
-                return;
-            }
-    
-            const voucherData = await api.voucher.getDetails(account.decodedAddress, voucherId);
-            const blockHash = await api.blocks.getFinalizedHead();
-            const blocks = await api.blocks.getBlockNumber(blockHash as Uint8Array);
-    
+      api.voucher.getDetails(account.decodedAddress, voucherId).then((voucherData) => {
+        api.blocks.getFinalizedHead().then((blockHash) => {
+          api.blocks.getBlockNumber(blockHash as Uint8Array).then((blocks) => {
             resolve(blocks.toNumber() > voucherData.expiry);
-        });
-    }
+          }).catch(reject);
+        }).catch(reject);
+      }).catch(reject);
+    });
+  };
 
-    const voucherBalance = async (voucherId: string): Promise<number> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("api or account is not ready");
-                reject(false);
-                return;
-            }
+  const voucherBalance = (voucherId: string): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      if (!api || !account) {
+        console.log("api or account is not ready");
+        reject(false);
+        return;
+      }
 
-            const voucherBalance = await api.balance.findOut(voucherId);
-            const voucherBalanceFormated = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+      api.balance.findOut(voucherId).then((voucherBalance) => {
+        const voucherBalanceFormated = Number(getFormattedBalanceValue(voucherBalance.toString()).toFixed());
+        resolve(voucherBalanceFormated);
+      }).catch(reject);
+    });
+  };
 
-            resolve(voucherBalanceFormated);
-        });
-    }
+  const voucherExists = (account: HexString): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (!api) {
+        console.log("api is not ready");
+        reject(false);
+        return;
+      }
 
-    const voucherExists = async (account: HexString): Promise<boolean> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api) {
-                console.log("api is not ready");
-                reject(false);
-                return;
-            }
+      api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID).then((vouchers) => {
+        resolve(Object.keys(vouchers).length > 0);
+      }).catch(reject);
+    });
+  };
 
-            const vouchers = await api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID);
+  const accountVoucherId = (account: HexString): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (!api) {
+        console.log("api is not ready");
+        reject(false);
+        return;
+      }
 
-            resolve(
-                Object.keys(vouchers).length > 0
-            );
-        });
-    }
+      api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID).then((vouchersData) => {
+        const vouchersId = Object.keys(vouchersData);
 
-    const accountVoucherId = async (account: HexString): Promise<string> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api) {
-                console.log("api is not ready");
-                reject(false);
-                return;
-            }
+        if (vouchersId.length < 1) {
+          console.log("User does not has voucher");
+          reject(false);
+          return;
+        }
 
-            const vouchersData = await api.voucher.getAllForAccount(account, MAIN_CONTRACT.PROGRAM_ID);
-            const vouchersId = Object.keys(vouchersData);
+        resolve(vouchersId[0]);
+      }).catch(reject);
+    });
+  };
 
-            if (vouchersId.length < 1) {
-                console.log("User does not has voucher");
-                reject(false);
-                return;
-            }
+  const renewVoucherOneHour = (voucherId: string): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (!api || !account) {
+        console.log("Api or Account is not ready");
+        reject(false);
+        return;
+      }
 
-            resolve(vouchersId[0]);
-        });
-    }
+      const alertOptions: TemplateAlertOptions = {
+        title: "Rutzo action"
+      };
 
-    const renewVoucherOneHour = async (voucherId: string): Promise<boolean> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("Api or Account is not ready");
-                reject(false);
-                return;
-            }
+      const renewVoucherAlertId = alert.loading("Renewing voucher", alertOptions);
 
-            const alertOptions: TemplateAlertOptions = {
-                title: "Rutzo action"
-            }
+      const voucherUpdate = api.voucher.update(
+        account.decodedAddress, 
+        voucherId, 
+        {
+            prolongDuration: 1_200 // one hour
+        }
+      );
 
-            const renewVoucherAlertId = alert.loading("Renewing voucher", alertOptions);
-
-            const newVoucherData: IUpdateVoucherParams = {
-                prolongDuration: 1_200 // one hour
-            }
-
-            const voucherUpdate = api.voucher.update(
-                account.decodedAddress, 
-                voucherId, 
-                newVoucherData
-            );
-
-            const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-
-            try {
-                await voucherUpdate.signAndSend(
-                    keyring,
-                    async (event: any) => {
-                        console.log(event.toHuman()); 
-                        const extrinsicJSON: any = event.toHuman();
-                        if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
-                            const objectKey = Object.keys(extrinsicJSON.status)[0];
-                            if (objectKey === "Finalized") {
-                                alert.remove(renewVoucherAlertId);
-                                alert.success("Voucher updated");
-                                console.log("Voucher updated");
-                                resolve(true);
-                            }
-                        }
-                    }
-                );
-            } catch (error: any) {
+      GearKeyring.fromSeed(seed, "AdminDavid").then((keyring) => {
+        voucherUpdate.signAndSend(
+          keyring,
+          (event: any) => {
+            console.log(event.toHuman());
+            const extrinsicJSON: any = event.toHuman();
+            if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
+              const objectKey = Object.keys(extrinsicJSON.status)[0];
+              if (objectKey === "Finalized") {
                 alert.remove(renewVoucherAlertId);
-                alert.error("Error renewing voucher");
-                console.error(`${error.name}: ${error.message}`);
-                reject(false);
+                alert.success("Voucher updated");
+                console.log("Voucher updated");
+                resolve(true);
+              }
             }
+          }
+        ).catch((error: any) => {
+          alert.remove(renewVoucherAlertId);
+          alert.error("Error renewing voucher");
+          console.error(`${error.name}: ${error.message}`);
+          reject(false);
         });
-    }
+      }).catch(reject);
+    });
+  };
 
-    const addTwoTokensToVoucher = async (voucherId: string): Promise<boolean> => {
-        return new Promise(async (resolve, reject) => {
-            if (!api || !account) {
-                console.log("Api or Account is not ready");
-                reject(false);
-                return;
-            }
+  const addTwoTokensToVoucher = (voucherId: string): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (!api || !account) {
+        console.log("Api or Account is not ready");
+        reject(false);
+        return;
+      }
 
-            const alertOptions: TemplateAlertOptions = {
-                title: "Rutzo action"
-            }
+      const alertOptions: TemplateAlertOptions = {
+        title: "Rutzo action"
+      };
 
-            const renewVoucherAlertId = alert.loading("Adding tokens to voucher", alertOptions);
+      const renewVoucherAlertId = alert.loading("Adding tokens to voucher", alertOptions);
 
-            const newVoucherData: IUpdateVoucherParams = {
-                balanceTopUp: ONE_TVARA_VALUE * 2
-            }
+      const voucherUpdate = api.voucher.update(
+        account.decodedAddress, 
+        voucherId, 
+        {
+            balanceTopUp: ONE_TVARA_VALUE * 2
+        }
+      );
 
-            const voucherUpdate = api.voucher.update(
-                account.decodedAddress, 
-                voucherId, 
-                newVoucherData
-            );
-
-            const keyring = await GearKeyring.fromSeed(seed, "AdminDavid");
-
-            try {
-                await voucherUpdate.signAndSend(
-                    keyring,
-                    async (event: any) => {
-                        console.log(event.toHuman()); 
-                        const extrinsicJSON: any = event.toHuman();
-                        if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
-                            const objectKey = Object.keys(extrinsicJSON.status)[0];
-                            if (objectKey === "Finalized") {
-                                alert.remove(renewVoucherAlertId);
-                                alert.success("Voucher updated");
-                                console.log("Voucher updated");
-                                resolve(true);
-                            }
-                        }
-                    }
-                );
-            } catch (error: any) {
+      GearKeyring.fromSeed(seed, "AdminDavid").then((keyring) => {
+        voucherUpdate.signAndSend(
+          keyring,
+          (event: any) => {
+            console.log(event.toHuman());
+            const extrinsicJSON: any = event.toHuman();
+            if (extrinsicJSON && extrinsicJSON.status !== "Ready") {
+              const objectKey = Object.keys(extrinsicJSON.status)[0];
+              if (objectKey === "Finalized") {
                 alert.remove(renewVoucherAlertId);
-                alert.error("Error adding tokens to voucher");
-                console.error(`${error.name}: ${error.message}`);
-                reject(false);
+                alert.success("Voucher updated");
+                console.log("Voucher updated");
+                resolve(true);
+              }
             }
+          }
+        ).catch((error: any) => {
+          alert.remove(renewVoucherAlertId);
+          alert.error("Error adding tokens to voucher");
+          console.error(`${error.name}: ${error.message}`);
+          reject(false);
         });
-    }
+      }).catch(reject);
+    });
+  };
 
-    return { 
-        createNewVoucher, 
-        voucherExpired, 
-        voucherBalance, 
-        voucherExists, 
-        renewVoucherOneHour,
-        accountVoucherId,
-        addTwoTokensToVoucher,
-        updateVoucher
-    };
-}
+  return { 
+    createNewVoucher, 
+    voucherExpired, 
+    voucherBalance, 
+    voucherExists, 
+    renewVoucherOneHour,
+    accountVoucherId,
+    addTwoTokensToVoucher,
+    updateVoucher
+  };
+};
 
 export default useVoucherUtils;
