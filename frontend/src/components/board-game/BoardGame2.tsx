@@ -77,21 +77,25 @@ function BoardGame2() {
   const isButtonDisabled = selectedCards.length !== 3;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <div className="w-full max-w-5xl flex justify-between items-center mb-8">
-        <div className="text-center">
-          <img src="player_avatar_url" alt="Player Avatar" className="w-16 h-16 rounded-full mb-2"/>
-          <p className="text-lg">{actualUserInMatch}</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-2">
+      <div className="w-full max-w-5xl flex justify-between items-center mb-4">
+        <div className="flex items-center mt-10">
+          <img src="https://www.rutzo.tech/NFT/lightning/nova_lighting.jpg" alt="Player Avatar" className="w-10 h-10 rounded-full mr-2"/>
+          <p className="text-sm w-96 overflow-hidden whitespace-nowrap truncate">{actualUserInMatch}</p>
         </div>
-        <div className="text-center">
-          <img src="enemy_avatar_url" alt="Enemy Avatar" className="w-16 h-16 rounded-full mb-2"/>
-          <p className="text-lg">{enemyName}</p>
+        <div className="flex items-center">
+          <p className="text-sm w-96 overflow-hidden whitespace-nowrap truncate mr-2">{enemyName}</p>
+          <img src="https://www.rutzo.tech/NFT/poison/angel_of_death_poison.jpg" alt="Enemy Avatar" className="w-10 h-10 rounded-full"/>
         </div>
+      </div>
+
+      <div className="flex justify-center mb-2 bg-gradient-to-r from-purple-800 to-green-500 rounded-xl">
+        <p className="text-sm p-2 font-bold">{isPlayerTurn ? "Your Turn" : "Enemy's Turn"}</p>
       </div>
 
       <div className="w-full max-w-5xl grid grid-cols-2 gap-4 mb-8">
         <div className="flex flex-col items-center">
-          <div className="w-52 h-80 md:w-64 md:h-96 bg-gray-800 rounded-lg mb-4 flex items-center justify-center">
+          <div className="bg-slate-900 rounded-lg mb-4 p-2 flex items-center justify-center">
             {cardToPlay ? (
               <Card
                 image={cardToPlay[1].media}
@@ -99,10 +103,10 @@ function BoardGame2() {
                 type={cardToPlay[1].description.toLowerCase()}
                 value={cardToPlay[1].reference}
                 onCardClick={() => removeCardToPlay(cardToPlay)}
-                scale={1.2}
+                scale={1}
               />
             ) : (
-              <Facedowncard scale={1.2} />
+              <Facedowncard scale={1.0} />
             )}
           </div>
           <div className="flex justify-center space-x-2">
@@ -127,17 +131,17 @@ function BoardGame2() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <div className="w-52 h-80 md:w-64 md:h-96 bg-gray-800 rounded-lg mb-4 flex items-center justify-center">
+          <div className="bg-slate-900 rounded-lg mb-4 p-2 flex items-center justify-center">
             {enemyCard ? (
               <Card
                 image={enemyCard.media}
                 title={enemyCard.name}
                 type={enemyCard.description.toLowerCase()}
                 value={enemyCard.reference}
-                scale={1.2}
+                scale={1}
               />
             ) : (
-              <Facedowncard scale={1.2} />
+              <Facedowncard scale={1} />
             )}
           </div>
           <div className="flex justify-center space-x-2">
@@ -148,9 +152,7 @@ function BoardGame2() {
         </div>
       </div>
 
-      <div className="flex justify-center mb-8">
-        <p className="text-lg">{isPlayerTurn ? "Your Turn" : "Enemy's Turn"}</p>
-      </div>
+      
 
       {userWonTheMatch !== null && (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-75">
