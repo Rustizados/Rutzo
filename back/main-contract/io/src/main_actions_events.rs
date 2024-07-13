@@ -12,7 +12,9 @@ use crate::{
 #[scale_info(crate = gstd::scale_info)]
 pub enum RutzoAction {
     MessageTest,
-    Register,
+    Register {
+        user_address: UserId
+    },
     Login,
     Logout,
     PlayGame {

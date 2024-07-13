@@ -95,8 +95,11 @@ async fn main() {
             msg::reply(RutzoEvent::NFTContractSaved, 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
-        RutzoAction::Register => {
-            msg::reply(state.register_user(caller), 0)
+        RutzoAction::Register { user_address } => {
+            // Trick function, this logic is for signless account, this works for
+            // wallets that does not have any tokens
+            
+            msg::reply(state.register_user(user_address, caller), 0)
                 .expect("Error in reply a message 'RutzoEvent'");
         },
         RutzoAction::Login => {

@@ -67,7 +67,8 @@ pub struct UserData {
     pub current_game: Option<GameId>,
     pub recent_past_game: Option<GameId>,
     pub past_games: Vec<GameId>,
-    pub is_logged_id: bool
+    pub is_logged_id: bool,
+    pub session_address: ActorId
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Clone)]
@@ -149,6 +150,7 @@ pub struct UserDataState {
     pub current_game: Option<u64>,  
     pub recent_past_game: Option<u64>,
     pub past_games: Vec<u64>,
+    pub session_account: ActorId
 }
 
 impl From<UserData> for UserDataState {
@@ -158,20 +160,26 @@ impl From<UserData> for UserDataState {
         } else {
             None  
         };
+        
         let past_games = value.past_games
             .iter()
             .map(|game_id| *game_id as u64)
             .collect();
+
         let recent_past_game = if  value.recent_past_game.is_some() {
             let recent_past_game = value.recent_past_game.unwrap();
             Some(recent_past_game as u64)
         } else {
             None
         };
+
+        let session_account = value.session_address;
+
         Self {
             current_game,
             past_games,
-            recent_past_game
+            recent_past_game,
+            session_account
         }
     }
 }
