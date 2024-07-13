@@ -176,22 +176,26 @@ function BoardGame2() {
         </div>
       )}
 
-      {showDialog && (
-        <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-75">
-          <div className="bg-white text-black p-8 rounded-lg text-center mb-4">
-            <h2>Searching for an opponent...</h2>
-            <p>Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</p>
-            <div className="flex space-x-4 mt-4">
-              <button
-                onClick={cancelMatch}
-                className="px-6 py-2 bg-gradient-to-r from-red-800 to-red-500 text-white rounded-full shadow-md hover:shadow-lg"
-              >
-                Cancel Match
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+{showDialog && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
+    <div className="bg-black text-white p-8 rounded-lg text-center  border-2 border-violet-800">
+      <h2 className="text-lg mb-3">Searching for an opponent...</h2>
+      <p>
+        Time left: {Math.floor(timeLeft / 60)}:
+        {(timeLeft % 60).toString().padStart(2, '0')}
+      </p>
+      <div className="flex justify-center mt-8">
+        <button
+          onClick={cancelMatch}
+          className="px-6 py-2 bg-gradient-to-r from-red-800 to-red-500 text-white rounded-full shadow-md hover:shadow-lg"
+        >
+          Cancel Match
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       <div className="fixed bottom-4 right-4">
         <button
