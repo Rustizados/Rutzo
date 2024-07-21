@@ -1,6 +1,6 @@
 import { MAIN_CONTRACT } from '@/app/consts';
 import { useApi, useAccount } from '@gear-js/react-hooks';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DefaultNfts, RegisterButton, NftsOnSale } from '@/components';
 import { ProgramMetadata } from '@gear-js/api';
 import './Marketplace.scss';
@@ -62,32 +62,45 @@ function Marketplace() {
   const mainContractMetadata = ProgramMetadata.from(MAIN_CONTRACT.METADATA);
 
   const setData = async () => {
-    if (!api) return;
+    if (!api || !account) {
+      console.error('API o cuenta no disponible.');
+      return;
+    }
 
-    const stateResult = await api.programState.read(
-      { programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account?.decodedAddress ?? '0x0' } },
-      mainContractMetadata,
-    );
+    try {
+      console.log('Fetching registration status...');
+      const stateResult = await api.programState.read(
+        { programId: MAIN_CONTRACT.PROGRAM_ID, payload: { UserIsRegister: account.decodedAddress ?? '0x0' } },
+        mainContractMetadata,
+      );
 
-    const stateFormated: any = stateResult.toJSON();
+      const stateFormated: any = stateResult.toJSON();
+      console.log('Registration status:', stateFormated);
 
-    setIsRegister(stateFormated.userIsRegister);
+      setIsRegister(stateFormated.userIsRegister);
 
-    if (!isRegister) return;
+      if (!stateFormated.userIsRegister) return;
 
-    const stateResult2 = await api.programState.read(
-      { programId: MAIN_CONTRACT.PROGRAM_ID, payload: { NFTsPurchasedByUser: account?.decodedAddress ?? '0x0' } },
-      mainContractMetadata,
-    );
+      console.log('Fetching NFTs purchased by user...');
+      const stateResult2 = await api.programState.read(
+        { programId: MAIN_CONTRACT.PROGRAM_ID, payload: { NFTsPurchasedByUser: account.decodedAddress ?? '0x0' } },
+        mainContractMetadata,
+      );
 
-    const stateFormated2: any = stateResult2.toJSON();
+      const stateFormated2: any = stateResult2.toJSON();
+      console.log('Purchased NFTs:', stateFormated2);
 
-    const mintedNfts: [number] = stateFormated2.purchasedNfts;
+      const mintedNfts: [number] = stateFormated2.purchasedNfts;
 
-    setTotalNftsToMint(3 - (mintedNfts?.length ?? 0));
+      setTotalNftsToMint(3 - (mintedNfts?.length ?? 0));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
-  setData();
+  useEffect(() => {
+    setData();
+  }, [api, account]);
 
   const handleChipClick = (type: string) => {
     setSelectedType(type);
